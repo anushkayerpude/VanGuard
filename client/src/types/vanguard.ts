@@ -149,3 +149,17 @@ export interface NuclearBlastEffect {
   estimatedCasualties: number;
   electromagneticPulseRadiusKm: number;
 }
+
+export type WsMessageType =
+  | 'HELLO'
+  | 'EVENT_STREAM'
+  | 'ALERT_TRIGGER'
+  | 'BRIEFING_UPDATE'
+  | 'HEALTH_STATUS'
+  | 'SITUATION_UPDATE'
+  | 'ESCALATION'
+  | 'CLUSTER_UPDATE'
+  | 'ASSET_UPDATE'
+  | 'METRICS'
+  | 'DEGRADED_MODE';
+

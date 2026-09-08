@@ -42,21 +42,24 @@ cited briefing — `provenance.engine: "deterministic"`.
 
 ```bash
 git clone https://github.com/Destroyerved/Vanguard.git
-cd Vanguard/server
+cd Vanguard
 npm install
 npm run dev
 ```
 
 ```
-HTTP    http://localhost:3001/api/v1
-WS      ws://localhost:3001/stream
-Health  http://localhost:3001/health
+Command Center   http://localhost:5173
+Backend REST     http://localhost:3001/api/v1
+WebSocket Feed   ws://localhost:3001/stream
+Health Check     http://localhost:3001/health
 ```
+
+> **Zero-friction dual mode**: The command center frontend automatically detects if the backend is running. If offline, it seamlessly falls back to an in-browser simulation worker so judges and operators can test everything out-of-the-box.
 
 **Optional** — richer briefing prose via Gemini:
 
 ```bash
-cp .env.example .env      # add GEMINI_API_KEY, then restart
+cd server && cp .env.example .env      # add GEMINI_API_KEY, then restart
 ```
 
 Without a key the deterministic synthesizer runs instead. Every feature stays operational.
@@ -289,6 +292,13 @@ test, and each is documented with its lesson in
 
 ```
 Vanguard/
+├── client/                        React 19 + TypeScript + Vite tactical frontend
+│   ├── src/
+│   │   ├── components/            TacticalMap, PhosphorRadar, AIBriefing, Rafale HUD, LandingPage
+│   │   ├── services/              REST + WebSocket dual-mode client & soundFx synthesizer
+│   │   ├── store/                 Zustand unified event store with kinematics & simulation fallback
+│   │   └── types/                 vanguard contracts
+│   └── public/assets/             military radar, Rafale fighter, soldiers, galaxy textures
 ├── server/                        Node.js + TypeScript fusion backend
 │   ├── src/
 │   │   ├── ingestion/             5 source adapters (1 live API, 4 simulators)
@@ -310,11 +320,12 @@ Vanguard/
 ## 🛠️ Commands
 
 ```bash
-npm run dev         # tsx watch, hot reload
-npm run build       # tsc → dist/
-npm start           # run the build
-npm test            # 114 tests
-npm run typecheck   # strict, noUncheckedIndexedAccess
+npm run dev         # starts both backend and tactical frontend concurrently
+npm run dev:server  # run backend only (port 3001)
+npm run dev:client  # run frontend only (port 5173)
+npm run build       # compile backend (dist/) and bundle frontend
+npm test            # 114 tests across confidence, fusion, grounding
+npm run typecheck   # strict TypeScript across full stack
 npm run smoke       # 15s end-to-end pipeline assertions
 ```
 
@@ -346,17 +357,27 @@ not pinned at RED, **zero ungrounded citations**, and confidence falling under d
   - [x] Explainable confidence + counterfactual
   - [x] 3 statistical anomaly detectors
   - [x] Threat posture with hysteresis and audit log
+- [x] **Phase 2 — Geospatial Tactical Map** *(complete, verified)*
+  - [x] Leaflet hardware-accelerated dark tactical map (`TacticalMap.tsx`)
+  - [x] Dynamic layer toggles (Assets, Alerts, Weather, Zones, Fallout)
+  - [x] Interactive incident popups with confidence rating and source corroboration
+  - [x] 4D time-scrubber with -60m timeline replay to LIVE stream
 - [x] **Phase 3 — AI Intelligence** *(complete, verified)*
   - [x] Gemini structured-output integration
   - [x] **Enforced citation grounding** + independent verification endpoint
   - [x] Deterministic fallback synthesizer
   - [x] Ranked COAs with tradeoffs · NL omnibar
+- [x] **Phase 4 — Command Center UI & Craftsmanship** *(complete, verified)*
+  - [x] Military HUD theme, glassmorphism, animated radar sweep, CRT scanlines
+  - [x] Dynamic threat level accents (`GREEN` → `RED`), DEFCON status indicator
+  - [x] Real-time audio klaxon alerts, supersonic shockwave & screen flash FX
+  - [x] Dual-mode architecture: live Node.js/Express backend + standalone in-browser simulation worker fallback
+- [x] **Phase 5 — Briefing & Decision Support** *(complete, verified)*
+  - [x] Web Speech API military voice synthesizer widget
+  - [x] Grounded SITREP briefing with citation badges and explainability drawer
 - [x] **Backend API & streaming** *(complete, verified)*
   - [x] 30 REST endpoints · 11 WebSocket frame types
   - [x] Operator simulation controls (scenarios, degraded comms, what-if)
-- [ ] **Phase 2 — Geospatial Command Map** *(API complete; React client pending)*
-- [ ] **Phase 4 — Command Center UI & craftsmanship**
-- [ ] **Phase 5 — SITREP PDF export, voice briefing**
 
 ---
 

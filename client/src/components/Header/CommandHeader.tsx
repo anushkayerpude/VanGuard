@@ -35,6 +35,7 @@ export const CommandHeader: React.FC<CommandHeaderProps> = ({ onBackToLanding })
   const isVoiceReading = useEventStore((s) => s.isVoiceReading);
   const triggerVoiceBriefing = useEventStore((s) => s.triggerVoiceBriefing);
   const stopVoiceBriefing = useEventStore((s) => s.stopVoiceBriefing);
+  const backendMode = useEventStore((s) => s.backendMode);
 
   useEffect(() => {
     const updateTime = () => {
@@ -91,6 +92,18 @@ export const CommandHeader: React.FC<CommandHeaderProps> = ({ onBackToLanding })
             <span className="px-1.5 py-0.2 bg-cyan-900/60 border border-cyan-400/30 rounded text-[9px] text-cyan-300 font-bold uppercase tracking-wider">
               C4ISR COP v1.1
             </span>
+            {backendMode === 'live' ? (
+              <span className="px-1.5 py-0.2 bg-emerald-950/80 border border-emerald-500 rounded text-[9px] text-emerald-300 font-bold flex items-center space-x-1 shadow-[0_0_8px_rgba(16,185,129,0.5)]">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping mr-1" />
+                <span>LIVE SERVER</span>
+              </span>
+            ) : (
+              <span className="px-1.5 py-0.2 bg-slate-900/80 border border-slate-700 rounded text-[9px] text-slate-400 font-bold flex items-center space-x-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 mr-1" />
+                <span>STANDALONE</span>
+              </span>
+            )}
+
             {onBackToLanding && (
               <button
                 onClick={onBackToLanding}

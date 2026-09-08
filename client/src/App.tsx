@@ -21,6 +21,14 @@ export function App() {
   const screenNukeFlash = useEventStore((s) => s.screenNukeFlash);
   const sourceHealth = useEventStore((s) => s.sourceHealth);
   const executeDetonation = useEventStore((s) => s.executeDetonation);
+  const initBackendSync = useEventStore((s) => s.initBackendSync);
+  const backendMode = useEventStore((s) => s.backendMode);
+  const wsStatus = useEventStore((s) => s.wsStatus);
+
+  // Initialize Dual-Mode backend connection & real-time sync
+  useEffect(() => {
+    initBackendSync();
+  }, [initBackendSync]);
 
   // Background Kinematic simulation tick (every 1s)
   useEffect(() => {
@@ -107,9 +115,21 @@ export function App() {
         </div>
 
         <div className="flex items-center space-x-3">
+          {backendMode === 'live' ? (
+            <span className="text-emerald-400 font-bold flex items-center bg-emerald-950/60 border border-emerald-500/40 px-2 py-0.5 rounded">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-ping" />
+              LIVE C4ISR STREAM (PORT 3001)
+            </span>
+          ) : (
+            <span className="text-amber-400 font-bold flex items-center bg-amber-950/60 border border-amber-500/40 px-2 py-0.5 rounded">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 mr-1.5" />
+              STANDALONE SIMULATION MODE
+            </span>
+          )}
           <span className="text-slate-500">RADAR: LEFT-BOTTOM (PSR-3D)</span>
           <span className="text-red-400 font-bold">● RAFALE: TOP-RIGHT (ASMP-A)</span>
         </div>
+
       </footer>
 
       {/* Modals */}

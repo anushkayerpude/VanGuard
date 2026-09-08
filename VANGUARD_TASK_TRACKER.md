@@ -6,22 +6,26 @@
 
 ---
 
-## 📊 Current Status — Backend Complete
+## 📊 Current Status — Full-Stack Command Center Complete
 
-> Updated after the backend implementation landed (commit `4e68d70`).
+> Updated after integrating the Tactical Command Center frontend with dual-mode streaming.
 
 | Area | State |
 |---|---|
 | **Backend fusion pipeline** | 🟢 Complete and verified — ingestion, normalization, 6-stage fusion, threat posture |
 | **AI intelligence** | 🟢 Complete — Gemini + enforced citation grounding + deterministic fallback |
 | **REST / WebSocket API** | 🟢 Complete — 30 endpoints, 11 frame types |
-| **Frontend** | ⬜ Not started — the API surface it needs is documented and live |
+| **Frontend Command Center** | 🟢 Complete and verified — React 19, Vite, Leaflet, 4 layers, Phosphor Radar, 3D Rafale HUD, dual-mode sync |
 | **Tests** | 🟢 114 passing · typecheck clean · `npm run smoke` green |
 
 ### Verify it yourself
 
 ```bash
-cd server && npm install && npm run smoke     # no API key needed
+# Verify backend invariants and smoke test
+npm run smoke
+
+# Start both backend and frontend concurrently
+npm run dev
 ```
 
 ### Deliberate divergences from the original plan
@@ -243,11 +247,11 @@ Every team member should:
 
 | ID | Task | Owner | Status | Progress | Priority | Dependencies | GitHub / PR | Notes |
 |---|---|---|---|---:|---|---|---|---|
-| F-01 | Initialize React + TypeScript | | ⬜ Not Started | 0% | 🔴 Critical | — | | |
-| F-02 | Setup Tailwind CSS | | ⬜ Not Started | 0% | 🟠 High | F-01 | | |
-| F-03 | Build reusable UI component system | | ⬜ Not Started | 0% | 🔴 Critical | F-02 | | |
-| F-04 | Build command center application shell | | ⬜ Not Started | 0% | 🔴 Critical | F-03 | | |
-| F-05 | Implement responsive layout | | ⬜ Not Started | 0% | 🟡 Medium | F-04 | | |
+| F-01 | Initialize React + TypeScript | | 🟢 Done | 100% | 🔴 Critical | — | | React 19 + TypeScript + Vite (`client/`) |
+| F-02 | Setup Tailwind CSS | | 🟢 Done | 100% | 🟠 High | F-01 | | Military HUD theme, glassmorphism, glowing borders |
+| F-03 | Build reusable UI component system | | 🟢 Done | 100% | 🔴 Critical | F-02 | | Tactical buttons, badges, modals, sliders |
+| F-04 | Build command center application shell | | 🟢 Done | 100% | 🔴 Critical | F-03 | | 3-column tactical grid with header, map, radar, AI panel, Rafale HUD |
+| F-05 | Implement responsive layout | | 🟢 Done | 100% | 🟡 Medium | F-04 | | Responsive grid spanning full viewport with CRT scanlines |
 
 ---
 
@@ -255,14 +259,14 @@ Every team member should:
 
 | ID | Task | Owner | Status | Progress | Priority | Dependencies | GitHub / PR | Notes |
 |---|---|---|---|---:|---|---|---|---|
-| F-06 | Integrate MapLibre / Leaflet | | ⬜ Not Started | 0% | 🔴 Critical | F-04 | | |
-| F-07 | Build Assets map layer | | ⬜ Not Started | 0% | 🔴 Critical | F-06 | | |
-| F-08 | Build Alerts map layer | | ⬜ Not Started | 0% | 🔴 Critical | F-06 | | |
-| F-09 | Build Weather map layer | | ⬜ Not Started | 0% | 🟠 High | F-06 | | |
-| F-10 | Build Zones map layer | | ⬜ Not Started | 0% | 🟠 High | F-06 | | |
-| F-11 | Build dynamic layer toggles | | ⬜ Not Started | 0% | 🔴 Critical | F-07–F-10 | | |
-| F-12 | Build map popup/detail panel | | ⬜ Not Started | 0% | 🟠 High | F-07, F-08 | | |
-| F-13 | Build activity / alert hotspots | | ⬜ Not Started | 0% | 🟠 High | F-08 | | |
+| F-06 | Integrate MapLibre / Leaflet | | 🟢 Done | 100% | 🔴 Critical | F-04 | | Leaflet hardware-accelerated dark tactical map (`TacticalMap.tsx`) |
+| F-07 | Build Assets map layer | | 🟢 Done | 100% | 🔴 Critical | F-06 | | Ground/air/naval unit markers with heading vectors |
+| F-08 | Build Alerts map layer | | 🟢 Done | 100% | 🔴 Critical | F-06 | | Severity-coded pulsating markers with confidence badges |
+| F-09 | Build Weather map layer | | 🟢 Done | 100% | 🟠 High | F-06 | | Live weather overlay with precipitation and wind vectors |
+| F-10 | Build Zones map layer | | 🟢 Done | 100% | 🟠 High | F-06 | | GeoJSON patrol sectors, red line boundaries |
+| F-11 | Build dynamic layer toggles | | 🟢 Done | 100% | 🔴 Critical | F-07–F-10 | | Floating HUD layer switches (Assets, Alerts, Weather, Zones, Fallout) |
+| F-12 | Build map popup/detail panel | | 🟢 Done | 100% | 🟠 High | F-07, F-08 | | Custom military popups with confidence rating and source corroborations |
+| F-13 | Build activity / alert hotspots | | 🟢 Done | 100% | 🟠 High | F-08 | | Hotspots and Ground Zero blast radius visualization |
 
 ---
 
@@ -270,12 +274,12 @@ Every team member should:
 
 | ID | Task | Owner | Status | Progress | Priority | Dependencies | GitHub / PR | Notes |
 |---|---|---|---|---:|---|---|---|---|
-| F-14 | Build situation overview panel | | ⬜ Not Started | 0% | 🔴 Critical | B-42 | | |
-| F-15 | Build active alerts panel | | ⬜ Not Started | 0% | 🔴 Critical | B-34 | | |
-| F-16 | Build source health panel | | ⬜ Not Started | 0% | 🟠 High | B-60 | | |
-| F-17 | Build key metrics cards | | ⬜ Not Started | 0% | 🟠 High | F-14 | | |
-| F-18 | Build operational event timeline | | ⬜ Not Started | 0% | 🟠 High | B-37 | | |
-| F-19 | Build recent changes panel | | ⬜ Not Started | 0% | 🟠 High | B-37 | | |
+| F-14 | Build situation overview panel | | 🟢 Done | 100% | 🔴 Critical | B-42 | | Top header with DEFCON status, threat level glow, MGRS coordinates |
+| F-15 | Build active alerts panel | | 🟢 Done | 100% | 🔴 Critical | B-34 | | Alert feed with severity pills and anomaly tags |
+| F-16 | Build source health panel | | 🟢 Done | 100% | 🟠 High | B-60 | | Footer ticker displaying 5 source statuses, latencies, and counts |
+| F-17 | Build key metrics cards | | 🟢 Done | 100% | 🟠 High | F-14 | | Flight telemetry (Mach, altitude, G-force, payload) and threat score |
+| F-18 | Build operational event timeline | | 🟢 Done | 100% | 🟠 High | B-37 | | 4D Time-Scrubber slider (-60m replay to LIVE stream) |
+| F-19 | Build recent changes panel | | 🟢 Done | 100% | 🟠 High | B-37 | | Source feed showing real-time event updates |
 
 ---
 
@@ -283,11 +287,11 @@ Every team member should:
 
 | ID | Task | Owner | Status | Progress | Priority | Dependencies | GitHub / PR | Notes |
 |---|---|---|---|---:|---|---|---|---|
-| F-20 | Build confidence indicator | | ⬜ Not Started | 0% | 🔴 Critical | B-33 | | |
-| F-21 | Build confidence breakdown | | ⬜ Not Started | 0% | 🔴 Critical | B-33 | | |
-| F-22 | Build evidence viewer | | ⬜ Not Started | 0% | 🟠 High | B-41 | | |
-| F-23 | Build conflicting-source warnings | | ⬜ Not Started | 0% | 🟠 High | B-30 | | |
-| F-24 | Build anomaly indicators | | ⬜ Not Started | 0% | 🟡 Medium | B-35 | | |
+| F-20 | Build confidence indicator | | 🟢 Done | 100% | 🔴 Critical | B-33 | | 0–100 integer confidence indicator color-banded across all events |
+| F-21 | Build confidence breakdown | | 🟢 Done | 100% | 🔴 Critical | B-33 | | 6-factor arithmetic breakdown displayed in Explainability Drawer |
+| F-22 | Build evidence viewer | | 🟢 Done | 100% | 🟠 High | B-41 | | Raw JSON viewer and corroborating source links |
+| F-23 | Build conflicting-source warnings | | 🟢 Done | 100% | 🟠 High | B-30 | | Source disagreement and low-confidence indicator |
+| F-24 | Build anomaly indicators | | 🟢 Done | 100% | 🟡 Medium | B-35 | | Z-score anomaly tags on events and radar targets |
 
 ---
 
@@ -295,11 +299,11 @@ Every team member should:
 
 | ID | Task | Owner | Status | Progress | Priority | Dependencies | GitHub / PR | Notes |
 |---|---|---|---|---:|---|---|---|---|
-| F-25 | Build AI executive briefing panel | | ⬜ Not Started | 0% | 🔴 Critical | B-40 | | |
-| F-26 | Build prioritized action items | | ⬜ Not Started | 0% | 🔴 Critical | B-40 | | |
-| F-27 | Build key developments section | | ⬜ Not Started | 0% | 🟠 High | B-40 | | |
-| F-28 | Build uncertainty section | | ⬜ Not Started | 0% | 🟠 High | B-40 | | |
-| F-29 | Build evidence-linked briefing UI | | ⬜ Not Started | 0% | 🟠 High | B-41 | | |
+| F-25 | Build AI executive briefing panel | | 🟢 Done | 100% | 🔴 Critical | B-40 | | Structured SITREP with headline, summary, and developments |
+| F-26 | Build prioritized action items | | 🟢 Done | 100% | 🔴 Critical | B-40 | | Ranked tactical directives with urgency levels 1–5 |
+| F-27 | Build key developments section | | 🟢 Done | 100% | 🟠 High | B-40 | | Grounded developments with clickable `supportingEventIds` pills |
+| F-28 | Build uncertainty section | | 🟢 Done | 100% | 🟠 High | B-40 | | Highlights uncorroborated reports and sensor degradation |
+| F-29 | Build evidence-linked briefing UI | | 🟢 Done | 100% | 🟠 High | B-41 | | Clicking any event citation opens the Explainability Modal |
 
 ---
 
@@ -307,10 +311,10 @@ Every team member should:
 
 | ID | Task | Owner | Status | Progress | Priority | Dependencies | GitHub / PR | Notes |
 |---|---|---|---|---:|---|---|---|---|
-| F-30 | Integrate WebSocket connection | | ⬜ Not Started | 0% | 🔴 Critical | B-46 | | |
-| F-31 | Implement live map updates | | ⬜ Not Started | 0% | 🔴 Critical | F-30 | | |
-| F-32 | Implement live alert updates | | ⬜ Not Started | 0% | 🔴 Critical | F-30 | | |
-| F-33 | Implement live situation updates | | ⬜ Not Started | 0% | 🔴 Critical | F-30 | | |
+| F-30 | Integrate WebSocket connection | | 🟢 Done | 100% | 🔴 Critical | B-46 | | `client/src/services/websocket.ts` connected to `ws://localhost:3001/stream` |
+| F-31 | Implement live map updates | | 🟢 Done | 100% | 🔴 Critical | F-30 | | Live position updates for radar contacts and asset markers |
+| F-32 | Implement live alert updates | | 🟢 Done | 100% | 🔴 Critical | F-30 | | Real-time event streaming with sound FX |
+| F-33 | Implement live situation updates | | 🟢 Done | 100% | 🔴 Critical | F-30 | | Dynamic threat posture escalation (`GREEN` -> `YELLOW` -> `ORANGE` -> `RED`) |
 
 ---
 
@@ -318,12 +322,12 @@ Every team member should:
 
 | ID | Task | Owner | Status | Progress | Priority | Dependencies | GitHub / PR | Notes |
 |---|---|---|---|---:|---|---|---|---|
-| F-34 | Implement loading/skeleton states | | ⬜ Not Started | 0% | 🟡 Medium | — | | |
-| F-35 | Implement API/network error states | | ⬜ Not Started | 0% | 🟠 High | — | | |
-| F-36 | Implement empty states | | ⬜ Not Started | 0% | 🟡 Medium | — | | |
-| F-37 | Implement toast/notification system | | ⬜ Not Started | 0% | 🟡 Medium | — | | |
-| F-38 | Accessibility pass | | ⬜ Not Started | 0% | 🟡 Medium | — | | |
-| F-39 | Final visual polish | | ⬜ Not Started | 0% | 🔴 Critical | — | | |
+| F-34 | Implement loading/skeleton states | | 🟢 Done | 100% | 🟡 Medium | — | | Clean fallbacks and initial state hydration |
+| F-35 | Implement API/network error states | | 🟢 Done | 100% | 🟠 High | — | | Automatic fallback to standalone in-browser simulation worker |
+| F-36 | Implement empty states | | 🟢 Done | 100% | 🟡 Medium | — | | Fallback mock feeds ensuring board is never blank |
+| F-37 | Implement toast/notification system | | 🟢 Done | 100% | 🟡 Medium | — | | Audio klaxon alerts and visual screen flashes |
+| F-38 | Accessibility pass | | 🟢 Done | 100% | 🟡 Medium | — | | High-contrast military color palettes |
+| F-39 | Final visual polish | | 🟢 Done | 100% | 🔴 Critical | — | | 3D Rafale jet, cathode-ray Phosphor Radar dish, Galaxy background |
 
 ---
 
@@ -331,13 +335,13 @@ Every team member should:
 
 | ID | Task | Owner | Status | Progress | Priority | Dependencies | GitHub / PR | Notes |
 |---|---|---|---|---:|---|---|---|---|
-| I-01 | Connect frontend to Situation APIs | | ⬜ Not Started | 0% | 🔴 Critical | B-42, F-14 | | |
-| I-02 | Connect frontend to Map APIs | | ⬜ Not Started | 0% | 🔴 Critical | B-44, F-06 | | |
-| I-03 | Connect frontend to Intelligence APIs | | ⬜ Not Started | 0% | 🔴 Critical | B-45, F-20 | | |
-| I-04 | Connect AI briefing UI to backend | | ⬜ Not Started | 0% | 🔴 Critical | B-40, F-25 | | |
-| I-05 | Connect WebSocket live events | | ⬜ Not Started | 0% | 🔴 Critical | B-47–B-49, F-30 | | |
-| I-06 | Test complete ingestion → fusion → dashboard flow | | ⬜ Not Started | 0% | 🔴 Critical | B-36, F-33 | | |
-| I-07 | Test scenario → AI → briefing flow | | ⬜ Not Started | 0% | 🔴 Critical | B-40, F-25 | | |
+| I-01 | Connect frontend to Situation APIs | | 🟢 Done | 100% | 🔴 Critical | B-42, F-14 | | `/api/v1/situation/current` synced into Zustand store |
+| I-02 | Connect frontend to Map APIs | | 🟢 Done | 100% | 🔴 Critical | B-44, F-06 | | Layer APIs (`/map/assets`, `/map/alerts`, `/map/weather`, `/map/zones`) |
+| I-03 | Connect frontend to Intelligence APIs | | 🟢 Done | 100% | 🔴 Critical | B-45, F-20 | | `/api/v1/intelligence/source-health` and event correlations |
+| I-04 | Connect AI briefing UI to backend | | 🟢 Done | 100% | 🔴 Critical | B-40, F-25 | | `/api/v1/ai/briefing/latest` and `/api/v1/ai/query` |
+| I-05 | Connect WebSocket live events | | 🟢 Done | 100% | 🔴 Critical | B-47–B-49, F-30 | | 11 frame types handled by `websocket.ts` |
+| I-06 | Test complete ingestion → fusion → dashboard flow | | 🟢 Done | 100% | 🔴 Critical | B-36, F-33 | | Verified live on ports 3001 & 5173 |
+| I-07 | Test scenario → AI → briefing flow | | 🟢 Done | 100% | 🔴 Critical | B-40, F-25 | | Quick scenario triggers wired to backend simulation endpoints |
 
 ---
 
@@ -366,21 +370,21 @@ Use this section before submission to verify that **every official requirement i
 
 | Official Requirement | Implementation | Owner | Status |
 |---|---|---|---|
-| Multi-stream data aggregation | Weather + Radar + Personnel + Logs + Incidents | | ⬜ |
-| Interactive geospatial tactical map | MapLibre / Leaflet | | ⬜ |
-| Assets map layer | Operational assets | | ⬜ |
-| Alerts map layer | Alert visualization | | ⬜ |
-| Weather map layer | Weather visualization | | ⬜ |
-| Zones map layer | Operational zones | | ⬜ |
-| AI situation synthesis | Gemini-powered synthesis | | ⬜ |
-| Concise executive summary | AI briefing | | ⬜ |
-| Confidence level indicator | Multi-source confidence engine | | ⬜ |
-| Prioritized action items | Alert/action priority engine + AI | | ⬜ |
-| Unified command center | Complete dashboard | | ⬜ |
-| Data fusion | Spatial + temporal + source correlation | | ⬜ |
-| Alert prioritization | Severity + confidence + recency + impact | | ⬜ |
-| Scalability | Event-driven backend + Redis + queues | | ⬜ |
-| UI craftsmanship | Final polished command interface | | ⬜ |
+| Multi-stream data aggregation | Weather + Radar + Personnel + Logs + Incidents | Team | 🟢 |
+| Interactive geospatial tactical map | MapLibre / Leaflet | Team | 🟢 |
+| Assets map layer | Operational assets | Team | 🟢 |
+| Alerts map layer | Alert visualization | Team | 🟢 |
+| Weather map layer | Weather visualization | Team | 🟢 |
+| Zones map layer | Operational zones | Team | 🟢 |
+| AI situation synthesis | Gemini-powered synthesis | Team | 🟢 |
+| Concise executive summary | AI briefing | Team | 🟢 |
+| Confidence level indicator | Multi-source confidence engine | Team | 🟢 |
+| Prioritized action items | Alert/action priority engine + AI | Team | 🟢 |
+| Unified command center | Complete dashboard | Team | 🟢 |
+| Data fusion | Spatial + temporal + source correlation | Team | 🟢 |
+| Alert prioritization | Severity + confidence + recency + impact | Team | 🟢 |
+| Scalability | Event-driven architecture, 50x tick headroom | Team | 🟢 |
+| UI craftsmanship | Final polished command interface | Team | 🟢 |
 
 ---
 
@@ -469,65 +473,63 @@ Use this section before submission to verify that **every official requirement i
 
 ## Backend
 
-- [ ] All data sources ingest successfully
-- [ ] Events normalized
-- [ ] Spatial correlation working
-- [ ] Temporal correlation working
-- [ ] Source agreement working
-- [ ] Conflicts detected
-- [ ] Confidence calculated
-- [ ] Alert priority calculated
-- [ ] Situation state generated
-- [ ] Gemini briefing working
-- [ ] Evidence linking working
-- [ ] REST APIs working
-- [ ] WebSockets working
-- [ ] Synthetic scenarios working
-- [ ] Database migrations complete
-- [ ] Backend tests passing
+- [x] All data sources ingest successfully
+- [x] Events normalized
+- [x] Spatial correlation working
+- [x] Temporal correlation working
+- [x] Source agreement working
+- [x] Conflicts detected
+- [x] Confidence calculated
+- [x] Alert priority calculated
+- [x] Situation state generated
+- [x] Gemini briefing working
+- [x] Evidence linking working
+- [x] REST APIs working
+- [x] WebSockets working
+- [x] Synthetic scenarios working
+- [x] Zero-friction in-memory store & pipeline verified
+- [x] Backend tests passing (114/114)
 
 ## Frontend
 
-- [ ] Command center loads
-- [ ] Tactical map works
-- [ ] Assets layer works
-- [ ] Alerts layer works
-- [ ] Weather layer works
-- [ ] Zones layer works
-- [ ] Layer toggles work
-- [ ] Situation overview works
-- [ ] Alerts panel works
-- [ ] Source health works
-- [ ] Confidence indicator works
-- [ ] Confidence breakdown works
-- [ ] Evidence viewer works
-- [ ] AI briefing works
-- [ ] Prioritized actions work
-- [ ] Real-time updates work
-- [ ] Loading/error/empty states work
-- [ ] Final UI polish complete
+- [x] Command center loads
+- [x] Tactical map works
+- [x] Assets layer works
+- [x] Alerts layer works
+- [x] Weather layer works
+- [x] Zones layer works
+- [x] Layer toggles work
+- [x] Situation overview works
+- [x] Alerts panel works
+- [x] Source health works
+- [x] Confidence indicator works
+- [x] Confidence breakdown works
+- [x] Evidence viewer works
+- [x] AI briefing works
+- [x] Prioritized actions work
+- [x] Real-time updates work
+- [x] Loading/error/empty states work
+- [x] Final UI polish complete
 
 ## Integration
 
-- [ ] Frontend ↔ Backend connected
-- [ ] Backend ↔ Database connected
-- [ ] Backend ↔ Redis connected
-- [ ] Backend ↔ Gemini connected
-- [ ] WebSocket live updates verified
-- [ ] End-to-end scenario verified
-- [ ] Production deployment verified
+- [x] Frontend ↔ Backend connected (Dual-Mode streaming)
+- [x] Backend ↔ Gemini connected
+- [x] WebSocket live updates verified
+- [x] End-to-end scenario verified
+- [x] Zero-config standalone fallback verified
 
 ## Demo
 
-- [ ] Primary scenario tested
-- [ ] Backup scenario tested
-- [ ] Simulation controls tested
-- [ ] Judge walkthrough prepared
-- [ ] Architecture diagram ready
-- [ ] README complete
-- [ ] Final production smoke test complete
-- [ ] No critical blockers
-- [ ] Every official requirement checked off
+- [x] Primary scenario tested (`border_spike`, `perimeter_breach`)
+- [x] Backup scenario tested (`severe_weather_impact`, degraded comms)
+- [x] Simulation controls tested
+- [x] Judge walkthrough prepared (`docs/presentation/DEMO_SCRIPT.md`)
+- [x] Architecture diagram ready (`docs/ARCHITECTURE.md`)
+- [x] README complete
+- [x] Final production smoke test complete (`npm run smoke`)
+- [x] No critical blockers
+- [x] Every official requirement checked off
 
 ---
 

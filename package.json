@@ -1,36 +1,19 @@
 {
-  "name": "vanguard-c4isr",
+  "name": "vanguard",
+  "version": "1.1.0",
   "private": true,
-  "version": "1.0.0",
+  "description": "VANGUARD — Multi-Source Defence Situational Awareness System (HackHertz 2026 D-05)",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@types/three": "^0.185.4",
-    "canvas-confetti": "^1.9.4",
-    "clsx": "^2.1.1",
-    "leaflet": "^1.9.4",
-    "lucide-react": "^1.16.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "tailwind-merge": "^3.0.2",
-    "three": "^0.185.1",
-    "zustand": "^5.0.3"
+    "dev": "concurrently -n \"SERVER,CLIENT\" -c \"cyan.bold,magenta.bold\" \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "smoke": "npm run smoke --prefix server",
+    "test": "npm test --prefix server",
+    "build": "npm run build --prefix server && npm run build --prefix client",
+    "typecheck": "npm run typecheck --prefix server && npm run build --prefix client"
   },
   "devDependencies": {
-    "@types/canvas-confetti": "^1.9.0",
-    "@types/leaflet": "^1.9.16",
-    "@types/node": "^22.13.4",
-    "@types/react": "^19.0.10",
-    "@types/react-dom": "^19.0.4",
-    "@vitejs/plugin-react": "^4.3.4",
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.5.2",
-    "tailwindcss": "^3.4.17",
-    "typescript": "^5.7.3",
-    "vite": "^6.1.0"
+    "concurrently": "^9.1.2"
   }
 }

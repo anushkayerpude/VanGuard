@@ -20,6 +20,16 @@ import {
 } from '../services/mockDataGenerator';
 import { soundFx } from '../services/soundFx';
 import { voiceSynthesizer } from '../services/aiBriefingService';
+import {
+  probeBackendHealth,
+  fetchCurrentSituation,
+  fetchEvents,
+  fetchLatestBriefing,
+  fetchSourceHealth,
+  injectScenario as apiInjectScenario,
+  setDegradedComms as apiSetDegradedComms,
+} from '../services/api';
+import { vanguardWs, type WebSocketStatus } from '../services/websocket';
 
 export interface EventStoreState {
   // Events & Intelligence
@@ -53,6 +63,8 @@ export interface EventStoreState {
   sourceHealth: SourceHealth[];
   isDegradedMode: boolean;
   timeScrubberMinute: number; // 0 = live, -60 = past
+  backendMode: 'live' | 'standalone';
+  wsStatus: WebSocketStatus;
   
   // Radar Widget State
   radarTargets: RadarTarget[];
@@ -112,6 +124,7 @@ export interface EventStoreState {
   // Simulation Actions
   injectScenario: (scenario: 'incursion' | 'jamming' | 'degraded' | 'reset') => void;
   kinematicTick: () => void;
+  initBackendSync: () => void;
 }
 
 export const useEventStore = create<EventStoreState>((set, get) => ({
@@ -142,6 +155,8 @@ export const useEventStore = create<EventStoreState>((set, get) => ({
   sourceHealth: generateInitialSourceHealth(),
   isDegradedMode: false,
   timeScrubberMinute: 0,
+  backendMode: 'standalone',
+  wsStatus: 'disconnected',
 
   radarTargets: generateInitialRadarTargets(),
   selectedRadarTargetId: 'RT-101',
@@ -388,6 +403,22 @@ export const useEventStore = create<EventStoreState>((set, get) => ({
 
   injectScenario: (scenario) => {
     soundFx.playClick(1300);
+
+    // Forward scenario command to live backend if connected
+    if (get().backendMode === 'live') {
+      const scenarioMap: Record<string, string> = {
+        incursion: 'border_spike',
+        jamming: 'radar_jamming',
+        degraded: 'severe_weather_impact',
+        reset: 'normal_operations',
+      };
+      if (scenario === 'degraded') {
+        apiSetDegradedComms(!get().isDegradedMode).catch(() => {});
+      } else if (scenarioMap[scenario]) {
+        apiInjectScenario(scenarioMap[scenario]).catch(() => {});
+      }
+    }
+
     if (scenario === 'incursion') {
       soundFx.playAlarmKlaxon();
       const incursionEvent: UnifiedEvent = {
@@ -469,5 +500,108 @@ export const useEventStore = create<EventStoreState>((set, get) => ({
         }
       };
     });
+  },
+
+  initBackendSync: () => {
+    const probeAndConnect = async () => {
+      const isAlive = await probeBackendHealth();
+      if (isAlive) {
+        set({ backendMode: 'live' });
+        try {
+          const [situation, eventsList, briefing, sources] = await Promise.allSettled([
+            fetchCurrentSituation(),
+            fetchEvents({ limit: 100 }),
+            fetchLatestBriefing(),
+            fetchSourceHealth(),
+          ]);
+
+          if (situation.status === 'fulfilled') {
+            set({
+              threatLevel: situation.value.threatLevel,
+              isDegradedMode: situation.value.degradedMode,
+            });
+          }
+          if (eventsList.status === 'fulfilled' && eventsList.value.length > 0) {
+            set({ events: eventsList.value, selectedEventId: eventsList.value[0]?.id || null });
+          }
+          if (briefing.status === 'fulfilled' && briefing.value) {
+            set({ aiBriefing: briefing.value });
+          }
+          if (sources.status === 'fulfilled' && sources.value.length > 0) {
+            set({ sourceHealth: sources.value });
+          }
+        } catch (err) {
+          console.warn('[VANGUARD] Initial REST sync warning:', err);
+        }
+
+        vanguardWs.connect();
+      } else {
+        set({ backendMode: 'standalone' });
+      }
+    };
+
+    probeAndConnect();
+
+    vanguardWs.onStatusChange((status) => {
+      set({ wsStatus: status });
+      if (status === 'connected') {
+        set({ backendMode: 'live' });
+      } else if (status === 'offline' && get().backendMode === 'live') {
+        set({ backendMode: 'standalone' });
+      }
+    });
+
+    vanguardWs.subscribe((type, payload) => {
+      switch (type) {
+        case 'EVENT_STREAM':
+          if (payload?.events && Array.isArray(payload.events)) {
+            set((state) => {
+              const incoming = payload.events as UnifiedEvent[];
+              const existingMap = new Map(state.events.map((e) => [e.id, e]));
+              incoming.forEach((e) => existingMap.set(e.id, e));
+              return { events: Array.from(existingMap.values()) };
+            });
+          }
+          break;
+
+        case 'ALERT_TRIGGER':
+          if (payload?.event) {
+            soundFx.playAlarmKlaxon();
+            set((state) => ({
+              events: [payload.event, ...state.events.filter((e) => e.id !== payload.event.id)],
+            }));
+          }
+          break;
+
+        case 'SITUATION_UPDATE':
+          if (payload?.situation) {
+            set({
+              threatLevel: payload.situation.threatLevel,
+              isDegradedMode: payload.situation.degradedMode,
+            });
+          }
+          break;
+
+        case 'BRIEFING_UPDATE':
+          if (payload?.summary) {
+            set({ aiBriefing: payload.summary });
+          }
+          break;
+
+        case 'HEALTH_STATUS':
+          if (payload?.sources && Array.isArray(payload.sources)) {
+            set({ sourceHealth: payload.sources });
+          }
+          break;
+
+        case 'DEGRADED_MODE':
+          set({ isDegradedMode: Boolean(payload?.enabled) });
+          break;
+
+        default:
+          break;
+      }
+    });
   }
 }));
+
