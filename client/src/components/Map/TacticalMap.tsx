@@ -5,13 +5,11 @@ import {
   Shield,
   Layers,
   Wind,
-  AlertTriangle,
   Radio,
   X,
   Calculator,
-  Zap,
-  Info,
-  ExternalLink
+  ExternalLink,
+  Sparkles
 } from 'lucide-react';
 import { OmniSearchBar } from '../Header/OmniSearchBar';
 
@@ -35,7 +33,7 @@ export const TacticalMap: React.FC = () => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
 
     const map = L.map(mapContainerRef.current, {
-      center: [23.03, 72.57], // Focused on operational theatre
+      center: [23.03, 72.57],
       zoom: 11,
       zoomControl: false,
       attributionControl: false,
@@ -43,7 +41,7 @@ export const TacticalMap: React.FC = () => {
       maxZoom: 16
     });
 
-    // Dark high-contrast tactical basemap
+    // High-contrast galaxy basemap
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
       maxZoom: 19,
       subdomains: 'abcd'
@@ -67,7 +65,7 @@ export const TacticalMap: React.FC = () => {
     const group = layerGroupRef.current;
     group.clearLayers();
 
-    // 1. ZONES & SECTOR BOUNDARIES
+    // 1. ZONES & SECTOR BOUNDARIES (Galaxy Fuchsia / Magenta lines)
     if (layers.zones) {
       const restrictedZone = L.polygon(
         [
@@ -78,13 +76,13 @@ export const TacticalMap: React.FC = () => {
           [23.08, 72.45]
         ],
         {
-          color: '#ef4444',
+          color: '#f43f5e',
           weight: 1.5,
           dashArray: '6, 6',
-          fillColor: '#ef4444',
-          fillOpacity: 0.05
+          fillColor: '#f43f5e',
+          fillOpacity: 0.08
         }
-      ).bindTooltip('RESTRICTED SECTOR 7', {
+      ).bindTooltip('✦ RESTRICTED SECTOR 7', {
         permanent: true,
         direction: 'center',
         className: 'tactical-tooltip'
@@ -96,11 +94,11 @@ export const TacticalMap: React.FC = () => {
     if (layers.weather) {
       const weatherCircle = L.circle([23.15, 72.55], {
         radius: 12000,
-        color: '#06b6d4',
-        weight: 1,
+        color: '#e879f9',
+        weight: 1.2,
         dashArray: '4, 8',
-        fillColor: '#06b6d4',
-        fillOpacity: 0.06
+        fillColor: '#d946ef',
+        fillOpacity: 0.08
       }).bindTooltip('LIVE WEATHER OVERLAY: Wind 14kt NW, Visibility 10km', {
         direction: 'top',
         className: 'tactical-tooltip'
@@ -110,7 +108,6 @@ export const TacticalMap: React.FC = () => {
 
     // 3. FUSED CONTACTS & OBSERVATIONS
     events.forEach((evt) => {
-      // Filter matching
       if (!filters.sourceTypes.includes(evt.sourceType)) return;
       if (!filters.severities.includes(evt.severity)) return;
       if (evt.confidence < filters.minConfidence) return;
@@ -119,18 +116,18 @@ export const TacticalMap: React.FC = () => {
       const isSelected = evt.id === selectedEventId;
       const isCritical = evt.severity === 'critical';
       const isHigh = evt.severity === 'high';
-      const color = isCritical ? '#ef4444' : isHigh ? '#f59e0b' : '#06b6d4';
+      const color = isCritical ? '#f43f5e' : isHigh ? '#fb7185' : '#e879f9';
 
       const markerHtml = `
         <div class="relative flex items-center justify-center cursor-pointer">
           <div class="w-6 h-6 rounded-full flex items-center justify-center transition-transform ${
-            isSelected ? 'scale-125 ring-2 ring-white ring-offset-2 ring-offset-black' : ''
-          }" style="background: rgba(15, 23, 42, 0.9); border: 2px solid ${color};">
+            isSelected ? 'scale-125 ring-2 ring-fuchsia-300 ring-offset-2 ring-offset-black' : ''
+          }" style="background: rgba(19, 4, 30, 0.95); border: 2px solid ${color}; box-shadow: 0 0 12px ${color}80;">
             <div class="w-2 h-2 rounded-full" style="background: ${color}; ${
         isCritical ? 'animation: ping 1.5s infinite;' : ''
       }"></div>
           </div>
-          <div class="absolute -bottom-4 text-[9px] font-mono font-bold px-1 rounded whitespace-nowrap bg-black/90 border border-slate-700" style="color: ${color};">
+          <div class="absolute -bottom-4 text-[9px] font-mono font-bold px-1 rounded whitespace-nowrap bg-[#12031e]/95 border border-fuchsia-500/50" style="color: ${color}; box-shadow: 0 0 8px rgba(217,70,239,0.3);">
             ${evt.id} (${evt.confidence}%)
           </div>
         </div>
@@ -164,7 +161,7 @@ export const TacticalMap: React.FC = () => {
   }, [selectedEventId]);
 
   return (
-    <div className="relative flex-1 w-full h-full bg-[#03070d] border border-cyan-500/30 rounded-lg overflow-hidden flex flex-col">
+    <div className="relative flex-1 w-full h-full bg-[#11031d]/85 border border-fuchsia-500/30 rounded-xl overflow-hidden flex flex-col shadow-[0_8px_32px_rgba(217,70,239,0.12)]">
       {/* Top Floating Controls Omnibar */}
       <div className="absolute top-3 left-3 right-3 z-[1000] flex items-center justify-between pointer-events-none">
         {/* Omnibar Natural Language & Keyword Search */}
@@ -173,13 +170,13 @@ export const TacticalMap: React.FC = () => {
         </div>
 
         {/* Clean Layer Toggles */}
-        <div className="pointer-events-auto flex items-center space-x-1.5 bg-[#060c14]/90 border border-cyan-500/40 backdrop-blur-md px-2.5 py-1.5 rounded-lg shadow-lg">
+        <div className="pointer-events-auto flex items-center space-x-1.5 bg-[#140422]/90 border border-fuchsia-500/40 backdrop-blur-xl px-2.5 py-1.5 rounded-lg shadow-lg">
           <button
             onClick={() => toggleLayer('alerts')}
-            className={`px-2 py-1 rounded text-xs font-sans font-semibold transition flex items-center space-x-1 ${
+            className={`px-2 py-1 rounded text-xs font-sans font-semibold transition flex items-center space-x-1 cursor-pointer ${
               layers.alerts
-                ? 'bg-red-500/20 text-red-300 border border-red-500/60'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-rose-500/25 text-rose-200 border border-rose-400/60 shadow-[0_0_8px_rgba(244,63,94,0.3)]'
+                : 'text-fuchsia-300/70 hover:text-white'
             }`}
           >
             <Shield className="w-3.5 h-3.5" />
@@ -188,10 +185,10 @@ export const TacticalMap: React.FC = () => {
 
           <button
             onClick={() => toggleLayer('weather')}
-            className={`px-2 py-1 rounded text-xs font-sans font-semibold transition flex items-center space-x-1 ${
+            className={`px-2 py-1 rounded text-xs font-sans font-semibold transition flex items-center space-x-1 cursor-pointer ${
               layers.weather
-                ? 'bg-sky-500/20 text-sky-300 border border-sky-500/60'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-fuchsia-500/25 text-fuchsia-200 border border-fuchsia-400/60 shadow-[0_0_8px_rgba(217,70,239,0.3)]'
+                : 'text-fuchsia-300/70 hover:text-white'
             }`}
           >
             <Wind className="w-3.5 h-3.5" />
@@ -200,10 +197,10 @@ export const TacticalMap: React.FC = () => {
 
           <button
             onClick={() => toggleLayer('zones')}
-            className={`px-2 py-1 rounded text-xs font-sans font-semibold transition flex items-center space-x-1 ${
+            className={`px-2 py-1 rounded text-xs font-sans font-semibold transition flex items-center space-x-1 cursor-pointer ${
               layers.zones
-                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/60'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-pink-500/25 text-pink-200 border border-pink-400/60 shadow-[0_0_8px_rgba(244,114,182,0.3)]'
+                : 'text-fuchsia-300/70 hover:text-white'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
@@ -215,18 +212,18 @@ export const TacticalMap: React.FC = () => {
       {/* Map Surface */}
       <div ref={mapContainerRef} className="flex-1 w-full h-full z-0" />
 
-      {/* Selected Contact Inspector Drawer */}
+      {/* Selected Contact Inspector Drawer (Galaxy Frosted Glass) */}
       {selectedEvent && (
-        <div className="absolute bottom-3 left-3 right-3 z-[1000] bg-[#070e17]/95 border border-cyan-500/50 backdrop-blur-md rounded-lg p-3.5 shadow-2xl animate-in fade-in slide-in-from-bottom duration-200">
+        <div className="absolute bottom-3 left-3 right-3 z-[1000] bg-[#140422]/95 border border-fuchsia-500/50 backdrop-blur-xl rounded-xl p-3.5 shadow-[0_12px_40px_rgba(217,70,239,0.25)] animate-in fade-in slide-in-from-bottom duration-200">
           <div className="flex items-start justify-between">
             <div className="flex items-start space-x-3">
               <div
-                className={`p-2 rounded-md ${
+                className={`p-2 rounded-lg ${
                   selectedEvent.severity === 'critical'
-                    ? 'bg-red-500/20 border border-red-500/40 text-red-400'
+                    ? 'bg-rose-500/20 border border-rose-500/40 text-rose-300'
                     : selectedEvent.severity === 'high'
-                    ? 'bg-amber-500/20 border border-amber-500/40 text-amber-400'
-                    : 'bg-cyan-500/20 border border-cyan-500/40 text-cyan-400'
+                    ? 'bg-fuchsia-500/20 border border-fuchsia-500/40 text-fuchsia-300'
+                    : 'bg-purple-500/20 border border-purple-500/40 text-purple-300'
                 }`}
               >
                 <Radio className="w-5 h-5" />
@@ -240,39 +237,39 @@ export const TacticalMap: React.FC = () => {
                   <span
                     className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase ${
                       selectedEvent.severity === 'critical'
-                        ? 'bg-red-950 text-red-400 border border-red-500/40'
+                        ? 'bg-rose-950 text-rose-300 border border-rose-500/40'
                         : selectedEvent.severity === 'high'
-                        ? 'bg-amber-950 text-amber-300 border border-amber-500/40'
-                        : 'bg-cyan-950 text-cyan-300 border border-cyan-500/40'
+                        ? 'bg-fuchsia-950 text-fuchsia-300 border border-fuchsia-500/40'
+                        : 'bg-purple-950 text-purple-300 border border-purple-500/40'
                     }`}
                   >
                     {selectedEvent.severity}
                   </span>
-                  <span className="text-xs text-slate-400 font-mono">
-                    Source: <strong className="text-cyan-300 uppercase">{selectedEvent.sourceType}</strong>
+                  <span className="text-xs text-fuchsia-300/80 font-mono">
+                    Source: <strong className="text-fuchsia-200 uppercase">{selectedEvent.sourceType}</strong>
                   </span>
-                  <span className="text-xs text-slate-400 font-mono">
+                  <span className="text-xs text-fuchsia-300/80 font-mono">
                     Coords: {selectedEvent.location.lat.toFixed(3)}°N, {selectedEvent.location.lng.toFixed(3)}°E
                   </span>
                 </div>
 
-                <h4 className="font-sans font-semibold text-sm text-slate-100 mt-1">
+                <h4 className="font-sans font-semibold text-sm text-fuchsia-100 mt-1">
                   {selectedEvent.title}
                 </h4>
-                <p className="text-xs text-slate-300 font-sans mt-0.5 max-w-3xl leading-relaxed">
+                <p className="text-xs text-fuchsia-200/90 font-sans mt-0.5 max-w-3xl leading-relaxed">
                   {selectedEvent.description}
                 </p>
 
                 {/* Corroboration Tags */}
                 {selectedEvent.corroboratedBy && selectedEvent.corroboratedBy.length > 0 && (
                   <div className="flex items-center space-x-2 mt-2">
-                    <span className="text-[11px] text-slate-400 font-sans">Corroborated by:</span>
+                    <span className="text-[11px] text-fuchsia-300/80 font-sans">Corroborated by:</span>
                     <div className="flex flex-wrap gap-1">
                       {selectedEvent.corroboratedBy.map((cid) => (
                         <button
                           key={cid}
                           onClick={() => selectEvent(cid)}
-                          className="px-1.5 py-0.5 rounded bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-500/40 text-[10px] font-mono text-cyan-300 flex items-center space-x-1 transition"
+                          className="px-1.5 py-0.5 rounded bg-fuchsia-950/80 hover:bg-fuchsia-900 border border-fuchsia-500/40 text-[10px] font-mono text-fuchsia-200 flex items-center space-x-1 transition cursor-pointer"
                         >
                           <span>{cid}</span>
                           <ExternalLink className="w-2.5 h-2.5" />
@@ -287,15 +284,15 @@ export const TacticalMap: React.FC = () => {
             {/* Right: Confidence Score & Explainability Button */}
             <div className="flex items-center space-x-3">
               <div className="text-right">
-                <div className="text-xs text-slate-400 font-mono">Confidence</div>
-                <div className="text-xl font-bold font-mono text-emerald-400">
+                <div className="text-xs text-fuchsia-300/80 font-mono">Confidence</div>
+                <div className="text-xl font-bold font-mono text-pink-400 galaxy-glow-pink">
                   {selectedEvent.confidence}%
                 </div>
               </div>
 
               <button
                 onClick={() => openExplainability(selectedEvent.id)}
-                className="flex items-center space-x-1.5 px-3 py-2 bg-cyan-600 hover:bg-cyan-500 text-black font-sans font-bold text-xs rounded-md shadow-md transition"
+                className="flex items-center space-x-1.5 px-3 py-2 bg-gradient-to-r from-fuchsia-600 to-pink-600 hover:from-fuchsia-500 hover:to-pink-500 text-white font-sans font-bold text-xs rounded-lg shadow-[0_0_12px_rgba(217,70,239,0.4)] transition cursor-pointer"
                 title="View mathematical confidence breakdown"
               >
                 <Calculator className="w-4 h-4" />
@@ -304,7 +301,7 @@ export const TacticalMap: React.FC = () => {
 
               <button
                 onClick={() => selectEvent(null)}
-                className="p-1 hover:bg-slate-800 text-slate-400 hover:text-white rounded"
+                className="p-1 hover:bg-fuchsia-900/60 text-fuchsia-400 hover:text-white rounded cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>

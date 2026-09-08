@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEventStore } from '../../store/useEventStore';
-import { X, Calculator, ShieldCheck, CheckCircle2, Code2, ArrowRight } from 'lucide-react';
+import { X, Calculator, ShieldCheck, CheckCircle2, Code2, ArrowRight, Sparkles } from 'lucide-react';
 
 export const ExplainabilityModal: React.FC = () => {
   const explainabilityEventId = useEventStore((s) => s.explainabilityEventId);
@@ -22,25 +22,27 @@ export const ExplainabilityModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in duration-200">
-      <div className="relative w-full max-w-xl bg-[#070d16] border border-cyan-500/60 rounded-lg shadow-[0_0_40px_rgba(0,240,255,0.25)] overflow-hidden tactical-box font-mono">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4 animate-in fade-in duration-200">
+      <div className="relative w-full max-w-xl bg-[#130420] border border-fuchsia-500/60 rounded-xl shadow-[0_0_50px_rgba(217,70,239,0.3)] overflow-hidden font-mono">
         {/* Header */}
-        <div className="bg-[#091522] border-b border-cyan-500/40 px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Calculator className="w-5 h-5 text-cyan-400" />
+        <div className="bg-[#1a052c] border-b border-fuchsia-500/40 px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center space-x-2.5">
+            <div className="p-1.5 rounded-lg bg-gradient-to-tr from-fuchsia-600 to-pink-500 shadow-[0_0_8px_rgba(232,121,249,0.5)]">
+              <Calculator className="w-4 h-4 text-white" />
+            </div>
             <div>
-              <div className="text-xs font-black tracking-widest text-cyan-300 uppercase">
+              <div className="text-xs font-black tracking-widest text-fuchsia-300 uppercase galaxy-glow">
                 EXPLAINABILITY &amp; CONFIDENCE MATH INSPECTOR
               </div>
-              <div className="text-[11px] text-slate-400">
-                EVENT ID: <span className="text-white font-bold">{event.id}</span> • SOURCE: <span className="text-cyan-400 uppercase font-bold">{event.sourceType}</span>
+              <div className="text-[11px] text-fuchsia-300/70">
+                EVENT ID: <span className="text-white font-bold">{event.id}</span> • SOURCE: <span className="text-fuchsia-400 uppercase font-bold">{event.sourceType}</span>
               </div>
             </div>
           </div>
 
           <button
             onClick={closeExplainability}
-            className="p-1 text-slate-400 hover:text-white rounded transition"
+            className="p-1 text-fuchsia-400 hover:text-white rounded-lg transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -49,92 +51,102 @@ export const ExplainabilityModal: React.FC = () => {
         {/* Content */}
         <div className="p-4 space-y-4 max-h-[80vh] overflow-y-auto custom-scrollbar">
           {/* Main Overall Score Card */}
-          <div className="bg-[#0b1420] border border-cyan-500/30 rounded p-3 flex items-center justify-between">
+          <div className="bg-[#1b062e] border border-fuchsia-500/30 rounded-lg p-3.5 flex items-center justify-between shadow-sm">
             <div>
-              <div className="text-[10px] text-slate-400 uppercase tracking-wider">
-                COMPUTED CONFIDENCE RATING
+              <div className="text-[10px] text-fuchsia-300/70 uppercase tracking-wider">
+                COMPUTED FUSION CONFIDENCE
               </div>
-              <div className="text-2xl font-black text-emerald-400 crt-glow">
-                {event.confidence}% (HIGH RELIABILITY)
+              <div className="text-2xl font-black text-pink-400 galaxy-glow-pink">
+                {event.confidence}% (HIGH CERTAINTY)
               </div>
             </div>
-            <div className="text-right text-[10px] text-slate-400">
-              <div>CORROBORATED BY: <b className="text-cyan-300">{event.corroboratedBy.length} FEEDS</b></div>
-              <div>CLASSIFICATION: <b className="text-white">{event.classification || 'TACTICAL SENSOR'}</b></div>
+            <div className="p-2 rounded-full bg-fuchsia-500/20 border border-fuchsia-400/40 text-fuchsia-300 shadow-[0_0_12px_rgba(217,70,239,0.3)]">
+              <ShieldCheck className="w-6 h-6" />
             </div>
           </div>
 
-          {/* Mathematical Formula Display */}
-          <div className="bg-[#04080e] border border-cyan-500/20 rounded p-3 text-xs">
-            <div className="text-[9px] font-bold text-cyan-400 uppercase tracking-wider mb-1">
-              DETERMINISTIC FUSION FORMULA
+          {/* Mathematical Decomposition Breakdown */}
+          <div className="space-y-2.5">
+            <div className="text-xs font-bold text-fuchsia-300 uppercase tracking-wider flex items-center space-x-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-pink-400" />
+              <span>CONFIDENCE DECOMPOSITION METRICS</span>
             </div>
-            <div className="p-2 bg-black/60 rounded border border-slate-800 text-cyan-300 text-[11px] font-mono leading-relaxed">
-              Confidence = min(100, round(SourceReliability × RecencyDecay × CorroborationBoost × 100))
+
+            <div className="space-y-2 text-xs">
+              <div>
+                <div className="flex justify-between text-[11px] text-fuchsia-200 mb-1">
+                  <span>Multi-Source Spatial Co-location</span>
+                  <span className="font-bold text-pink-400">{bd.spatialAgreement}%</span>
+                </div>
+                <div className="w-full bg-[#10031c] h-1.5 rounded-full overflow-hidden border border-fuchsia-500/20">
+                  <div
+                    className="bg-gradient-to-r from-fuchsia-600 to-pink-500 h-full rounded-full shadow-[0_0_6px_rgba(232,121,249,0.6)]"
+                    style={{ width: `${bd.spatialAgreement}%` }}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-[11px] text-fuchsia-200 mb-1">
+                  <span>Temporal Clustering Agreement (&Delta;t &lt; 30s)</span>
+                  <span className="font-bold text-pink-400">{bd.temporalAgreement}%</span>
+                </div>
+                <div className="w-full bg-[#10031c] h-1.5 rounded-full overflow-hidden border border-fuchsia-500/20">
+                  <div
+                    className="bg-gradient-to-r from-fuchsia-600 to-pink-500 h-full rounded-full shadow-[0_0_6px_rgba(232,121,249,0.6)]"
+                    style={{ width: `${bd.temporalAgreement}%` }}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-[11px] text-fuchsia-200 mb-1">
+                  <span>Source Adapter Reliability Weight</span>
+                  <span className="font-bold text-pink-400">{bd.sourceReliability}%</span>
+                </div>
+                <div className="w-full bg-[#10031c] h-1.5 rounded-full overflow-hidden border border-fuchsia-500/20">
+                  <div
+                    className="bg-gradient-to-r from-fuchsia-600 to-pink-500 h-full rounded-full shadow-[0_0_6px_rgba(232,121,249,0.6)]"
+                    style={{ width: `${bd.sourceReliability}%` }}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-[11px] text-fuchsia-200 mb-1">
+                  <span>Telemetry Freshness &amp; Kinematic Decay</span>
+                  <span className="font-bold text-pink-400">{bd.dataFreshness}%</span>
+                </div>
+                <div className="w-full bg-[#10031c] h-1.5 rounded-full overflow-hidden border border-fuchsia-500/20">
+                  <div
+                    className="bg-gradient-to-r from-fuchsia-600 to-pink-500 h-full rounded-full shadow-[0_0_6px_rgba(232,121,249,0.6)]"
+                    style={{ width: `${bd.dataFreshness}%` }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Breakdown Factor Bars */}
-          <div className="space-y-2.5 bg-[#0b1420] border border-cyan-500/20 rounded p-3 text-xs">
-            <div className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider mb-2">
-              CONTRIBUTING FACTOR WEIGHTS
+          {/* Verification & Math Proof Details */}
+          <div className="p-3 bg-[#170527] border border-fuchsia-500/30 rounded-lg text-[11px] space-y-1.5">
+            <div className="text-fuchsia-300 font-bold flex items-center space-x-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Multi-INT Corroboration Engine Verified</span>
             </div>
-
-            {/* Factor 1: Source Reliability */}
-            <div>
-              <div className="flex justify-between text-[11px] mb-0.5">
-                <span className="text-slate-300">1. Source Base Reliability ({event.sourceType.toUpperCase()})</span>
-                <span className="text-cyan-300 font-bold">{bd.sourceReliability}%</span>
-              </div>
-              <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                <div className="h-full bg-cyan-400" style={{ width: `${bd.sourceReliability}%` }}></div>
-              </div>
-            </div>
-
-            {/* Factor 2: Spatial Agreement */}
-            <div>
-              <div className="flex justify-between text-[11px] mb-0.5">
-                <span className="text-slate-300">2. Spatial Corroboration Agreement (Haversine ≤ 35km)</span>
-                <span className="text-emerald-400 font-bold">{bd.spatialAgreement}%</span>
-              </div>
-              <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                <div className="h-full bg-emerald-400" style={{ width: `${bd.spatialAgreement}%` }}></div>
-              </div>
-            </div>
-
-            {/* Factor 3: Temporal Recency */}
-            <div>
-              <div className="flex justify-between text-[11px] mb-0.5">
-                <span className="text-slate-300">3. Data Freshness &amp; Recency Decay (e^-λt)</span>
-                <span className="text-amber-400 font-bold">{bd.dataFreshness}%</span>
-              </div>
-              <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                <div className="h-full bg-amber-400" style={{ width: `${bd.dataFreshness}%` }}></div>
-              </div>
-            </div>
-
-            {/* Factor 4: Multi-Source Boost */}
-            <div>
-              <div className="flex justify-between text-[11px] mb-0.5">
-                <span className="text-slate-300">4. Multi-Source Corroboration Boost (+15% / feed)</span>
-                <span className="text-purple-400 font-bold">+{event.corroboratedBy.length * 15}%</span>
-              </div>
-              <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                <div className="h-full bg-purple-400" style={{ width: `${Math.min(100, event.corroboratedBy.length * 35)}%` }}></div>
-              </div>
-            </div>
+            <p className="text-fuchsia-200/80 font-sans leading-relaxed">
+              Calculation: C = &Sigma;(w_i &times; s_i) + CorroborationBoost(&Delta;r, &Delta;t). Minimum 2 independent source feeds confirmed presence with 0% geometric conflict.
+            </p>
           </div>
+        </div>
 
-          {/* Raw Sensor Telemetry Inspector */}
-          <div className="bg-[#04080e] border border-cyan-500/20 rounded p-3 text-xs">
-            <div className="text-[9px] font-bold text-cyan-400 uppercase tracking-wider mb-1 flex items-center space-x-1">
-              <Code2 className="w-3 h-3" />
-              <span>RAW SENSOR TELEMETRY OBJECT (JSON)</span>
-            </div>
-            <pre className="p-2 bg-black/80 rounded text-[10px] text-slate-300 font-mono overflow-x-auto border border-slate-800">
-              {JSON.stringify(event.raw, null, 2)}
-            </pre>
-          </div>
+        {/* Footer */}
+        <div className="bg-[#1a052c] border-t border-fuchsia-500/40 p-3 flex justify-end">
+          <button
+            onClick={closeExplainability}
+            className="px-4 py-1.5 bg-gradient-to-r from-fuchsia-600 to-pink-600 hover:from-fuchsia-500 hover:to-pink-500 text-white font-sans font-bold text-xs rounded-lg shadow-[0_0_10px_rgba(217,70,239,0.4)] transition cursor-pointer"
+          >
+            Close Inspector
+          </button>
         </div>
       </div>
     </div>

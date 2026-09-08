@@ -5,7 +5,8 @@ import { CommandHeader } from './components/Header/CommandHeader';
 import { TacticalMap } from './components/Map/TacticalMap';
 import { AIBriefingPanel } from './components/Briefing/AIBriefingPanel';
 import { ExplainabilityModal } from './components/Explainability/ExplainabilityModal';
-import { Activity, Radio, Server } from 'lucide-react';
+import { GalaxyBackground } from './components/Galaxy/GalaxyBackground';
+import { Activity, Server, Sparkles } from 'lucide-react';
 
 export function App() {
   const [currentView, setCurrentView] = useState<'landing' | 'command'>('landing');
@@ -34,12 +35,15 @@ export function App() {
     return <LandingPage onEnterCommandRoom={() => setCurrentView('command')} />;
   }
 
-  // Clean, Intuitive 2-Column Situational Awareness Layout:
-  // LEFT (60%): Tactical Map with search omnibar, layer filters, and instant contact inspector
-  // RIGHT (40%): Intelligence & Action Hub (AI SITREP Briefing, Live 5-Source Feed, Adapter Health)
+  // Clean, Galaxy-Themed 2-Column Situational Awareness Layout in Magenta Tones:
+  // LEFT (58%): Tactical Map with search omnibar, layer filters, and instant contact inspector
+  // RIGHT (42%): Intelligence & Action Hub (AI SITREP Briefing, Live 5-Source Feed, Adapter Health)
   return (
-    <div className="relative w-screen h-screen flex flex-col bg-[#020408] text-[#c9d8e6] overflow-hidden select-none">
-      {/* Top Clean Command Header */}
+    <div className="relative w-screen h-screen flex flex-col bg-[#09020f] text-[#f5d0fe] overflow-hidden select-none">
+      {/* Dynamic Cosmic Nebula & Doodles Background */}
+      <GalaxyBackground />
+
+      {/* Top Clean Command Header in Galaxy Magenta */}
       <CommandHeader onBackToLanding={() => setCurrentView('landing')} />
 
       {/* Main Clean 2-Column Grid */}
@@ -55,29 +59,29 @@ export function App() {
         </div>
       </main>
 
-      {/* Bottom Minimal Status Bar */}
-      <footer className="relative z-30 bg-[#05080c] border-t border-cyan-500/20 px-4 py-1.5 flex items-center justify-between text-[11px] font-mono text-slate-400">
+      {/* Bottom Minimal Cosmic Status Bar */}
+      <footer className="relative z-30 bg-[#0d0317]/90 border-t border-fuchsia-500/30 px-4 py-1.5 flex items-center justify-between text-[11px] font-mono text-fuchsia-300/80 backdrop-blur-md">
         <div className="flex items-center space-x-4">
-          <span className="text-cyan-400 font-bold flex items-center">
-            <Activity className="w-3.5 h-3.5 mr-1 text-emerald-400" />
+          <span className="text-fuchsia-400 font-bold flex items-center">
+            <Sparkles className="w-3.5 h-3.5 mr-1 text-pink-400 animate-pulse" />
             5 ADAPTERS ACTIVE:
           </span>
           {sourceHealth.map((sh) => (
             <div key={sh.sourceType} className="flex items-center space-x-1">
               <span
                 className={`w-1.5 h-1.5 rounded-full ${
-                  sh.status === 'live' ? 'bg-emerald-400' : 'bg-amber-400'
+                  sh.status === 'live' ? 'bg-emerald-400 shadow-[0_0_6px_#34d399]' : 'bg-amber-400'
                 }`}
               />
-              <span className="uppercase text-slate-300 font-bold">{sh.sourceType}:</span>
-              <span className="text-white">{sh.latencyMs}ms</span>
+              <span className="uppercase text-fuchsia-200 font-bold">{sh.sourceType}:</span>
+              <span className="text-white font-mono">{sh.latencyMs}ms</span>
             </div>
           ))}
         </div>
 
-        <div className="flex items-center space-x-2 text-slate-400">
-          <Server className="w-3 h-3 text-cyan-400" />
-          <span className="text-cyan-300 font-semibold">
+        <div className="flex items-center space-x-2 text-fuchsia-300">
+          <Server className="w-3 h-3 text-fuchsia-400" />
+          <span className="text-fuchsia-200 font-semibold font-mono">
             {backendMode === 'live' ? 'BACKEND 3001: SYNCED' : `STREAM: ${wsStatus.toUpperCase()}`}
           </span>
         </div>
