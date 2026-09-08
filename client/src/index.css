@@ -4,38 +4,40 @@
 
 @layer base {
   :root {
-    --color-tactical-cyan: #d946ef;
-    --color-tactical-magenta: #e879f9;
-    --color-tactical-amber: #fb7185;
-    --color-tactical-green: #34d399;
-    --color-tactical-red: #f43f5e;
-    --bg-tactical-panel: rgba(19, 4, 30, 0.85);
+    --color-mauve-primary: #806874;
+    --color-mauve-light: #b39ba8;
+    --color-mauve-dark: #4e3c46;
+    --color-mauve-glow: #cfc0c8;
+    --color-tactical-amber: #cfa07e;
+    --color-tactical-green: #6e9b87;
+    --color-tactical-red: #c25975;
+    --bg-tactical-panel: rgba(24, 19, 22, 0.88);
   }
 
   body {
-    background-color: #09020f;
-    color: #f5d0fe;
+    background-color: #0c090b;
+    color: #e5dce1;
     font-family: 'JetBrains Mono', monospace;
     overflow: hidden;
   }
 }
 
-/* Cosmic Glass Panel */
+/* Cosmic Glass Panel (#806874 Palette) */
 .cosmic-panel {
-  background: rgba(19, 4, 30, 0.78);
+  background: rgba(24, 19, 22, 0.82);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(217, 70, 239, 0.28);
-  box-shadow: 0 8px 32px rgba(217, 70, 239, 0.12), inset 0 0 20px rgba(168, 85, 247, 0.05);
+  border: 1px solid rgba(128, 104, 116, 0.35);
+  box-shadow: 0 8px 32px rgba(12, 9, 11, 0.6), inset 0 0 20px rgba(128, 104, 116, 0.08);
   border-radius: 0.75rem;
 }
 
-/* Tactical HUD corner accents (Magenta Edition) */
+/* Tactical HUD corner accents (#806874 Edition) */
 .tactical-box {
   position: relative;
-  background: rgba(19, 4, 30, 0.82);
+  background: rgba(24, 19, 22, 0.85);
   backdrop-filter: blur(14px);
-  border: 1px solid rgba(217, 70, 239, 0.3);
+  border: 1px solid rgba(128, 104, 116, 0.35);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -51,101 +53,101 @@
 .tactical-box::before {
   top: -1px;
   left: -1px;
-  border-top: 2px solid #e879f9;
-  border-left: 2px solid #e879f9;
+  border-top: 2px solid #b39ba8;
+  border-left: 2px solid #b39ba8;
 }
 
 .tactical-box::after {
   bottom: -1px;
   right: -1px;
-  border-bottom: 2px solid #e879f9;
-  border-right: 2px solid #e879f9;
+  border-bottom: 2px solid #b39ba8;
+  border-right: 2px solid #b39ba8;
 }
 
 /* Alert state variants */
 .tactical-box-red {
-  border-color: rgba(244, 63, 94, 0.5);
+  border-color: rgba(194, 89, 117, 0.5);
 }
 .tactical-box-red::before {
-  border-color: #f43f5e;
+  border-color: #c25975;
 }
 .tactical-box-red::after {
-  border-color: #f43f5e;
+  border-color: #c25975;
 }
 
 .tactical-box-amber {
-  border-color: rgba(251, 113, 133, 0.5);
+  border-color: rgba(207, 160, 126, 0.5);
 }
 .tactical-box-amber::before {
-  border-color: #fb7185;
+  border-color: #cfa07e;
 }
 .tactical-box-amber::after {
-  border-color: #fb7185;
+  border-color: #cfa07e;
 }
 
-/* Custom Magenta Scrollbar */
+/* Custom Mauve Scrollbar (#806874) */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(10, 2, 16, 0.8);
+  background: rgba(14, 11, 13, 0.85);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(217, 70, 239, 0.35);
+  background: rgba(128, 104, 116, 0.45);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(232, 121, 249, 0.7);
+  background: rgba(179, 155, 168, 0.75);
 }
 
-/* Leaflet Dark Galaxy Map Styling */
+/* Leaflet Dark Twilight Mauve Map Styling */
 .leaflet-container {
-  background: #09020f !important;
+  background: #0c090b !important;
   font-family: 'JetBrains Mono', monospace !important;
 }
 
 .leaflet-tile {
-  filter: brightness(0.55) invert(1) contrast(1.8) hue-rotate(285deg) saturate(1.8) !important;
+  filter: brightness(0.5) invert(1) contrast(1.6) hue-rotate(295deg) saturate(0.65) !important;
 }
 
 .leaflet-popup-content-wrapper {
-  background: rgba(19, 4, 30, 0.95) !important;
-  color: #f5d0fe !important;
-  border: 1px solid rgba(217, 70, 239, 0.5) !important;
+  background: rgba(24, 19, 22, 0.96) !important;
+  color: #e5dce1 !important;
+  border: 1px solid rgba(128, 104, 116, 0.5) !important;
   border-radius: 8px !important;
-  box-shadow: 0 0 20px rgba(217, 70, 239, 0.3) !important;
+  box-shadow: 0 0 20px rgba(128, 104, 116, 0.25) !important;
   backdrop-filter: blur(12px) !important;
 }
 
 .leaflet-popup-tip {
-  background: rgba(19, 4, 30, 0.95) !important;
+  background: rgba(24, 19, 22, 0.96) !important;
 }
 
 .tactical-tooltip {
-  background: rgba(19, 4, 30, 0.92) !important;
-  color: #f0abfc !important;
-  border: 1px solid rgba(217, 70, 239, 0.5) !important;
+  background: rgba(24, 19, 22, 0.94) !important;
+  color: #e5dce1 !important;
+  border: 1px solid rgba(128, 104, 116, 0.55) !important;
   font-family: 'JetBrains Mono', monospace !important;
   font-size: 10px !important;
   font-weight: bold !important;
   border-radius: 4px !important;
   padding: 4px 8px !important;
-  box-shadow: 0 0 12px rgba(217, 70, 239, 0.25) !important;
+  box-shadow: 0 0 12px rgba(128, 104, 116, 0.25) !important;
 }
 
-/* Neon Glows */
-.galaxy-glow {
-  text-shadow: 0 0 8px rgba(232, 121, 249, 0.8), 0 0 20px rgba(217, 70, 239, 0.4);
+/* Mauve Glows */
+.mauve-glow {
+  text-shadow: 0 0 8px rgba(179, 155, 168, 0.8), 0 0 20px rgba(128, 104, 116, 0.4);
 }
 
-.galaxy-glow-pink {
-  text-shadow: 0 0 8px rgba(244, 114, 182, 0.8), 0 0 20px rgba(244, 63, 94, 0.4);
+.mauve-glow-light {
+  text-shadow: 0 0 8px rgba(207, 192, 200, 0.8), 0 0 16px rgba(128, 104, 116, 0.35);
 }
 
-.galaxy-box-glow {
-  box-shadow: 0 0 20px rgba(217, 70, 239, 0.25), inset 0 0 15px rgba(232, 121, 249, 0.1);
+.mauve-box-glow {
+  box-shadow: 0 0 20px rgba(128, 104, 116, 0.25), inset 0 0 15px rgba(179, 155, 168, 0.1);
 }

@@ -6,7 +6,7 @@ import { TacticalMap } from './components/Map/TacticalMap';
 import { AIBriefingPanel } from './components/Briefing/AIBriefingPanel';
 import { ExplainabilityModal } from './components/Explainability/ExplainabilityModal';
 import { GalaxyBackground } from './components/Galaxy/GalaxyBackground';
-import { Activity, Server, Sparkles } from 'lucide-react';
+import { Server, Sparkles } from 'lucide-react';
 
 export function App() {
   const [currentView, setCurrentView] = useState<'landing' | 'command'>('landing');
@@ -35,15 +35,15 @@ export function App() {
     return <LandingPage onEnterCommandRoom={() => setCurrentView('command')} />;
   }
 
-  // Clean, Galaxy-Themed 2-Column Situational Awareness Layout in Magenta Tones:
+  // Clean Situational Awareness Layout in #806874 Dusty Mauve Twilight Aesthetic:
   // LEFT (58%): Tactical Map with search omnibar, layer filters, and instant contact inspector
   // RIGHT (42%): Intelligence & Action Hub (AI SITREP Briefing, Live 5-Source Feed, Adapter Health)
   return (
-    <div className="relative w-screen h-screen flex flex-col bg-[#09020f] text-[#f5d0fe] overflow-hidden select-none">
+    <div className="relative w-screen h-screen flex flex-col bg-[#0c090b] text-[#e5dce1] overflow-hidden select-none">
       {/* Dynamic Cosmic Nebula & Doodles Background */}
       <GalaxyBackground />
 
-      {/* Top Clean Command Header in Galaxy Magenta */}
+      {/* Top Command Header in #806874 Mauve Theme */}
       <CommandHeader onBackToLanding={() => setCurrentView('landing')} />
 
       {/* Main Clean 2-Column Grid */}
@@ -60,28 +60,28 @@ export function App() {
       </main>
 
       {/* Bottom Minimal Cosmic Status Bar */}
-      <footer className="relative z-30 bg-[#0d0317]/90 border-t border-fuchsia-500/30 px-4 py-1.5 flex items-center justify-between text-[11px] font-mono text-fuchsia-300/80 backdrop-blur-md">
+      <footer className="relative z-30 bg-[#140f12]/92 border-t border-[#806874]/40 px-4 py-1.5 flex items-center justify-between text-[11px] font-mono text-[#cfc0c8] backdrop-blur-md shadow-sm">
         <div className="flex items-center space-x-4">
-          <span className="text-fuchsia-400 font-bold flex items-center">
-            <Sparkles className="w-3.5 h-3.5 mr-1 text-pink-400 animate-pulse" />
+          <span className="text-[#b39ba8] font-bold flex items-center">
+            <Sparkles className="w-3.5 h-3.5 mr-1 text-[#cfc0c8] animate-pulse" />
             5 ADAPTERS ACTIVE:
           </span>
           {sourceHealth.map((sh) => (
             <div key={sh.sourceType} className="flex items-center space-x-1">
               <span
                 className={`w-1.5 h-1.5 rounded-full ${
-                  sh.status === 'live' ? 'bg-emerald-400 shadow-[0_0_6px_#34d399]' : 'bg-amber-400'
+                  sh.status === 'live' ? 'bg-[#6e9b87] shadow-[0_0_6px_#6e9b87]' : 'bg-[#cfa07e]'
                 }`}
               />
-              <span className="uppercase text-fuchsia-200 font-bold">{sh.sourceType}:</span>
+              <span className="uppercase text-[#cfc0c8] font-bold">{sh.sourceType}:</span>
               <span className="text-white font-mono">{sh.latencyMs}ms</span>
             </div>
           ))}
         </div>
 
-        <div className="flex items-center space-x-2 text-fuchsia-300">
-          <Server className="w-3 h-3 text-fuchsia-400" />
-          <span className="text-fuchsia-200 font-semibold font-mono">
+        <div className="flex items-center space-x-2 text-[#cfc0c8]">
+          <Server className="w-3 h-3 text-[#b39ba8]" />
+          <span className="text-[#e5dce1] font-semibold font-mono">
             {backendMode === 'live' ? 'BACKEND 3001: SYNCED' : `STREAM: ${wsStatus.toUpperCase()}`}
           </span>
         </div>
