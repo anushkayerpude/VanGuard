@@ -13,6 +13,7 @@ import {
 import { useEventStore } from '../../store/useEventStore';
 import { downloadSitrepText } from '../../services/sitrepGenerator';
 import { triggerNewBriefing } from '../../services/api';
+import { soundFx } from '../../services/soundFx';
 
 interface CommandHeaderProps {
   onBackToLanding?: () => void;
@@ -20,6 +21,7 @@ interface CommandHeaderProps {
 
 export const CommandHeader: React.FC<CommandHeaderProps> = ({ onBackToLanding }) => {
   const [timeUtc, setTimeUtc] = useState('');
+  const [bombCountdown, setBombCountdown] = useState<number | null>(null);
 
   const threatLevel = useEventStore((s) => s.threatLevel);
   const isAudioMuted = useEventStore((s) => s.isAudioMuted);
@@ -168,6 +170,36 @@ export const CommandHeader: React.FC<CommandHeaderProps> = ({ onBackToLanding })
             <RotateCcw className="w-3.5 h-3.5" />
           </button>
         </div>
+
+        {/* Timer Bomb Audio Trigger */}
+        <button
+          onClick={() => {
+            if (bombCountdown !== null) {
+              soundFx.stopBombTimer();
+              soundFx.playBombDefused();
+              setBombCountdown(null);
+            } else {
+              setBombCountdown(5);
+              soundFx.startAcceleratingBombTimer(
+                5,
+                (sec) => setBombCountdown(sec),
+                () => {
+                  setBombCountdown(null);
+                  injectScenario('incursion');
+                }
+              );
+            }
+          }}
+          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-[11px] font-sans font-bold transition cursor-pointer border ${
+            bombCountdown !== null
+              ? 'bg-rose-600 text-white border-rose-300 shadow-[0_0_16px_rgba(225,29,72,0.7)] animate-pulse'
+              : 'bg-slate-900/90 hover:bg-slate-800 border-slate-700 text-rose-300 hover:text-rose-200'
+          }`}
+          title="Trigger 5s Timer Bomb Audio Countdown (Click again to defuse)"
+        >
+          <span>💣</span>
+          <span>{bombCountdown !== null ? `T-${bombCountdown}s BOMB` : 'Timer Bomb'}</span>
+        </button>
 
         {/* AI Force Sync Button */}
         <button

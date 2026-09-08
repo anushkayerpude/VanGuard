@@ -17,6 +17,8 @@ import {
 import type { SourceType } from '../../types/vanguard';
 import { RocketDoodle, ConstellationDoodle, SparkleDoodle } from '../Galaxy/GalaxyDoodles';
 
+import { soundFx } from '../../services/soundFx';
+
 type FeatureType = 'sitrep' | 'feed' | 'health';
 
 export const FeatureRowsPanel: React.FC = () => {
@@ -35,6 +37,7 @@ export const FeatureRowsPanel: React.FC = () => {
   const stopVoiceBriefing = useEventStore((s) => s.stopVoiceBriefing);
 
   const toggleFeature = (feat: FeatureType) => {
+    soundFx.playTimeBombTick(2400);
     setActiveFeature((prev) => (prev === feat ? null : feat));
   };
 
