@@ -47,16 +47,16 @@ export function App() {
       {/* Top Defense Command Header */}
       <CommandHeader onBackToLanding={() => setCurrentView('landing')} />
 
-      {/* Main 2-Column Wireframe Grid */}
-      <main className="flex-1 px-6 sm:px-8 py-4 grid grid-cols-12 gap-8 overflow-hidden z-20">
-        {/* LEFT COLUMN (5 cols / 42% width): Centered 3 Feature Rows in the Middle */}
-        <div className="col-span-12 lg:col-span-5 flex flex-col justify-center items-center h-full overflow-hidden px-3">
+      {/* Main 2-Column Wireframe Grid (Enlarged Map Footprint) */}
+      <main className="flex-1 px-4 sm:px-6 py-2.5 grid grid-cols-12 gap-5 sm:gap-6 overflow-hidden z-20">
+        {/* LEFT COLUMN (4 cols / 33% width): Centered 3 Distinct Feature Rows with Generous Spacing */}
+        <div className="col-span-12 lg:col-span-4 flex flex-col justify-center items-center h-full overflow-hidden px-1">
           <FeatureRowsPanel />
         </div>
 
-        {/* RIGHT COLUMN (7 cols / 58% width): Tactical Geospatial Map (Size reduced by 20% & Centered) */}
-        <div className="col-span-12 lg:col-span-7 flex flex-col justify-center items-center h-full overflow-hidden p-2">
-          <div className="w-[86%] h-[80%] my-auto transition-all duration-300">
+        {/* RIGHT COLUMN (8 cols / 67% width): Tactical Geospatial Map (Enlarged & Prominent) */}
+        <div className="col-span-12 lg:col-span-8 flex flex-col justify-center items-center h-full overflow-hidden p-0.5">
+          <div className="w-full h-full my-auto transition-all duration-300">
             <TacticalMap />
           </div>
         </div>
