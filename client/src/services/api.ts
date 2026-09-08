@@ -7,7 +7,7 @@
 
 import type { UnifiedEvent, AISummary, SourceHealth, ThreatLevel } from '../types/vanguard';
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:3001/api/v1';
+const API_BASE = import.meta.env.VITE_API_BASE || '/api/v1';
 
 export interface CurrentSituationResponse {
   situation: {
@@ -36,7 +36,8 @@ export interface EventDetailResponse {
 }
 
 export interface LatestBriefingResponse {
-  briefing: AISummary;
+  summary?: AISummary;
+  briefing?: AISummary;
 }
 
 export interface SourceHealthResponse {
@@ -58,12 +59,18 @@ export interface GeoJsonFeatureCollection {
 /** Check if live backend server is reachable */
 export async function probeBackendHealth(): Promise<boolean> {
   try {
-    const res = await fetch('http://localhost:3001/health', {
+    const res = await fetch('/health', {
       method: 'GET',
       headers: { Accept: 'application/json' },
       signal: AbortSignal.timeout(1500),
-    });
-    if (!res.ok) return false;
+    }).catch(() =>
+      fetch('http://localhost:3001/health', {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+        signal: AbortSignal.timeout(1500),
+      })
+    );
+    if (!res || !res.ok) return false;
     const data = await res.json();
     return data?.status === 'ok';
   } catch {
@@ -87,7 +94,10 @@ export async function fetchEvents(params?: {
   severity?: string;
   limit?: number;
 }): Promise<UnifiedEvent[]> {
-  const url = new URL(`${API_BASE}/events`);
+  const url = new URL(
+    `${API_BASE}/events`,
+    typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3001'
+  );
   if (params?.source) url.searchParams.set('source', params.source);
   if (params?.severity) url.searchParams.set('severity', params.severity);
   if (params?.limit) url.searchParams.set('limit', String(params.limit));
@@ -116,7 +126,7 @@ export async function fetchLatestBriefing(): Promise<AISummary> {
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}: Failed to fetch AI briefing`);
   const data: LatestBriefingResponse = await res.json();
-  return data.briefing;
+  return (data.summary || data.briefing || data) as AISummary;
 }
 
 /** Trigger fresh briefing generation */
@@ -127,7 +137,7 @@ export async function triggerNewBriefing(): Promise<AISummary> {
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}: Failed to trigger AI briefing`);
   const data: LatestBriefingResponse = await res.json();
-  return data.briefing;
+  return (data.summary || data.briefing || data) as AISummary;
 }
 
 /** Submit Natural Language query to omnibar parser */

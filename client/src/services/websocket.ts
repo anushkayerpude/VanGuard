@@ -23,10 +23,9 @@ class VanguardWebSocketClient {
   public status: WebSocketStatus = 'disconnected';
 
   constructor() {
-    const isSsl = window.location.protocol === 'https:';
-    const host = window.location.hostname || 'localhost';
-    // If running in Vite dev with proxy, or direct to backend port 3001
-    this.url = `${isSsl ? 'wss' : 'ws'}://${host}:3001/stream`;
+    const isSsl = typeof window !== 'undefined' && window.location.protocol === 'https:';
+    const host = typeof window !== 'undefined' ? window.location.host : 'localhost:3001';
+    this.url = `${isSsl ? 'wss' : 'ws'}://${host}/stream`;
   }
 
   public subscribe(handler: WsHandler): () => void {

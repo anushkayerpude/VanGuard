@@ -4,28 +4,19 @@ import { LandingPage } from './components/Landing/LandingPage';
 import { CommandHeader } from './components/Header/CommandHeader';
 import { TacticalMap } from './components/Map/TacticalMap';
 import { AIBriefingPanel } from './components/Briefing/AIBriefingPanel';
-import { SourceFeed } from './components/Feed/SourceFeed';
-import { PhosphorRadar } from './components/Radar/PhosphorRadar';
-import { RafaleStrikeHUD } from './components/Rafale/RafaleStrikeHUD';
-import { RafaleTopRightNuke } from './components/Rafale/RafaleTopRightNuke';
-import { NukeStrikeModal } from './components/Rafale/NukeStrikeModal';
 import { ExplainabilityModal } from './components/Explainability/ExplainabilityModal';
-import { Activity, Radio, Cpu, Flame } from 'lucide-react';
+import { Activity, Radio, Server } from 'lucide-react';
 
 export function App() {
   const [currentView, setCurrentView] = useState<'landing' | 'command'>('landing');
-  const [activeRightTab, setActiveRightTab] = useState<'hud' | 'feed'>('hud');
 
-  const kinematicTick = useEventStore((s) => s.kinematicTick);
-  const screenShake = useEventStore((s) => s.screenShake);
-  const screenNukeFlash = useEventStore((s) => s.screenNukeFlash);
-  const sourceHealth = useEventStore((s) => s.sourceHealth);
-  const executeDetonation = useEventStore((s) => s.executeDetonation);
   const initBackendSync = useEventStore((s) => s.initBackendSync);
+  const kinematicTick = useEventStore((s) => s.kinematicTick);
+  const sourceHealth = useEventStore((s) => s.sourceHealth);
   const backendMode = useEventStore((s) => s.backendMode);
   const wsStatus = useEventStore((s) => s.wsStatus);
 
-  // Initialize Dual-Mode backend connection & real-time sync
+  // Initialize live backend connection & WebSocket stream on mount
   useEffect(() => {
     initBackendSync();
   }, [initBackendSync]);
@@ -38,102 +29,61 @@ export function App() {
     return () => clearInterval(interval);
   }, [kinematicTick]);
 
-  // If on Landing Page, render Landing Page
+  // If on Landing Page, render Luxury Landing Page
   if (currentView === 'landing') {
     return <LandingPage onEnterCommandRoom={() => setCurrentView('command')} />;
   }
 
-  // Tactical Command Center Layout:
-  // LEFT COLUMN: Tactical Map (Top) + Phosphor Radar (Left Bottom)
-  // MIDDLE COLUMN: AI Briefing Panel (Grounded SITREP + COA Matrix)
-  // RIGHT COLUMN: Rafale F4 HUD Nuking the UI (Top Right) + Source Feed / Telemetry (Bottom Right)
+  // Clean, Intuitive 2-Column Situational Awareness Layout:
+  // LEFT (60%): Tactical Map with search omnibar, layer filters, and instant contact inspector
+  // RIGHT (40%): Intelligence & Action Hub (AI SITREP Briefing, Live 5-Source Feed, Adapter Health)
   return (
-    <div
-      className={`relative w-screen h-screen flex flex-col bg-[#04070b] text-[#c9d8e6] overflow-hidden select-none ${
-        screenShake ? 'animate-screen-shake' : ''
-      }`}
-    >
-      {/* Nuclear Detonation White Flash Screen Effect */}
-      {screenNukeFlash && (
-        <div className="fixed inset-0 z-50 bg-white pointer-events-none animate-nuke-flash" />
-      )}
-
-      {/* CRT Scanline & Ambient Grid Texture */}
-      <div className="absolute inset-0 scanlines opacity-60 z-30 pointer-events-none" />
-
-      {/* Top Tactical Command Header */}
+    <div className="relative w-screen h-screen flex flex-col bg-[#020408] text-[#c9d8e6] overflow-hidden select-none">
+      {/* Top Clean Command Header */}
       <CommandHeader onBackToLanding={() => setCurrentView('landing')} />
 
-      {/* Main Command Center Layout Grid */}
-      <main className="flex-1 p-2 grid grid-cols-12 gap-2 overflow-hidden z-20">
-        {/* LEFT COLUMN (Col span: 5): Tactical Map (Top) + Phosphor Radar (Left Bottom) */}
-        <div className="col-span-12 lg:col-span-5 flex flex-col h-full gap-2 overflow-hidden">
-          {/* Tactical Map */}
-          <div className="flex-[3] min-h-[260px] flex flex-col overflow-hidden">
-            <TacticalMap />
-          </div>
-
-          {/* LEFT BOTTOM: 3D Cathode-Ray Phosphor Radar */}
-          <div className="flex-[2] min-h-[200px] flex flex-col overflow-hidden">
-            <PhosphorRadar />
-          </div>
+      {/* Main Clean 2-Column Grid */}
+      <main className="flex-1 p-3 grid grid-cols-12 gap-3 overflow-hidden z-20">
+        {/* LEFT COLUMN (7 cols / 58% width): Tactical Geospatial Map */}
+        <div className="col-span-12 lg:col-span-7 flex flex-col h-full overflow-hidden">
+          <TacticalMap />
         </div>
 
-        {/* MIDDLE COLUMN (Col span: 4): AI Situation Briefing & Grounded COAs */}
-        <div className="col-span-12 lg:col-span-4 flex flex-col h-full overflow-hidden">
+        {/* RIGHT COLUMN (5 cols / 42% width): Intelligence & Observations Hub */}
+        <div className="col-span-12 lg:col-span-5 flex flex-col h-full overflow-hidden">
           <AIBriefingPanel />
-        </div>
-
-        {/* RIGHT COLUMN (Col span: 3): TOP RIGHT RAFALE NUKING THE UI + SOURCE FEED */}
-        <div className="col-span-12 lg:col-span-3 flex flex-col h-full gap-2 overflow-hidden">
-          {/* TOP RIGHT: Rafale F4 Nuking the UI & Cockpit HUD */}
-          <div className="flex-[3] min-h-[260px] flex flex-col overflow-hidden">
-            <RafaleTopRightNuke onNukeTriggered={executeDetonation} />
-          </div>
-
-          {/* RIGHT BOTTOM: Multi-Source Intel Stream Feed */}
-          <div className="flex-[3] min-h-[200px] flex flex-col overflow-hidden">
-            <SourceFeed />
-          </div>
         </div>
       </main>
 
-      {/* Bottom Status Ticker Bar */}
-      <footer className="relative z-30 bg-[#05080c] border-t border-cyan-500/30 px-3 py-1 flex items-center justify-between text-[10px] font-mono text-slate-400">
+      {/* Bottom Minimal Status Bar */}
+      <footer className="relative z-30 bg-[#05080c] border-t border-cyan-500/20 px-4 py-1.5 flex items-center justify-between text-[11px] font-mono text-slate-400">
         <div className="flex items-center space-x-4">
           <span className="text-cyan-400 font-bold flex items-center">
-            <Activity className="w-3 h-3 mr-1 text-emerald-400 animate-pulse" />
-            VANGUARD INGESTION STREAM:
+            <Activity className="w-3.5 h-3.5 mr-1 text-emerald-400" />
+            5 ADAPTERS ACTIVE:
           </span>
           {sourceHealth.map((sh) => (
             <div key={sh.sourceType} className="flex items-center space-x-1">
-              <span className={`w-1.5 h-1.5 rounded-full ${sh.status === 'live' ? 'bg-emerald-400' : 'bg-amber-400'}`} />
-              <span className="uppercase text-slate-300">{sh.sourceType}:</span>
-              <span className="text-white font-bold">{sh.latencyMs}ms</span>
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${
+                  sh.status === 'live' ? 'bg-emerald-400' : 'bg-amber-400'
+                }`}
+              />
+              <span className="uppercase text-slate-300 font-bold">{sh.sourceType}:</span>
+              <span className="text-white">{sh.latencyMs}ms</span>
             </div>
           ))}
         </div>
 
-        <div className="flex items-center space-x-3">
-          {backendMode === 'live' ? (
-            <span className="text-emerald-400 font-bold flex items-center bg-emerald-950/60 border border-emerald-500/40 px-2 py-0.5 rounded">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-ping" />
-              LIVE C4ISR STREAM (PORT 3001)
-            </span>
-          ) : (
-            <span className="text-amber-400 font-bold flex items-center bg-amber-950/60 border border-amber-500/40 px-2 py-0.5 rounded">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 mr-1.5" />
-              STANDALONE SIMULATION MODE
-            </span>
-          )}
-          <span className="text-slate-500">RADAR: LEFT-BOTTOM (PSR-3D)</span>
-          <span className="text-red-400 font-bold">● RAFALE: TOP-RIGHT (ASMP-A)</span>
+        <div className="flex items-center space-x-2 text-slate-400">
+          <Server className="w-3 h-3 text-cyan-400" />
+          <span className="text-cyan-300 font-semibold">
+            {backendMode === 'live' ? 'BACKEND 3001: SYNCED' : `STREAM: ${wsStatus.toUpperCase()}`}
+          </span>
         </div>
-
       </footer>
 
-      {/* Modals */}
-      <NukeStrikeModal />
+      {/* Full Explainability Math Inspector Modal */}
       <ExplainabilityModal />
     </div>
   );
