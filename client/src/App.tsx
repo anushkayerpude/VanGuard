@@ -62,31 +62,15 @@ export function App() {
         </div>
       </main>
 
-      {/* Bottom Minimal Defense Telemetry Status Bar */}
-      <footer className="relative z-30 bg-[#070b10]/95 border-t border-slate-800/80 px-6 py-2 flex items-center justify-between text-[11px] font-mono text-slate-400 backdrop-blur-xl shadow-lg">
-        <div className="flex items-center space-x-6">
-          <span className="text-cyan-400 font-bold flex items-center space-x-1.5">
-            <Activity className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-            <span>5 INGESTION ADAPTERS:</span>
-          </span>
-          {sourceHealth.map((sh) => (
-            <div key={sh.sourceType} className="flex items-center space-x-1.5">
-              <span
-                className={`w-2 h-2 rounded-full ${
-                  sh.status === 'live' ? 'bg-emerald-400 shadow-[0_0_8px_#34d399]' : 'bg-amber-400'
-                }`}
-              />
-              <span className="uppercase text-slate-300 font-bold">{sh.sourceType}:</span>
-              <span className="text-white font-mono">{sh.latencyMs}ms</span>
-            </div>
-          ))}
+      {/* Bottom Clean Minimal Status Bar */}
+      <footer className="relative z-30 bg-[#070b10]/95 border-t border-slate-800/80 px-8 py-2 flex items-center justify-between text-xs font-mono text-slate-400 backdrop-blur-xl shadow-lg">
+        <div className="flex items-center space-x-2.5">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
+          <span className="text-slate-300 font-bold tracking-wide">VANGUARD DEFENSE C4ISR</span>
         </div>
 
-        <div className="flex items-center space-x-3 text-slate-400">
-          <Server className="w-3.5 h-3.5 text-cyan-400" />
-          <span className="text-cyan-300 font-semibold font-mono">
-            {backendMode === 'live' ? 'C4ISR ENGINE 3001: SYNCED' : `STREAM: ${wsStatus.toUpperCase()}`}
-          </span>
+        <div className="flex items-center space-x-2 text-slate-400">
+          <span className="text-cyan-400 font-mono font-medium">LIVE OPERATIONAL FEED</span>
         </div>
       </footer>
 

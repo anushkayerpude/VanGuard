@@ -111,24 +111,6 @@ export const FeatureRowsPanel: React.FC = () => {
           </div>
 
           <div className="flex items-center space-x-3">
-            {activeFeature === 'sitrep' && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  isVoiceReading ? stopVoiceBriefing() : triggerVoiceBriefing();
-                }}
-                className={`px-3 py-1.5 rounded-xl text-xs font-sans font-bold flex items-center space-x-1.5 transition border cursor-pointer ${
-                  isVoiceReading
-                    ? 'bg-rose-600 text-white border-rose-300 shadow-[0_0_12px_rgba(225,29,72,0.6)] animate-pulse'
-                    : 'bg-slate-800/90 border-slate-600/70 text-slate-200 hover:text-white hover:bg-slate-700/80'
-                }`}
-                title="Readout SITREP Summary"
-              >
-                <Volume2 className="w-3.5 h-3.5 text-cyan-400" />
-                <span>{isVoiceReading ? 'Speaking...' : 'Listen'}</span>
-              </button>
-            )}
-
             <div
               className={`p-1.5 rounded-xl transition ${
                 activeFeature === 'sitrep'
