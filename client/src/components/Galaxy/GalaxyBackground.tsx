@@ -28,12 +28,12 @@ export const GalaxyBackground: React.FC = () => {
       speedY: number;
     }> = [];
 
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < 35; i++) {
       particles.push({
         x: Math.random() * width,
         y: Math.random() * height,
         size: Math.random() * 1.5 + 0.5,
-        alpha: Math.random() * 0.35 + 0.1,
+        alpha: Math.random() * 0.4 + 0.15,
         speedY: -(Math.random() * 0.25 + 0.08),
       });
     }
@@ -69,19 +69,19 @@ export const GalaxyBackground: React.FC = () => {
   }, []);
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#05080c]">
-      {/* 1. Fully Enhanced 8K Quality Naval Warships Background Picture (No Grids) */}
+    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#0a121e]">
+      {/* 1. Fully Evident High-Quality Naval Warships Background Picture */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-700 opacity-65 scale-100"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-700 opacity-92 scale-100"
         style={{
           backgroundImage: `url('/warships_bg.jpg')`,
-          filter: 'brightness(0.92) contrast(1.15) saturate(1.18)',
+          filter: 'brightness(1.04) contrast(1.12) saturate(1.22)',
         }}
       />
 
-      {/* 2. Deep Stealth Gradient Overlays for High UI Legibility & Crisp Contrast */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#06090d] via-[#06090d]/45 to-[#06090d]/70" />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#06090d]/75 via-[#06090d]/20 to-[#06090d]/75" />
+      {/* 2. Soft Lighter Oceanic Vignette for High UI Clarity & Vivid Background Visibility */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#060c16]/55 via-transparent to-[#060c16]/40" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#060c16]/50 via-transparent to-[#060c16]/50" />
 
       {/* 3. Canvas Floating Telemetry Particles */}
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />

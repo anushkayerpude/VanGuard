@@ -63,14 +63,14 @@ export function App() {
       </main>
 
       {/* Bottom Clean Minimal Status Bar */}
-      <footer className="relative z-30 bg-[#070b10]/95 border-t border-slate-800/80 px-8 py-2 flex items-center justify-between text-xs font-mono text-slate-400 backdrop-blur-xl shadow-lg">
+      <footer className="relative z-30 bg-[#101b2b]/85 border-t border-slate-700/60 px-8 py-2.5 flex items-center justify-between text-xs font-mono text-slate-300 backdrop-blur-xl shadow-lg">
         <div className="flex items-center space-x-2.5">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
-          <span className="text-slate-300 font-bold tracking-wide">VANGUARD DEFENSE C4ISR</span>
+          <span className="text-white font-bold tracking-wide">VANGUARD DEFENSE C4ISR</span>
         </div>
 
-        <div className="flex items-center space-x-2 text-slate-400">
-          <span className="text-cyan-400 font-mono font-medium">LIVE OPERATIONAL FEED</span>
+        <div className="flex items-center space-x-2 text-slate-300 font-bold">
+          <span className="text-cyan-300 font-mono font-bold">LIVE OPERATIONAL FEED</span>
         </div>
       </footer>
 

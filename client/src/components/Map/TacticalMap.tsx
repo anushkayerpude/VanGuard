@@ -168,7 +168,7 @@ export const TacticalMap: React.FC = () => {
   }, [selectedEventId]);
 
   return (
-    <div className="relative flex-1 w-full h-full bg-[#0b1017]/90 border border-slate-800/80 rounded-2xl overflow-hidden flex flex-col shadow-2xl">
+    <div className="relative flex-1 w-full h-full bg-[#0d1624]/85 border border-slate-600/70 rounded-2xl overflow-hidden flex flex-col shadow-2xl backdrop-blur-md">
       {/* Top Floating Controls Omnibar (Spacious layout with rounded pills) */}
       <div className="absolute top-4 left-4 right-4 z-[1000] flex items-center justify-between pointer-events-none">
         {/* Omnibar Natural Language & Keyword Search */}
@@ -176,14 +176,14 @@ export const TacticalMap: React.FC = () => {
           <OmniSearchBar />
         </div>
 
-        {/* Clean Layer Toggles in Rounded Defense Glass */}
-        <div className="pointer-events-auto flex items-center space-x-2 bg-[#0c131c]/92 border border-slate-700/70 backdrop-blur-xl px-3 py-1.5 rounded-xl shadow-lg">
+        {/* Clean Layer Toggles in Lighter Rounded Defense Glass */}
+        <div className="pointer-events-auto flex items-center space-x-2 bg-[#132236]/90 border border-slate-600/70 backdrop-blur-xl px-3 py-1.5 rounded-xl shadow-lg">
           <button
             onClick={() => toggleLayer('alerts')}
             className={`px-3 py-1.5 rounded-lg text-xs font-sans font-semibold transition flex items-center space-x-1.5 cursor-pointer ${
               layers.alerts
-                ? 'bg-red-500/20 text-red-300 border border-red-500/50 shadow-[0_0_8px_rgba(239,68,68,0.25)]'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-red-500/25 text-red-200 border border-red-400/60 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
+                : 'text-slate-300 hover:text-white'
             }`}
           >
             <Shield className="w-3.5 h-3.5" />
@@ -194,8 +194,8 @@ export const TacticalMap: React.FC = () => {
             onClick={() => toggleLayer('weather')}
             className={`px-3 py-1.5 rounded-lg text-xs font-sans font-semibold transition flex items-center space-x-1.5 cursor-pointer ${
               layers.weather
-                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50 shadow-[0_0_8px_rgba(6,182,212,0.25)]'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-cyan-500/25 text-cyan-200 border border-cyan-400/60 shadow-[0_0_8px_rgba(6,182,212,0.3)]'
+                : 'text-slate-300 hover:text-white'
             }`}
           >
             <Wind className="w-3.5 h-3.5" />
@@ -206,8 +206,8 @@ export const TacticalMap: React.FC = () => {
             onClick={() => toggleLayer('zones')}
             className={`px-3 py-1.5 rounded-lg text-xs font-sans font-semibold transition flex items-center space-x-1.5 cursor-pointer ${
               layers.zones
-                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/50 shadow-[0_0_8px_rgba(245,158,11,0.25)]'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-amber-500/25 text-amber-200 border border-amber-400/60 shadow-[0_0_8px_rgba(245,158,11,0.3)]'
+                : 'text-slate-300 hover:text-white'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />

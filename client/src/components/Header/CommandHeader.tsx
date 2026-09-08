@@ -72,13 +72,13 @@ export const CommandHeader: React.FC<CommandHeaderProps> = ({ onBackToLanding })
   };
 
   return (
-    <header className="relative z-40 bg-[#070b10]/95 border-b border-slate-800/80 px-6 sm:px-8 py-3 flex items-center justify-between backdrop-blur-xl shadow-lg">
+    <header className="relative z-40 bg-[#101b2b]/85 border-b border-slate-700/60 px-6 sm:px-8 py-3 flex items-center justify-between backdrop-blur-xl shadow-lg">
       {/* Left: Clean Brand & Return Home */}
       <div className="flex items-center space-x-4">
         {onBackToLanding && (
           <button
             onClick={onBackToLanding}
-            className="flex items-center space-x-1.5 px-3 py-1.5 bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 hover:border-cyan-400 rounded-xl text-xs text-slate-200 transition cursor-pointer shadow-sm"
+            className="flex items-center space-x-1.5 px-3 py-1.5 bg-[#18283d]/90 hover:bg-[#223652] border border-slate-600/70 hover:border-cyan-400 rounded-xl text-xs text-slate-100 transition cursor-pointer shadow-sm"
             title="Return to Landing Page"
           >
             <ArrowLeft className="w-3.5 h-3.5 text-cyan-400" />
@@ -87,8 +87,8 @@ export const CommandHeader: React.FC<CommandHeaderProps> = ({ onBackToLanding })
         )}
 
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-950 to-slate-900 border border-cyan-500/50 flex items-center justify-center shadow-[0_0_12px_rgba(0,240,255,0.25)]">
-            <Crosshair className="w-4 h-4 text-cyan-400 animate-spin" style={{ animationDuration: '24s' }} />
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-900 to-slate-800 border border-cyan-400/60 flex items-center justify-center shadow-[0_0_12px_rgba(0,240,255,0.35)]">
+            <Crosshair className="w-4 h-4 text-cyan-300 animate-spin" style={{ animationDuration: '24s' }} />
           </div>
 
           <span className="font-sans font-black tracking-widest text-lg text-white defense-glow">
@@ -108,16 +108,16 @@ export const CommandHeader: React.FC<CommandHeaderProps> = ({ onBackToLanding })
       {/* Right: Essential Action Controls & Clock */}
       <div className="flex items-center space-x-3">
         {/* Scenarios Cluster */}
-        <div className="flex items-center space-x-1.5 bg-[#0c131c] border border-slate-700/60 rounded-xl p-1 shadow-sm">
+        <div className="flex items-center space-x-1.5 bg-[#18283d]/90 border border-slate-600/70 rounded-xl p-1 shadow-sm">
           <button
             onClick={() => injectScenario('incursion')}
-            className="px-3 py-1.5 bg-red-950/80 hover:bg-red-900 border border-red-500/50 rounded-lg text-xs text-red-200 font-sans font-semibold transition cursor-pointer shadow-[0_0_8px_rgba(239,68,68,0.25)]"
+            className="px-3 py-1.5 bg-red-900/80 hover:bg-red-800 border border-red-400/60 rounded-lg text-xs text-red-100 font-sans font-semibold transition cursor-pointer shadow-[0_0_8px_rgba(239,68,68,0.3)]"
           >
             Incursion
           </button>
           <button
             onClick={() => injectScenario('reset')}
-            className="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-white rounded-lg transition cursor-pointer"
+            className="p-1.5 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg transition cursor-pointer"
             title="Reset Scenario"
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -127,23 +127,23 @@ export const CommandHeader: React.FC<CommandHeaderProps> = ({ onBackToLanding })
         {/* AI Sync Button */}
         <button
           onClick={handleSyncAI}
-          className="flex items-center space-x-1.5 px-3.5 py-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-sans font-bold text-xs rounded-xl shadow-[0_0_12px_rgba(0,240,255,0.3)] transition cursor-pointer"
+          className="flex items-center space-x-1.5 px-3.5 py-1.5 bg-gradient-to-r from-cyan-400 to-sky-500 hover:from-cyan-300 hover:to-sky-400 text-black font-sans font-bold text-xs rounded-xl shadow-[0_0_14px_rgba(0,240,255,0.4)] transition cursor-pointer"
         >
-          <Sparkles className="w-3.5 h-3.5" />
+          <Sparkles className="w-3.5 h-3.5 text-slate-900" />
           <span>AI Sync</span>
         </button>
 
         {/* SITREP Export */}
         <button
           onClick={() => downloadSitrepText(aiBriefing, events, threatLevel)}
-          className="flex items-center space-x-1.5 px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl text-slate-200 font-sans font-semibold text-xs transition cursor-pointer"
+          className="flex items-center space-x-1.5 px-3.5 py-1.5 bg-[#1e324c] hover:bg-[#284263] border border-slate-500/60 rounded-xl text-white font-sans font-semibold text-xs transition cursor-pointer"
         >
-          <FileDown className="w-3.5 h-3.5 text-cyan-400" />
+          <FileDown className="w-3.5 h-3.5 text-cyan-300" />
           <span>Export</span>
         </button>
 
         {/* UTC Clock */}
-        <div className="border-l border-slate-700/80 pl-3 text-xs font-mono text-slate-300">
+        <div className="border-l border-slate-600/80 pl-3 text-xs font-mono text-slate-200 font-bold">
           {timeUtc}
         </div>
       </div>

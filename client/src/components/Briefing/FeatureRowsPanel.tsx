@@ -7,7 +7,6 @@ import {
   ChevronDown,
   ChevronUp,
   ArrowUpRight,
-  Volume2,
   Wind,
   Users,
   FileText,
@@ -38,15 +37,15 @@ export const FeatureRowsPanel: React.FC = () => {
   const getSourceIcon = (src: SourceType) => {
     switch (src) {
       case 'radar':
-        return <Radio className="w-4 h-4 text-cyan-400" />;
+        return <Radio className="w-4 h-4 text-cyan-300" />;
       case 'weather':
-        return <Wind className="w-4 h-4 text-amber-400" />;
+        return <Wind className="w-4 h-4 text-amber-300" />;
       case 'personnel':
-        return <Users className="w-4 h-4 text-emerald-400" />;
+        return <Users className="w-4 h-4 text-emerald-300" />;
       case 'log':
-        return <FileText className="w-4 h-4 text-sky-400" />;
+        return <FileText className="w-4 h-4 text-sky-300" />;
       case 'incident':
-        return <AlertTriangle className="w-4 h-4 text-rose-400" />;
+        return <AlertTriangle className="w-4 h-4 text-rose-300" />;
     }
   };
 
@@ -67,23 +66,23 @@ export const FeatureRowsPanel: React.FC = () => {
       {/* FEATURE ROW 1: AI SITREP // OPERATIONAL INTELLIGENCE */}
       {/* ========================================================================= */}
       <div
-        className={`flex flex-col rounded-2xl border transition-all duration-300 overflow-hidden shadow-[0_10px_35px_rgba(0,0,0,0.55)] backdrop-blur-xl ${
+        className={`flex flex-col rounded-2xl border transition-all duration-300 overflow-hidden shadow-[0_10px_35px_rgba(0,0,0,0.35)] backdrop-blur-xl ${
           activeFeature === 'sitrep'
-            ? 'bg-[#0a1017]/95 border-cyan-400/80 shadow-[0_0_26px_rgba(0,240,255,0.22)] max-h-[48vh] min-h-[220px]'
-            : 'bg-[#0a1017]/85 border-slate-700/70 hover:border-cyan-400/50 hover:bg-[#0f1724]/90 cursor-pointer shrink-0'
+            ? 'bg-[#101c2d]/88 border-cyan-400/80 shadow-[0_0_26px_rgba(0,240,255,0.22)] max-h-[48vh] min-h-[220px]'
+            : 'bg-[#101c2d]/75 border-slate-600/60 hover:border-cyan-400/60 hover:bg-[#152438]/85 cursor-pointer shrink-0'
         }`}
       >
         {/* Clickable Header Bar */}
         <div
           onClick={() => toggleFeature('sitrep')}
-          className="px-5 py-4 flex items-center justify-between cursor-pointer select-none bg-gradient-to-r from-[#070b10] via-[#0b131e] to-[#070b10] border-b border-slate-700/60 hover:from-[#0d1724] transition"
+          className="px-5 py-4 flex items-center justify-between cursor-pointer select-none bg-gradient-to-r from-[#132236]/90 via-[#182a42]/85 to-[#132236]/90 border-b border-slate-600/50 hover:from-[#182b45] transition"
         >
           <div className="flex items-center space-x-3.5">
             <div
               className={`p-2.5 rounded-xl transition shadow-md ${
                 activeFeature === 'sitrep'
-                  ? 'bg-gradient-to-tr from-cyan-600 to-sky-700 text-white shadow-[0_0_12px_rgba(0,240,255,0.4)]'
-                  : 'bg-cyan-950/80 border border-cyan-500/40 text-cyan-400'
+                  ? 'bg-gradient-to-tr from-cyan-500 to-sky-600 text-slate-950 shadow-[0_0_12px_rgba(0,240,255,0.45)]'
+                  : 'bg-cyan-950/80 border border-cyan-400/50 text-cyan-300'
               }`}
             >
               <Sparkles className="w-4 h-4" />
@@ -94,11 +93,11 @@ export const FeatureRowsPanel: React.FC = () => {
                 <span className="font-sans font-black text-sm text-white tracking-wider uppercase">
                   AI SITREP // INTELLIGENCE
                 </span>
-                <span className="text-[10px] text-emerald-400 font-bold bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-500/40">
+                <span className="text-[10px] text-emerald-300 font-bold bg-emerald-950/85 px-2 py-0.5 rounded-full border border-emerald-400/50">
                   100% CITED
                 </span>
               </div>
-              <div className="text-[11px] text-slate-400 font-sans mt-0.5">
+              <div className="text-[11px] text-slate-300 font-sans mt-0.5">
                 Autonomous multi-source intelligence briefing &amp; prioritized action directives
               </div>
             </div>
@@ -108,8 +107,8 @@ export const FeatureRowsPanel: React.FC = () => {
             <div
               className={`p-1.5 rounded-xl transition ${
                 activeFeature === 'sitrep'
-                  ? 'bg-cyan-950/80 text-cyan-300'
-                  : 'bg-slate-800/80 text-slate-400 hover:text-white'
+                  ? 'bg-cyan-950/80 text-cyan-300 border border-cyan-400/40'
+                  : 'bg-slate-800/80 text-slate-300 hover:text-white'
               }`}
             >
               {activeFeature === 'sitrep' ? (
@@ -125,38 +124,38 @@ export const FeatureRowsPanel: React.FC = () => {
         {activeFeature === 'sitrep' && (
           <div className="flex-1 overflow-y-auto p-4 space-y-3.5 custom-scrollbar">
             {/* Headline Card */}
-            <div className="p-3.5 bg-gradient-to-r from-cyan-950/60 via-slate-900/90 to-[#0c131c] border-l-4 border-cyan-400 rounded-r-xl rounded-l-md shadow-md flex items-center justify-between gap-2">
+            <div className="p-3.5 bg-gradient-to-r from-cyan-950/70 via-[#15253a]/90 to-[#101c2d] border-l-4 border-cyan-400 rounded-r-xl rounded-l-md shadow-md flex items-center justify-between gap-2">
               <div className="min-w-0">
                 <div className="text-[10px] font-bold text-cyan-300 uppercase tracking-widest mb-1 font-mono flex items-center space-x-1">
                   <span>SITUATION SUMMARY</span>
                   <SparkleDoodle size={10} />
                 </div>
-                <div className="text-xs sm:text-sm font-bold text-slate-100 leading-snug font-sans">
+                <div className="text-xs sm:text-sm font-bold text-white leading-snug font-sans">
                   {aiBriefing.headline || 'Active Multi-Source Situational Awareness'}
                 </div>
               </div>
-              <RocketDoodle size={32} className="hidden sm:inline-block opacity-85 shrink-0 ml-2" />
+              <RocketDoodle size={32} className="hidden sm:inline-block opacity-90 shrink-0 ml-2" />
             </div>
 
             {/* Executive Grounded Summary */}
-            <div className="bg-[#0f1724]/90 border border-slate-700/50 rounded-xl p-3.5 shadow-sm">
-              <div className="text-[10px] font-bold tracking-wider uppercase text-cyan-400 mb-1.5 font-mono">
+            <div className="bg-[#142337]/90 border border-slate-600/50 rounded-xl p-3.5 shadow-sm">
+              <div className="text-[10px] font-bold tracking-wider uppercase text-cyan-300 mb-1.5 font-mono">
                 EXECUTIVE BRIEFING
               </div>
-              <p className="text-xs text-slate-200 leading-relaxed font-sans font-normal">
+              <p className="text-xs text-slate-100 leading-relaxed font-sans font-normal">
                 {aiBriefing.executiveSummary}
               </p>
             </div>
 
             {/* Key Corroborated Developments */}
-            <div className="bg-[#0f1724]/90 border border-slate-700/50 rounded-xl p-3.5 shadow-sm space-y-2.5">
-              <div className="text-[10px] font-bold tracking-wider uppercase text-sky-400 font-mono">
+            <div className="bg-[#142337]/90 border border-slate-600/50 rounded-xl p-3.5 shadow-sm space-y-2.5">
+              <div className="text-[10px] font-bold tracking-wider uppercase text-sky-300 font-mono">
                 KEY CORROBORATED DEVELOPMENTS
               </div>
               <div className="space-y-2">
                 {aiBriefing.keyDevelopments.map((dev, idx) => (
-                  <div key={idx} className="text-xs text-slate-200 pl-3 border-l-2 border-cyan-500/60 space-y-1.5">
-                    <p className="leading-snug font-sans text-slate-200">{dev.point}</p>
+                  <div key={idx} className="text-xs text-slate-100 pl-3 border-l-2 border-cyan-400/70 space-y-1.5">
+                    <p className="leading-snug font-sans text-slate-100">{dev.point}</p>
                     <div className="flex flex-wrap gap-1.5">
                       {dev.supportingEventIds.map((eid) => (
                         <button
@@ -164,8 +163,8 @@ export const FeatureRowsPanel: React.FC = () => {
                           onClick={() => selectEvent(eid)}
                           className={`px-2.5 py-0.5 rounded-lg text-[10px] font-mono font-bold uppercase transition flex items-center space-x-1 cursor-pointer ${
                             selectedEventId === eid
-                              ? 'bg-cyan-600 text-white font-black shadow-[0_0_10px_rgba(0,240,255,0.6)] border border-cyan-300'
-                              : 'bg-slate-800/90 hover:bg-slate-700 border border-slate-600/60 text-cyan-300'
+                              ? 'bg-cyan-500 text-slate-950 font-black shadow-[0_0_10px_rgba(0,240,255,0.6)] border border-cyan-200'
+                              : 'bg-slate-800/95 hover:bg-slate-700 border border-slate-500/60 text-cyan-300'
                           }`}
                         >
                           <span>#{eid}</span>
@@ -179,19 +178,19 @@ export const FeatureRowsPanel: React.FC = () => {
             </div>
 
             {/* Prioritized Action Directives */}
-            <div className="bg-[#0f1724]/90 border border-slate-700/50 rounded-xl p-3.5 shadow-sm relative overflow-hidden space-y-2.5">
-              <div className="absolute right-3 top-2 pointer-events-none opacity-20">
+            <div className="bg-[#142337]/90 border border-slate-600/50 rounded-xl p-3.5 shadow-sm relative overflow-hidden space-y-2.5">
+              <div className="absolute right-3 top-2 pointer-events-none opacity-25">
                 <ConstellationDoodle size={45} />
               </div>
 
-              <div className="text-[10px] font-bold tracking-wider uppercase text-amber-400 font-mono">
+              <div className="text-[10px] font-bold tracking-wider uppercase text-amber-300 font-mono">
                 PRIORITIZED ACTION DIRECTIVES
               </div>
               <div className="space-y-2 z-10 relative">
                 {aiBriefing.prioritizedActions.map((act) => (
                   <div
                     key={act.actionId}
-                    className="p-3 bg-[#141f2e]/90 border border-slate-700/50 rounded-xl flex items-start space-x-3"
+                    className="p-3 bg-[#192b42]/90 border border-slate-600/50 rounded-xl flex items-start space-x-3"
                   >
                     <span
                       className={`px-2 py-0.5 rounded text-[9px] font-mono font-black ${
@@ -205,10 +204,10 @@ export const FeatureRowsPanel: React.FC = () => {
                       {act.priority}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <div className="text-xs font-sans font-semibold text-slate-100">
+                      <div className="text-xs font-sans font-semibold text-white">
                         {act.title}
                       </div>
-                      <div className="text-[11px] text-slate-300 font-sans mt-0.5 leading-snug">
+                      <div className="text-[11px] text-slate-200 font-sans mt-0.5 leading-snug">
                         {act.rationale}
                       </div>
                     </div>
@@ -224,23 +223,23 @@ export const FeatureRowsPanel: React.FC = () => {
       {/* FEATURE ROW 2: LIVE MULTI-SOURCE FEED */}
       {/* ========================================================================= */}
       <div
-        className={`flex flex-col rounded-2xl border transition-all duration-300 overflow-hidden shadow-[0_10px_35px_rgba(0,0,0,0.55)] backdrop-blur-xl ${
+        className={`flex flex-col rounded-2xl border transition-all duration-300 overflow-hidden shadow-[0_10px_35px_rgba(0,0,0,0.35)] backdrop-blur-xl ${
           activeFeature === 'feed'
-            ? 'bg-[#0a1017]/95 border-cyan-400/80 shadow-[0_0_26px_rgba(0,240,255,0.22)] max-h-[48vh] min-h-[220px]'
-            : 'bg-[#0a1017]/85 border-slate-700/70 hover:border-cyan-400/50 hover:bg-[#0f1724]/90 cursor-pointer shrink-0'
+            ? 'bg-[#101c2d]/88 border-cyan-400/80 shadow-[0_0_26px_rgba(0,240,255,0.22)] max-h-[48vh] min-h-[220px]'
+            : 'bg-[#101c2d]/75 border-slate-600/60 hover:border-cyan-400/60 hover:bg-[#152438]/85 cursor-pointer shrink-0'
         }`}
       >
         {/* Clickable Header Bar */}
         <div
           onClick={() => toggleFeature('feed')}
-          className="px-5 py-4 flex items-center justify-between cursor-pointer select-none bg-gradient-to-r from-[#070b10] via-[#0b131e] to-[#070b10] border-b border-slate-700/60 hover:from-[#0d1724] transition"
+          className="px-5 py-4 flex items-center justify-between cursor-pointer select-none bg-gradient-to-r from-[#132236]/90 via-[#182a42]/85 to-[#132236]/90 border-b border-slate-600/50 hover:from-[#182b45] transition"
         >
           <div className="flex items-center space-x-3.5">
             <div
               className={`p-2.5 rounded-xl transition shadow-md ${
                 activeFeature === 'feed'
-                  ? 'bg-gradient-to-tr from-cyan-600 to-sky-700 text-white shadow-[0_0_12px_rgba(0,240,255,0.4)]'
-                  : 'bg-cyan-950/80 border border-cyan-500/40 text-cyan-400'
+                  ? 'bg-gradient-to-tr from-cyan-500 to-sky-600 text-slate-950 shadow-[0_0_12px_rgba(0,240,255,0.45)]'
+                  : 'bg-cyan-950/80 border border-cyan-400/50 text-cyan-300'
               }`}
             >
               <Radio className="w-4 h-4" />
@@ -251,11 +250,11 @@ export const FeatureRowsPanel: React.FC = () => {
                 <span className="font-sans font-black text-sm text-white tracking-wider uppercase">
                   LIVE MULTI-SOURCE FEED
                 </span>
-                <span className="text-[10px] text-cyan-300 font-bold bg-cyan-950/80 px-2 py-0.5 rounded-full border border-cyan-500/40 font-mono">
+                <span className="text-[10px] text-cyan-300 font-bold bg-cyan-950/85 px-2 py-0.5 rounded-full border border-cyan-400/50 font-mono">
                   {events.length} ACTIVE OBSERVATIONS
                 </span>
               </div>
-              <div className="text-[11px] text-slate-400 font-sans mt-0.5">
+              <div className="text-[11px] text-slate-300 font-sans mt-0.5">
                 Real-time kinematic radar, weather telemetry, personnel logs, &amp; sensor tripwires
               </div>
             </div>
@@ -265,8 +264,8 @@ export const FeatureRowsPanel: React.FC = () => {
             <div
               className={`p-1.5 rounded-xl transition ${
                 activeFeature === 'feed'
-                  ? 'bg-cyan-950/80 text-cyan-300'
-                  : 'bg-slate-800/80 text-slate-400 hover:text-white'
+                  ? 'bg-cyan-950/80 text-cyan-300 border border-cyan-400/40'
+                  : 'bg-slate-800/80 text-slate-300 hover:text-white'
               }`}
             >
               {activeFeature === 'feed' ? (
@@ -282,15 +281,15 @@ export const FeatureRowsPanel: React.FC = () => {
         {activeFeature === 'feed' && (
           <div className="flex-1 flex flex-col overflow-hidden">
             {/* Filter search bar */}
-            <div className="p-3.5 bg-[#080d14] border-b border-slate-700/60">
+            <div className="p-3.5 bg-[#0e1724]/95 border-b border-slate-600/60">
               <div className="relative">
-                <Search className="w-3.5 h-3.5 absolute left-3 top-3 text-slate-400" />
+                <Search className="w-3.5 h-3.5 absolute left-3 top-3 text-slate-300" />
                 <input
                   type="text"
                   value={feedSearch}
                   onChange={(e) => setFeedSearch(e.target.value)}
                   placeholder="Filter feed by ID, keyword, or source type..."
-                  className="w-full pl-9 pr-3.5 py-2 bg-[#0c131c] border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-400 focus:outline-none focus:border-cyan-400"
+                  className="w-full pl-9 pr-3.5 py-2 bg-[#142337] border border-slate-500/60 rounded-xl text-xs text-white placeholder-slate-300 focus:outline-none focus:border-cyan-400"
                 />
               </div>
             </div>
@@ -308,8 +307,8 @@ export const FeatureRowsPanel: React.FC = () => {
                     onClick={() => selectEvent(evt.id)}
                     className={`p-3 rounded-xl border transition cursor-pointer ${
                       isSelected
-                        ? 'bg-[#16253b] border-cyan-400 shadow-[0_0_16px_rgba(0,240,255,0.3)]'
-                        : 'bg-[#0f1724]/90 hover:bg-[#141f2e] border-slate-700/60'
+                        ? 'bg-[#1b314d] border-cyan-400 shadow-[0_0_16px_rgba(0,240,255,0.35)]'
+                        : 'bg-[#142337]/90 hover:bg-[#1a2e47] border-slate-600/50'
                     }`}
                   >
                     <div className="flex items-center justify-between">
@@ -321,10 +320,10 @@ export const FeatureRowsPanel: React.FC = () => {
                         <span
                           className={`px-2 py-0.5 rounded-full text-[9px] font-mono font-bold uppercase ${
                             isCritical
-                              ? 'bg-rose-950 text-rose-300 border border-rose-500/50'
+                              ? 'bg-rose-950 text-rose-200 border border-rose-400/60'
                               : isHigh
-                              ? 'bg-amber-950 text-amber-300 border border-amber-500/50'
-                              : 'bg-slate-800 text-slate-300 border border-slate-600/50'
+                              ? 'bg-amber-950 text-amber-200 border border-amber-400/60'
+                              : 'bg-slate-800 text-slate-200 border border-slate-500/60'
                           }`}
                         >
                           {evt.severity}
@@ -340,21 +339,21 @@ export const FeatureRowsPanel: React.FC = () => {
                             e.stopPropagation();
                             openExplainability(evt.id);
                           }}
-                          className="text-[10px] text-sky-400 hover:text-cyan-300 underline font-mono cursor-pointer"
+                          className="text-[10px] text-sky-300 hover:text-cyan-200 underline font-mono cursor-pointer"
                         >
                           Math &rarr;
                         </button>
                       </div>
                     </div>
 
-                    <div className="text-xs font-sans font-semibold text-slate-100 mt-1.5 leading-snug">
+                    <div className="text-xs font-sans font-semibold text-white mt-1.5 leading-snug">
                       {evt.title}
                     </div>
-                    <div className="text-[11px] text-slate-300 font-sans mt-0.5 line-clamp-2 leading-relaxed">
+                    <div className="text-[11px] text-slate-200 font-sans mt-0.5 line-clamp-2 leading-relaxed">
                       {evt.description}
                     </div>
 
-                    <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-slate-700/50 text-[10px] font-mono text-slate-400">
+                    <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-slate-600/50 text-[10px] font-mono text-slate-300">
                       <span>
                         {evt.location.lat.toFixed(2)}°N, {evt.location.lng.toFixed(2)}°E
                       </span>
@@ -376,23 +375,23 @@ export const FeatureRowsPanel: React.FC = () => {
       {/* FEATURE ROW 3: FEED ADAPTER PIPELINES TELEMETRY */}
       {/* ========================================================================= */}
       <div
-        className={`flex flex-col rounded-2xl border transition-all duration-300 overflow-hidden shadow-[0_10px_35px_rgba(0,0,0,0.55)] backdrop-blur-xl ${
+        className={`flex flex-col rounded-2xl border transition-all duration-300 overflow-hidden shadow-[0_10px_35px_rgba(0,0,0,0.35)] backdrop-blur-xl ${
           activeFeature === 'health'
-            ? 'bg-[#0a1017]/95 border-cyan-400/80 shadow-[0_0_26px_rgba(0,240,255,0.22)] max-h-[48vh] min-h-[220px]'
-            : 'bg-[#0a1017]/85 border-slate-700/70 hover:border-cyan-400/50 hover:bg-[#0f1724]/90 cursor-pointer shrink-0'
+            ? 'bg-[#101c2d]/88 border-cyan-400/80 shadow-[0_0_26px_rgba(0,240,255,0.22)] max-h-[48vh] min-h-[220px]'
+            : 'bg-[#101c2d]/75 border-slate-600/60 hover:border-cyan-400/60 hover:bg-[#152438]/85 cursor-pointer shrink-0'
         }`}
       >
         {/* Clickable Header Bar */}
         <div
           onClick={() => toggleFeature('health')}
-          className="px-5 py-4 flex items-center justify-between cursor-pointer select-none bg-gradient-to-r from-[#070b10] via-[#0b131e] to-[#070b10] border-b border-slate-700/60 hover:from-[#0d1724] transition"
+          className="px-5 py-4 flex items-center justify-between cursor-pointer select-none bg-gradient-to-r from-[#132236]/90 via-[#182a42]/85 to-[#132236]/90 border-b border-slate-600/50 hover:from-[#182b45] transition"
         >
           <div className="flex items-center space-x-3.5">
             <div
               className={`p-2.5 rounded-xl transition shadow-md ${
                 activeFeature === 'health'
-                  ? 'bg-gradient-to-tr from-cyan-600 to-sky-700 text-white shadow-[0_0_12px_rgba(0,240,255,0.4)]'
-                  : 'bg-cyan-950/80 border border-cyan-500/40 text-cyan-400'
+                  ? 'bg-gradient-to-tr from-cyan-500 to-sky-600 text-slate-950 shadow-[0_0_12px_rgba(0,240,255,0.45)]'
+                  : 'bg-cyan-950/80 border border-cyan-400/50 text-cyan-300'
               }`}
             >
               <Activity className="w-4 h-4" />
@@ -403,12 +402,12 @@ export const FeatureRowsPanel: React.FC = () => {
                 <span className="font-sans font-black text-sm text-white tracking-wider uppercase">
                   FEED ADAPTER TELEMETRY
                 </span>
-                <span className="text-[10px] text-emerald-400 font-bold bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-500/40 flex items-center space-x-1 font-mono">
+                <span className="text-[10px] text-emerald-300 font-bold bg-emerald-950/85 px-2 py-0.5 rounded-full border border-emerald-400/50 flex items-center space-x-1 font-mono">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                   <span>5/5 LIVE PIPELINES</span>
                 </span>
               </div>
-              <div className="text-[11px] text-slate-400 font-sans mt-0.5">
+              <div className="text-[11px] text-slate-300 font-sans mt-0.5">
                 Real-time pipeline health, millisecond latencies, &amp; adapter reliability scores
               </div>
             </div>
@@ -418,8 +417,8 @@ export const FeatureRowsPanel: React.FC = () => {
             <div
               className={`p-1.5 rounded-xl transition ${
                 activeFeature === 'health'
-                  ? 'bg-cyan-950/80 text-cyan-300'
-                  : 'bg-slate-800/80 text-slate-400 hover:text-white'
+                  ? 'bg-cyan-950/80 text-cyan-300 border border-cyan-400/40'
+                  : 'bg-slate-800/80 text-slate-300 hover:text-white'
               }`}
             >
               {activeFeature === 'health' ? (
@@ -434,7 +433,7 @@ export const FeatureRowsPanel: React.FC = () => {
         {/* Expanded View Content */}
         {activeFeature === 'health' && (
           <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
-            <div className="text-xs font-mono text-cyan-400 tracking-wider mb-1">
+            <div className="text-xs font-mono text-cyan-300 font-bold tracking-wider mb-1">
               5 INGESTION ADAPTER PIPELINES (REAL-TIME TELEMETRY)
             </div>
 
@@ -442,10 +441,10 @@ export const FeatureRowsPanel: React.FC = () => {
               {sourceHealth.map((sh) => (
                 <div
                   key={sh.sourceType}
-                  className="p-3.5 bg-[#0f1724] border border-slate-700/60 rounded-xl flex items-center justify-between shadow-sm hover:border-cyan-500/40 transition"
+                  className="p-3.5 bg-[#142337]/90 border border-slate-600/50 rounded-xl flex items-center justify-between shadow-sm hover:border-cyan-400/50 transition"
                 >
                   <div className="flex items-center space-x-3.5">
-                    <div className="p-2 bg-[#080d14] rounded-xl border border-slate-700/60">
+                    <div className="p-2 bg-[#0e1927] rounded-xl border border-slate-600/60">
                       {getSourceIcon(sh.sourceType)}
                     </div>
                     <div>
@@ -456,14 +455,14 @@ export const FeatureRowsPanel: React.FC = () => {
                         <span
                           className={`px-2 py-0.5 rounded-full text-[9px] font-mono font-bold uppercase ${
                             sh.status === 'live'
-                              ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/50'
-                              : 'bg-amber-950 text-amber-300 border border-amber-500/50'
+                              ? 'bg-emerald-950 text-emerald-300 border border-emerald-400/60'
+                              : 'bg-amber-950 text-amber-300 border border-amber-400/60'
                           }`}
                         >
                           {sh.status}
                         </span>
                       </div>
-                      <div className="text-[11px] text-slate-400 font-sans mt-0.5">
+                      <div className="text-[11px] text-slate-300 font-sans mt-0.5">
                         Ingested: {sh.totalIngested} observations
                       </div>
                     </div>
@@ -473,7 +472,7 @@ export const FeatureRowsPanel: React.FC = () => {
                     <div className="text-xs font-mono text-cyan-300 font-bold">
                       {sh.latencyMs} ms
                     </div>
-                    <div className="text-[10px] font-mono text-slate-400">
+                    <div className="text-[10px] font-mono text-slate-300">
                       Reliability: {(sh.reliabilityScore * 100).toFixed(0)}%
                     </div>
                   </div>
