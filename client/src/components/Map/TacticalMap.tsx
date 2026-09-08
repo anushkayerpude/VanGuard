@@ -11,7 +11,6 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { OmniSearchBar } from '../Header/OmniSearchBar';
-import { PlanetDoodle, ShootingStarDoodle, GalaxySpiralDoodle } from '../Galaxy/GalaxyDoodles';
 
 export const TacticalMap: React.FC = () => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -41,7 +40,7 @@ export const TacticalMap: React.FC = () => {
       maxZoom: 16
     });
 
-    // Dark twilight basemap
+    // High-contrast defense basemap
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
       maxZoom: 19,
       subdomains: 'abcd'
@@ -65,7 +64,7 @@ export const TacticalMap: React.FC = () => {
     const group = layerGroupRef.current;
     group.clearLayers();
 
-    // 1. ZONES & SECTOR BOUNDARIES (#806874 & Crimson Accents)
+    // 1. ZONES & SECTOR BOUNDARIES (Tactical Red & Cyan lines)
     if (layers.zones) {
       const restrictedZone = L.polygon(
         [
@@ -76,13 +75,13 @@ export const TacticalMap: React.FC = () => {
           [23.08, 72.45]
         ],
         {
-          color: '#c25975',
-          weight: 1.5,
+          color: '#ef4444',
+          weight: 1.8,
           dashArray: '6, 6',
-          fillColor: '#c25975',
+          fillColor: '#ef4444',
           fillOpacity: 0.08
         }
-      ).bindTooltip('✦ RESTRICTED SECTOR 7', {
+      ).bindTooltip('RESTRICTED AIRSPACE SECTOR 7', {
         permanent: true,
         direction: 'center',
         className: 'tactical-tooltip'
@@ -94,10 +93,10 @@ export const TacticalMap: React.FC = () => {
     if (layers.weather) {
       const weatherCircle = L.circle([23.15, 72.55], {
         radius: 12000,
-        color: '#b39ba8',
+        color: '#38bdf8',
         weight: 1.2,
         dashArray: '4, 8',
-        fillColor: '#806874',
+        fillColor: '#0284c7',
         fillOpacity: 0.1
       }).bindTooltip('LIVE WEATHER OVERLAY: Wind 14kt NW, Visibility 10km', {
         direction: 'top',
@@ -116,18 +115,18 @@ export const TacticalMap: React.FC = () => {
       const isSelected = evt.id === selectedEventId;
       const isCritical = evt.severity === 'critical';
       const isHigh = evt.severity === 'high';
-      const color = isCritical ? '#c25975' : isHigh ? '#cfa07e' : '#b39ba8';
+      const color = isCritical ? '#ef4444' : isHigh ? '#f59e0b' : '#38bdf8';
 
       const markerHtml = `
         <div class="relative flex items-center justify-center cursor-pointer">
           <div class="w-6 h-6 rounded-full flex items-center justify-center transition-transform ${
-            isSelected ? 'scale-125 ring-2 ring-[#e5dce1] ring-offset-2 ring-offset-[#0c090b]' : ''
-          }" style="background: rgba(24, 19, 22, 0.95); border: 2px solid ${color}; box-shadow: 0 0 12px ${color}80;">
+            isSelected ? 'scale-125 ring-2 ring-white ring-offset-2 ring-offset-[#070a0e]' : ''
+          }" style="background: rgba(12, 18, 27, 0.95); border: 2px solid ${color}; box-shadow: 0 0 12px ${color}80;">
             <div class="w-2 h-2 rounded-full" style="background: ${color}; ${
         isCritical ? 'animation: ping 1.5s infinite;' : ''
       }"></div>
           </div>
-          <div class="absolute -bottom-4 text-[9px] font-mono font-bold px-1 rounded whitespace-nowrap bg-[#1a1317]/95 border border-[#806874]/60" style="color: ${color}; box-shadow: 0 0 8px rgba(128,104,116,0.3);">
+          <div class="absolute -bottom-4 text-[9px] font-mono font-bold px-1.5 py-0.2 rounded-md whitespace-nowrap bg-[#0b1017]/95 border border-slate-700/80" style="color: ${color}; box-shadow: 0 2px 8px rgba(0,0,0,0.5);">
             ${evt.id} (${evt.confidence}%)
           </div>
         </div>
@@ -161,30 +160,22 @@ export const TacticalMap: React.FC = () => {
   }, [selectedEventId]);
 
   return (
-    <div className="relative flex-1 w-full h-full bg-[#140f12]/88 border border-[#806874]/35 rounded-xl overflow-hidden flex flex-col shadow-[0_8px_32px_rgba(12,9,11,0.5)]">
-      {/* Background Planet Doodle Watermark */}
-      <div className="absolute top-14 right-4 pointer-events-none z-10 opacity-30">
-        <PlanetDoodle size={56} />
-      </div>
-
-      {/* Top Floating Controls Omnibar */}
-      <div className="absolute top-3 left-3 right-3 z-[1000] flex items-center justify-between pointer-events-none">
-        {/* Omnibar Natural Language & Keyword Search with Shooting Star Doodle */}
-        <div className="flex items-center space-x-2 pointer-events-auto">
-          <div className="w-80">
-            <OmniSearchBar />
-          </div>
-          <ShootingStarDoodle size={36} className="hidden sm:inline-block opacity-80" />
+    <div className="relative flex-1 w-full h-full bg-[#0b1017]/90 border border-slate-800/80 rounded-2xl overflow-hidden flex flex-col shadow-2xl">
+      {/* Top Floating Controls Omnibar (Spacious layout with rounded pills) */}
+      <div className="absolute top-4 left-4 right-4 z-[1000] flex items-center justify-between pointer-events-none">
+        {/* Omnibar Natural Language & Keyword Search */}
+        <div className="w-84 pointer-events-auto">
+          <OmniSearchBar />
         </div>
 
-        {/* Clean Layer Toggles (#806874 Mauve Glass) */}
-        <div className="pointer-events-auto flex items-center space-x-1.5 bg-[#1a1317]/92 border border-[#806874]/40 backdrop-blur-xl px-2.5 py-1.5 rounded-lg shadow-lg">
+        {/* Clean Layer Toggles in Rounded Defense Glass */}
+        <div className="pointer-events-auto flex items-center space-x-2 bg-[#0c131c]/92 border border-slate-700/70 backdrop-blur-xl px-3 py-1.5 rounded-xl shadow-lg">
           <button
             onClick={() => toggleLayer('alerts')}
-            className={`px-2 py-1 rounded-md text-xs font-sans font-semibold transition flex items-center space-x-1 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-sans font-semibold transition flex items-center space-x-1.5 cursor-pointer ${
               layers.alerts
-                ? 'bg-[#4a212b]/80 text-[#f5d0d8] border border-[#c25975]/60 shadow-[0_0_8px_rgba(194,89,117,0.3)]'
-                : 'text-[#cfc0c8] hover:text-white'
+                ? 'bg-red-500/20 text-red-300 border border-red-500/50 shadow-[0_0_8px_rgba(239,68,68,0.25)]'
+                : 'text-slate-400 hover:text-white'
             }`}
           >
             <Shield className="w-3.5 h-3.5" />
@@ -193,10 +184,10 @@ export const TacticalMap: React.FC = () => {
 
           <button
             onClick={() => toggleLayer('weather')}
-            className={`px-2 py-1 rounded-md text-xs font-sans font-semibold transition flex items-center space-x-1 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-sans font-semibold transition flex items-center space-x-1.5 cursor-pointer ${
               layers.weather
-                ? 'bg-[#3b2a33]/80 text-[#e5dce1] border border-[#806874]/70 shadow-[0_0_8px_rgba(128,104,116,0.35)]'
-                : 'text-[#cfc0c8] hover:text-white'
+                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50 shadow-[0_0_8px_rgba(6,182,212,0.25)]'
+                : 'text-slate-400 hover:text-white'
             }`}
           >
             <Wind className="w-3.5 h-3.5" />
@@ -205,10 +196,10 @@ export const TacticalMap: React.FC = () => {
 
           <button
             onClick={() => toggleLayer('zones')}
-            className={`px-2 py-1 rounded-md text-xs font-sans font-semibold transition flex items-center space-x-1 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-sans font-semibold transition flex items-center space-x-1.5 cursor-pointer ${
               layers.zones
-                ? 'bg-[#2e231b]/80 text-[#faede3] border border-[#cfa07e]/60 shadow-[0_0_8px_rgba(207,160,126,0.3)]'
-                : 'text-[#cfc0c8] hover:text-white'
+                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/50 shadow-[0_0_8px_rgba(245,158,11,0.25)]'
+                : 'text-slate-400 hover:text-white'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
@@ -220,72 +211,67 @@ export const TacticalMap: React.FC = () => {
       {/* Map Surface */}
       <div ref={mapContainerRef} className="flex-1 w-full h-full z-0" />
 
-      {/* Selected Contact Inspector Drawer with Galaxy Spiral Doodle */}
+      {/* Selected Contact Inspector Drawer (Rounded-2xl with Ample Breathing Room) */}
       {selectedEvent && (
-        <div className="absolute bottom-3 left-3 right-3 z-[1000] bg-[#1a1317]/96 border border-[#806874]/55 backdrop-blur-xl rounded-xl p-3.5 shadow-[0_12px_40px_rgba(12,9,11,0.7)] animate-in fade-in slide-in-from-bottom duration-200">
-          <div className="flex items-start justify-between relative overflow-hidden">
-            {/* Watermark Galaxy Spiral */}
-            <div className="absolute right-40 -bottom-4 pointer-events-none opacity-20">
-              <GalaxySpiralDoodle size={75} />
-            </div>
-
-            <div className="flex items-start space-x-3 z-10">
+        <div className="absolute bottom-4 left-4 right-4 z-[1000] bg-[#0c131c]/96 border border-slate-700/80 backdrop-blur-2xl rounded-2xl p-5 shadow-[0_16px_50px_rgba(0,0,0,0.8)] animate-in fade-in slide-in-from-bottom duration-200">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start space-x-4">
               <div
-                className={`p-2 rounded-lg ${
+                className={`p-3 rounded-xl ${
                   selectedEvent.severity === 'critical'
-                    ? 'bg-[#4a212b]/70 border border-[#c25975]/50 text-[#f5d0d8]'
+                    ? 'bg-red-500/20 border border-red-500/40 text-red-400'
                     : selectedEvent.severity === 'high'
-                    ? 'bg-[#3b2a33]/70 border border-[#cfa07e]/50 text-[#faede3]'
-                    : 'bg-[#2b2027]/70 border border-[#806874]/50 text-[#e5dce1]'
+                    ? 'bg-amber-500/20 border border-amber-500/40 text-amber-400'
+                    : 'bg-cyan-500/20 border border-cyan-500/40 text-cyan-400'
                 }`}
               >
-                <Radio className="w-5 h-5" />
+                <Radio className="w-6 h-6" />
               </div>
 
-              <div>
-                <div className="flex items-center space-x-2">
+              <div className="space-y-1.5">
+                <div className="flex items-center space-x-2.5">
                   <span className="font-mono font-bold text-sm text-white">
                     {selectedEvent.id}
                   </span>
                   <span
-                    className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase ${
+                    className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase ${
                       selectedEvent.severity === 'critical'
-                        ? 'bg-[#3d1a24] text-[#f5d0d8] border border-[#c25975]/50'
+                        ? 'bg-red-950 text-red-300 border border-red-500/40'
                         : selectedEvent.severity === 'high'
-                        ? 'bg-[#3b2a33] text-[#faede3] border border-[#cfa07e]/50'
-                        : 'bg-[#2b2027] text-[#e5dce1] border border-[#806874]/50'
+                        ? 'bg-amber-950 text-amber-300 border border-amber-500/40'
+                        : 'bg-cyan-950 text-cyan-300 border border-cyan-500/40'
                     }`}
                   >
                     {selectedEvent.severity}
                   </span>
-                  <span className="text-xs text-[#cfc0c8] font-mono">
-                    Source: <strong className="text-[#e5dce1] uppercase">{selectedEvent.sourceType}</strong>
+                  <span className="text-xs text-slate-400 font-mono">
+                    Source: <strong className="text-cyan-300 uppercase">{selectedEvent.sourceType}</strong>
                   </span>
-                  <span className="text-xs text-[#cfc0c8] font-mono">
+                  <span className="text-xs text-slate-400 font-mono">
                     Coords: {selectedEvent.location.lat.toFixed(3)}°N, {selectedEvent.location.lng.toFixed(3)}°E
                   </span>
                 </div>
 
-                <h4 className="font-sans font-semibold text-sm text-white mt-1">
+                <h4 className="font-sans font-semibold text-base text-white">
                   {selectedEvent.title}
                 </h4>
-                <p className="text-xs text-[#cfc0c8] font-sans mt-0.5 max-w-3xl leading-relaxed">
+                <p className="text-xs text-slate-300 font-sans max-w-3xl leading-relaxed">
                   {selectedEvent.description}
                 </p>
 
                 {/* Corroboration Tags */}
                 {selectedEvent.corroboratedBy && selectedEvent.corroboratedBy.length > 0 && (
-                  <div className="flex items-center space-x-2 mt-2">
-                    <span className="text-[11px] text-[#b39ba8] font-sans">Corroborated by:</span>
-                    <div className="flex flex-wrap gap-1">
+                  <div className="flex items-center space-x-2 pt-1">
+                    <span className="text-[11px] text-slate-400 font-sans">Corroborated by:</span>
+                    <div className="flex flex-wrap gap-1.5">
                       {selectedEvent.corroboratedBy.map((cid) => (
                         <button
                           key={cid}
                           onClick={() => selectEvent(cid)}
-                          className="px-1.5 py-0.5 rounded bg-[#2c2228] hover:bg-[#3d2f37] border border-[#806874]/50 text-[10px] font-mono text-[#e5dce1] flex items-center space-x-1 transition cursor-pointer"
+                          className="px-2 py-0.5 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-[10px] font-mono text-cyan-300 flex items-center space-x-1.5 transition cursor-pointer"
                         >
                           <span>{cid}</span>
-                          <ExternalLink className="w-2.5 h-2.5" />
+                          <ExternalLink className="w-3 h-3 text-cyan-400" />
                         </button>
                       ))}
                     </div>
@@ -295,17 +281,17 @@ export const TacticalMap: React.FC = () => {
             </div>
 
             {/* Right: Confidence Score & Explainability Button */}
-            <div className="flex items-center space-x-3 z-10">
+            <div className="flex items-center space-x-4 shrink-0">
               <div className="text-right">
-                <div className="text-xs text-[#b39ba8] font-mono">Confidence</div>
-                <div className="text-xl font-bold font-mono text-[#e5dce1] mauve-glow">
+                <div className="text-xs text-slate-400 font-mono">Confidence</div>
+                <div className="text-2xl font-bold font-mono text-emerald-400">
                   {selectedEvent.confidence}%
                 </div>
               </div>
 
               <button
                 onClick={() => openExplainability(selectedEvent.id)}
-                className="flex items-center space-x-1.5 px-3 py-2 bg-gradient-to-r from-[#806874] to-[#5e4b55] hover:from-[#957b88] hover:to-[#6d5863] text-white font-sans font-bold text-xs rounded-lg shadow-[0_0_12px_rgba(128,104,116,0.4)] transition cursor-pointer"
+                className="flex items-center space-x-2 px-4 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-sans font-bold text-xs rounded-xl shadow-[0_0_14px_rgba(0,240,255,0.3)] transition cursor-pointer"
                 title="View mathematical confidence breakdown"
               >
                 <Calculator className="w-4 h-4" />
@@ -314,7 +300,7 @@ export const TacticalMap: React.FC = () => {
 
               <button
                 onClick={() => selectEvent(null)}
-                className="p-1 hover:bg-[#2f242b] text-[#cfc0c8] hover:text-white rounded cursor-pointer"
+                className="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-white rounded-lg transition cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
