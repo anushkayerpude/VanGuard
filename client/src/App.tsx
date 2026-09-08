@@ -3,9 +3,7 @@ import { useEventStore } from './store/useEventStore';
 import { LandingPage } from './components/Landing/LandingPage';
 import { CommandHeader } from './components/Header/CommandHeader';
 import { TacticalMap } from './components/Map/TacticalMap';
-import { AISitrepCard } from './components/Briefing/AISitrepCard';
-import { LiveFeedCard } from './components/Briefing/LiveFeedCard';
-import { FeedHealthCard } from './components/Briefing/FeedHealthCard';
+import { FeatureRowsPanel } from './components/Briefing/FeatureRowsPanel';
 import { ExplainabilityModal } from './components/Explainability/ExplainabilityModal';
 import { GalaxyBackground } from './components/Galaxy/GalaxyBackground';
 import { Server, Activity } from 'lucide-react';
@@ -38,7 +36,7 @@ export function App() {
   }
 
   // Wireframe C4ISR Command Room Layout:
-  // LEFT: 3 Vertically Stacked Feature Rectangles (AI SITREP, Live Feed, Feed Health)
+  // LEFT: 3 Distinct Feature Rows with generous spacing (Click to expand)
   // RIGHT: Big Square Tactical Geospatial Map
   // BACKGROUND: Military Picture with Tactical Atmospheric Overlays
   return (
@@ -50,23 +48,10 @@ export function App() {
       <CommandHeader onBackToLanding={() => setCurrentView('landing')} />
 
       {/* Main 2-Column Wireframe Grid */}
-      <main className="flex-1 px-4 sm:px-6 py-3.5 grid grid-cols-12 gap-5 overflow-hidden z-20">
-        {/* LEFT COLUMN (5 cols / 42% width): 3 Vertically Stacked Feature Rectangles */}
-        <div className="col-span-12 lg:col-span-5 flex flex-col h-full gap-3.5 overflow-hidden">
-          {/* Rectangle 1: AI SITREP (Intelligence & Grounded Actions) */}
-          <div className="flex-[1.2] min-h-0 overflow-hidden">
-            <AISitrepCard />
-          </div>
-
-          {/* Rectangle 2: LIVE MULTI-SOURCE FEED (Real-time Stream & Math Explainability) */}
-          <div className="flex-[1.2] min-h-0 overflow-hidden">
-            <LiveFeedCard />
-          </div>
-
-          {/* Rectangle 3: FEED ADAPTER HEALTH (5 Pipeline Telemetry & Latency) */}
-          <div className="flex-[0.9] min-h-0 overflow-hidden">
-            <FeedHealthCard />
-          </div>
+      <main className="flex-1 px-4 sm:px-6 py-4 grid grid-cols-12 gap-6 overflow-hidden z-20">
+        {/* LEFT COLUMN (5 cols / 42% width): 3 Interactive Feature Rows */}
+        <div className="col-span-12 lg:col-span-5 flex flex-col h-full overflow-hidden">
+          <FeatureRowsPanel />
         </div>
 
         {/* RIGHT COLUMN (7 cols / 58% width): The Big Square Tactical Geospatial Map */}
