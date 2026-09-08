@@ -14,6 +14,7 @@ import {
   Volume2
 } from 'lucide-react';
 import type { SourceType } from '../../types/vanguard';
+import { RocketDoodle, GalaxySpiralDoodle, ConstellationDoodle, SparkleDoodle } from '../Galaxy/GalaxyDoodles';
 
 export const AIBriefingPanel: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'briefing' | 'feed' | 'health'>('briefing');
@@ -115,24 +116,32 @@ export const AIBriefingPanel: React.FC = () => {
 
       {/* Tab 1: AI Briefing Content */}
       {activeTab === 'briefing' && (
-        <div className="flex-1 overflow-y-auto p-3.5 space-y-3.5 custom-scrollbar">
-          {/* Executive Headline Card */}
-          <div className="p-3 bg-gradient-to-r from-[#3d1a24]/80 via-[#261b21]/90 to-[#1e151a]/80 border-l-4 border-[#c25975] rounded-r-lg shadow-md">
-            <div className="text-[10px] font-bold text-[#f5d0d8] uppercase tracking-wider mb-1 font-mono">
-              OPERATIONAL SITUATION SUMMARY
+        <div className="flex-1 overflow-y-auto p-3.5 space-y-3.5 custom-scrollbar relative">
+          {/* Executive Headline Card with Rocket Doodle */}
+          <div className="p-3 bg-gradient-to-r from-[#3d1a24]/80 via-[#261b21]/90 to-[#1e151a]/80 border-l-4 border-[#c25975] rounded-r-lg shadow-md flex items-center justify-between">
+            <div>
+              <div className="text-[10px] font-bold text-[#f5d0d8] uppercase tracking-wider mb-1 font-mono flex items-center space-x-1">
+                <span>OPERATIONAL SITUATION SUMMARY</span>
+                <SparkleDoodle size={12} />
+              </div>
+              <div className="text-sm font-bold text-white leading-snug font-sans">
+                {aiBriefing.headline || 'Active Multi-Source Situational Awareness'}
+              </div>
             </div>
-            <div className="text-sm font-bold text-white leading-snug font-sans">
-              {aiBriefing.headline || 'Active Multi-Source Situational Awareness'}
-            </div>
+            <RocketDoodle size={32} className="hidden sm:inline-block opacity-80 shrink-0 ml-2" />
           </div>
 
-          {/* Grounded Executive Summary */}
-          <div className="bg-[#1b1419]/90 border border-[#806874]/30 rounded-lg p-3 shadow-sm">
-            <div className="text-[10px] font-bold tracking-wider uppercase text-[#b39ba8] mb-1.5 font-mono flex items-center justify-between">
+          {/* Grounded Executive Summary with Spiral Doodle Watermark */}
+          <div className="bg-[#1b1419]/90 border border-[#806874]/30 rounded-lg p-3 shadow-sm relative overflow-hidden">
+            <div className="absolute right-2 -bottom-2 pointer-events-none opacity-15">
+              <GalaxySpiralDoodle size={64} />
+            </div>
+
+            <div className="text-[10px] font-bold tracking-wider uppercase text-[#b39ba8] mb-1.5 font-mono flex items-center justify-between z-10">
               <span>EXECUTIVE BRIEFING</span>
               <span className="text-[9px] text-[#6e9b87] font-bold">100% CITED &amp; GROUNDED</span>
             </div>
-            <p className="text-xs text-[#e5dce1] leading-relaxed font-sans font-normal">
+            <p className="text-xs text-[#e5dce1] leading-relaxed font-sans font-normal z-10 relative">
               {aiBriefing.executiveSummary}
             </p>
           </div>
@@ -167,12 +176,16 @@ export const AIBriefingPanel: React.FC = () => {
             </div>
           </div>
 
-          {/* Prioritized Action Directives */}
-          <div className="bg-[#1b1419]/90 border border-[#806874]/30 rounded-lg p-3 shadow-sm">
-            <div className="text-[10px] font-bold tracking-wider uppercase text-[#cfa07e] mb-2 font-mono">
-              PRIORITIZED ACTION DIRECTIVES
+          {/* Prioritized Action Directives with Constellation Doodle */}
+          <div className="bg-[#1b1419]/90 border border-[#806874]/30 rounded-lg p-3 shadow-sm relative overflow-hidden">
+            <div className="absolute right-3 top-2 pointer-events-none opacity-20">
+              <ConstellationDoodle size={45} />
             </div>
-            <div className="space-y-2">
+
+            <div className="text-[10px] font-bold tracking-wider uppercase text-[#cfa07e] mb-2 font-mono flex items-center space-x-1">
+              <span>PRIORITIZED ACTION DIRECTIVES</span>
+            </div>
+            <div className="space-y-2 z-10 relative">
               {aiBriefing.prioritizedActions.map((act) => (
                 <div
                   key={act.actionId}

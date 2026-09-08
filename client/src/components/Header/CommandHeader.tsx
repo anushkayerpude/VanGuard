@@ -7,11 +7,11 @@ import {
   FileDown,
   ArrowLeft,
   Sparkles,
-  Compass
 } from 'lucide-react';
 import { useEventStore } from '../../store/useEventStore';
 import { downloadSitrepText } from '../../services/sitrepGenerator';
 import { triggerNewBriefing } from '../../services/api';
+import { ConstellationDoodle, SatelliteDoodle, SparkleDoodle } from '../Galaxy/GalaxyDoodles';
 
 interface CommandHeaderProps {
   onBackToLanding?: () => void;
@@ -83,7 +83,7 @@ export const CommandHeader: React.FC<CommandHeaderProps> = ({ onBackToLanding })
 
   return (
     <header className="relative z-40 bg-[#140f12]/92 border-b border-[#806874]/40 px-4 py-2 flex items-center justify-between backdrop-blur-xl shadow-[0_4px_24px_rgba(12,9,11,0.5)]">
-      {/* Left: Brand & Return Button */}
+      {/* Left: Brand & Return Button with Galaxy Doodles */}
       <div className="flex items-center space-x-3">
         {onBackToLanding && (
           <button
@@ -96,40 +96,46 @@ export const CommandHeader: React.FC<CommandHeaderProps> = ({ onBackToLanding })
           </button>
         )}
 
-        <div>
-          <div className="flex items-center space-x-2">
-            <div className="w-6 h-6 rounded bg-gradient-to-tr from-[#806874] to-[#b39ba8] flex items-center justify-center shadow-[0_0_10px_rgba(128,104,116,0.5)]">
-              <Compass className="w-4 h-4 text-[#0c090b] animate-spin" style={{ animationDuration: '24s' }} />
-            </div>
-            <span className="font-sans font-black tracking-wider text-base text-white mauve-glow">
-              VANGUARD
-            </span>
-            <span className="text-[11px] text-[#cfc0c8] font-mono font-semibold">
-              C4ISR COP
-            </span>
-            <span
-              className={`inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
-                backendMode === 'live'
-                  ? 'bg-[#2b1f26] border border-[#806874] text-[#e5dce1] shadow-[0_0_8px_rgba(128,104,116,0.35)]'
-                  : 'bg-[#2e231b] border border-[#cfa07e] text-[#faede3]'
-              }`}
-            >
+        <div className="flex items-center space-x-2">
+          {/* Satellite Doodle Icon */}
+          <SatelliteDoodle size={30} className="text-[#cfc0c8] animate-pulse" />
+
+          <div>
+            <div className="flex items-center space-x-2">
+              <span className="font-sans font-black tracking-wider text-base text-white mauve-glow flex items-center space-x-1">
+                <span>VANGUARD</span>
+                <SparkleDoodle size={16} className="text-[#e5dce1]" />
+              </span>
+              <span className="text-[11px] text-[#cfc0c8] font-mono font-semibold">
+                GALAXY C4ISR
+              </span>
               <span
-                className={`w-1.5 h-1.5 rounded-full ${
-                  backendMode === 'live' ? 'bg-[#b39ba8] animate-pulse' : 'bg-[#cfa07e]'
+                className={`inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                  backendMode === 'live'
+                    ? 'bg-[#2b1f26] border border-[#806874] text-[#e5dce1] shadow-[0_0_8px_rgba(128,104,116,0.35)]'
+                    : 'bg-[#2e231b] border border-[#cfa07e] text-[#faede3]'
                 }`}
-              />
-              <span>{backendMode === 'live' ? 'LIVE STREAM' : 'STANDALONE'}</span>
-            </span>
+              >
+                <span
+                  className={`w-1.5 h-1.5 rounded-full ${
+                    backendMode === 'live' ? 'bg-[#b39ba8] animate-pulse' : 'bg-[#cfa07e]'
+                  }`}
+                />
+                <span>{backendMode === 'live' ? 'LIVE STREAM' : 'STANDALONE'}</span>
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Center: Threat Posture Banner */}
-      <div className={`px-4 py-1 rounded-md border flex items-center space-x-2.5 ${threat.classes}`}>
-        <ShieldAlert className="w-4 h-4 shrink-0" />
-        <div className="text-xs font-bold font-mono tracking-wide">
-          {threat.label}
+      {/* Center: Threat Posture Banner with Constellation Doodle */}
+      <div className="flex items-center space-x-2">
+        <ConstellationDoodle size={36} className="hidden md:inline-block opacity-70" />
+        <div className={`px-4 py-1 rounded-md border flex items-center space-x-2.5 ${threat.classes}`}>
+          <ShieldAlert className="w-4 h-4 shrink-0" />
+          <div className="text-xs font-bold font-mono tracking-wide">
+            {threat.label}
+          </div>
         </div>
       </div>
 

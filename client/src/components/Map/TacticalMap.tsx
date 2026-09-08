@@ -11,6 +11,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { OmniSearchBar } from '../Header/OmniSearchBar';
+import { PlanetDoodle, ShootingStarDoodle, GalaxySpiralDoodle } from '../Galaxy/GalaxyDoodles';
 
 export const TacticalMap: React.FC = () => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -161,11 +162,19 @@ export const TacticalMap: React.FC = () => {
 
   return (
     <div className="relative flex-1 w-full h-full bg-[#140f12]/88 border border-[#806874]/35 rounded-xl overflow-hidden flex flex-col shadow-[0_8px_32px_rgba(12,9,11,0.5)]">
+      {/* Background Planet Doodle Watermark */}
+      <div className="absolute top-14 right-4 pointer-events-none z-10 opacity-30">
+        <PlanetDoodle size={56} />
+      </div>
+
       {/* Top Floating Controls Omnibar */}
       <div className="absolute top-3 left-3 right-3 z-[1000] flex items-center justify-between pointer-events-none">
-        {/* Omnibar Natural Language & Keyword Search */}
-        <div className="w-80 pointer-events-auto">
-          <OmniSearchBar />
+        {/* Omnibar Natural Language & Keyword Search with Shooting Star Doodle */}
+        <div className="flex items-center space-x-2 pointer-events-auto">
+          <div className="w-80">
+            <OmniSearchBar />
+          </div>
+          <ShootingStarDoodle size={36} className="hidden sm:inline-block opacity-80" />
         </div>
 
         {/* Clean Layer Toggles (#806874 Mauve Glass) */}
@@ -211,11 +220,16 @@ export const TacticalMap: React.FC = () => {
       {/* Map Surface */}
       <div ref={mapContainerRef} className="flex-1 w-full h-full z-0" />
 
-      {/* Selected Contact Inspector Drawer (#806874 Mauve Glass) */}
+      {/* Selected Contact Inspector Drawer with Galaxy Spiral Doodle */}
       {selectedEvent && (
         <div className="absolute bottom-3 left-3 right-3 z-[1000] bg-[#1a1317]/96 border border-[#806874]/55 backdrop-blur-xl rounded-xl p-3.5 shadow-[0_12px_40px_rgba(12,9,11,0.7)] animate-in fade-in slide-in-from-bottom duration-200">
-          <div className="flex items-start justify-between">
-            <div className="flex items-start space-x-3">
+          <div className="flex items-start justify-between relative overflow-hidden">
+            {/* Watermark Galaxy Spiral */}
+            <div className="absolute right-40 -bottom-4 pointer-events-none opacity-20">
+              <GalaxySpiralDoodle size={75} />
+            </div>
+
+            <div className="flex items-start space-x-3 z-10">
               <div
                 className={`p-2 rounded-lg ${
                   selectedEvent.severity === 'critical'
@@ -281,7 +295,7 @@ export const TacticalMap: React.FC = () => {
             </div>
 
             {/* Right: Confidence Score & Explainability Button */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3 z-10">
               <div className="text-right">
                 <div className="text-xs text-[#b39ba8] font-mono">Confidence</div>
                 <div className="text-xl font-bold font-mono text-[#e5dce1] mauve-glow">
