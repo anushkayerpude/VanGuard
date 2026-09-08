@@ -54,9 +54,11 @@ export function App() {
           <FeatureRowsPanel />
         </div>
 
-        {/* RIGHT COLUMN (7 cols / 58% width): The Big Square Tactical Geospatial Map */}
-        <div className="col-span-12 lg:col-span-7 flex flex-col h-full overflow-hidden">
-          <TacticalMap />
+        {/* RIGHT COLUMN (7 cols / 58% width): Tactical Geospatial Map (Size reduced by 20% & Centered) */}
+        <div className="col-span-12 lg:col-span-7 flex flex-col justify-center items-center h-full overflow-hidden p-2">
+          <div className="w-[86%] h-[80%] my-auto transition-all duration-300">
+            <TacticalMap />
+          </div>
         </div>
       </main>
 
