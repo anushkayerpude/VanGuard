@@ -3,10 +3,12 @@ import { useEventStore } from './store/useEventStore';
 import { LandingPage } from './components/Landing/LandingPage';
 import { CommandHeader } from './components/Header/CommandHeader';
 import { TacticalMap } from './components/Map/TacticalMap';
-import { AIBriefingPanel } from './components/Briefing/AIBriefingPanel';
+import { AISitrepCard } from './components/Briefing/AISitrepCard';
+import { LiveFeedCard } from './components/Briefing/LiveFeedCard';
+import { FeedHealthCard } from './components/Briefing/FeedHealthCard';
 import { ExplainabilityModal } from './components/Explainability/ExplainabilityModal';
 import { GalaxyBackground } from './components/Galaxy/GalaxyBackground';
-import { Server, Activity, Shield } from 'lucide-react';
+import { Server, Activity } from 'lucide-react';
 
 export function App() {
   const [currentView, setCurrentView] = useState<'landing' | 'command'>('landing');
@@ -30,37 +32,51 @@ export function App() {
     return () => clearInterval(interval);
   }, [kinematicTick]);
 
-  // If on Landing Page, render Luxury Landing Page
+  // If on Landing Page, render Defense Landing Page
   if (currentView === 'landing') {
     return <LandingPage onEnterCommandRoom={() => setCurrentView('command')} />;
   }
 
-  // Spacious, Modern Defense Situational Awareness Layout (Rounded Containers & Ample Breathing Room):
-  // LEFT (58%): Tactical Geospatial Map (rounded-2xl)
-  // RIGHT (42%): Intelligence & Action Hub (rounded-2xl)
+  // Wireframe C4ISR Command Room Layout:
+  // LEFT: 3 Vertically Stacked Feature Rectangles (AI SITREP, Live Feed, Feed Health)
+  // RIGHT: Big Square Tactical Geospatial Map
+  // BACKGROUND: Military Picture with Tactical Atmospheric Overlays
   return (
     <div className="relative w-screen h-screen flex flex-col bg-[#06090d] text-[#e2e8f0] overflow-hidden select-none font-mono">
-      {/* Deep Aerospace Stealth Ambient Background */}
+      {/* High-Res Military Defense Command Room Background */}
       <GalaxyBackground />
 
       {/* Top Defense Command Header */}
       <CommandHeader onBackToLanding={() => setCurrentView('landing')} />
 
-      {/* Main Spacious 2-Column Grid */}
-      <main className="flex-1 px-4 sm:px-6 py-4 grid grid-cols-12 gap-5 sm:gap-6 overflow-hidden z-20">
-        {/* LEFT COLUMN (7 cols / 58% width): Tactical Geospatial Map */}
-        <div className="col-span-12 lg:col-span-7 flex flex-col h-full overflow-hidden">
-          <TacticalMap />
+      {/* Main 2-Column Wireframe Grid */}
+      <main className="flex-1 px-4 sm:px-6 py-3.5 grid grid-cols-12 gap-5 overflow-hidden z-20">
+        {/* LEFT COLUMN (5 cols / 42% width): 3 Vertically Stacked Feature Rectangles */}
+        <div className="col-span-12 lg:col-span-5 flex flex-col h-full gap-3.5 overflow-hidden">
+          {/* Rectangle 1: AI SITREP (Intelligence & Grounded Actions) */}
+          <div className="flex-[1.2] min-h-0 overflow-hidden">
+            <AISitrepCard />
+          </div>
+
+          {/* Rectangle 2: LIVE MULTI-SOURCE FEED (Real-time Stream & Math Explainability) */}
+          <div className="flex-[1.2] min-h-0 overflow-hidden">
+            <LiveFeedCard />
+          </div>
+
+          {/* Rectangle 3: FEED ADAPTER HEALTH (5 Pipeline Telemetry & Latency) */}
+          <div className="flex-[0.9] min-h-0 overflow-hidden">
+            <FeedHealthCard />
+          </div>
         </div>
 
-        {/* RIGHT COLUMN (5 cols / 42% width): Intelligence & Observations Hub */}
-        <div className="col-span-12 lg:col-span-5 flex flex-col h-full overflow-hidden">
-          <AIBriefingPanel />
+        {/* RIGHT COLUMN (7 cols / 58% width): The Big Square Tactical Geospatial Map */}
+        <div className="col-span-12 lg:col-span-7 flex flex-col h-full overflow-hidden">
+          <TacticalMap />
         </div>
       </main>
 
       {/* Bottom Minimal Defense Telemetry Status Bar */}
-      <footer className="relative z-30 bg-[#0a0f15]/95 border-t border-slate-800/80 px-6 py-2 flex items-center justify-between text-[11px] font-mono text-slate-400 backdrop-blur-xl shadow-lg">
+      <footer className="relative z-30 bg-[#070b10]/95 border-t border-slate-800/80 px-6 py-2 flex items-center justify-between text-[11px] font-mono text-slate-400 backdrop-blur-xl shadow-lg">
         <div className="flex items-center space-x-6">
           <span className="text-cyan-400 font-bold flex items-center space-x-1.5">
             <Activity className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
