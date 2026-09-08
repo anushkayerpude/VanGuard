@@ -9,7 +9,6 @@ import {
   Zap,
   ChevronRight
 } from 'lucide-react';
-import { soundFx } from '../../services/soundFx';
 import { MilitaryRadarDoodlesBg } from './MilitaryRadarDoodlesBg';
 import { MilitaryRotatingRadar } from './MilitaryRotatingRadar';
 
@@ -19,7 +18,6 @@ interface LandingPageProps {
 
 export const LandingPage: React.FC<LandingPageProps> = ({ onEnterCommandRoom }) => {
   const handleLaunch = () => {
-    soundFx.playTargetLock();
     onEnterCommandRoom();
   };
 

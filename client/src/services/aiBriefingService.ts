@@ -61,74 +61,16 @@ export function parseNaturalLanguageQuery(query: string): ParsedQueryFilter {
   return filter;
 }
 
-// Voice synthesizer for military briefing
+// Voice synthesizer - Audio Disabled
 export class MilitaryVoiceSynthesizer {
-  private synth: SpeechSynthesis | null = null;
-  private currentUtterance: SpeechSynthesisUtterance | null = null;
-  private isSpeaking: boolean = false;
-
-  constructor() {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      this.synth = window.speechSynthesis;
-    }
+  public speak(_text: string, _onStart?: () => void, onEnd?: () => void) {
+    if (onEnd) onEnd();
   }
 
-  public speak(text: string, onStart?: () => void, onEnd?: () => void) {
-    if (!this.synth) return;
-
-    this.stop();
-
-    // Sanitize text for crisp radio readout (replace hashtags and IDs with phonetic friendly words)
-    const cleaned = text
-      .replace(/#HK-(\d+)/g, 'Hostile Track $1')
-      .replace(/#EV-(\d+)/g, 'Event $1')
-      .replace(/#CAP-(\w+)/g, 'Combat Air Patrol $1')
-      .replace(/COA-(\d+)/g, 'Course of Action $1')
-      .replace(/BOGEY/g, 'Bogey')
-      .replace(/C4I/g, 'C 4 I')
-      .replace(/SAM/g, 'Surface to Air Missile')
-      .replace(/BVRAAM/g, 'Beyond Visual Range Missile');
-
-    const utterance = new SpeechSynthesisUtterance(`Command Briefing. ${cleaned}. Vanguard out.`);
-    utterance.rate = 1.05;
-    utterance.pitch = 0.95;
-    utterance.volume = 1.0;
-
-    // Pick English military-style voice if available
-    const voices = this.synth.getVoices();
-    const militaryVoice = voices.find(v => (v.name.includes('Daniel') || v.name.includes('David') || v.name.includes('Google US English') || v.lang.startsWith('en')));
-    if (militaryVoice) {
-      utterance.voice = militaryVoice;
-    }
-
-    utterance.onstart = () => {
-      this.isSpeaking = true;
-      if (onStart) onStart();
-    };
-
-    utterance.onend = () => {
-      this.isSpeaking = false;
-      if (onEnd) onEnd();
-    };
-
-    utterance.onerror = () => {
-      this.isSpeaking = false;
-      if (onEnd) onEnd();
-    };
-
-    this.currentUtterance = utterance;
-    this.synth.speak(utterance);
-  }
-
-  public stop() {
-    if (this.synth) {
-      this.synth.cancel();
-      this.isSpeaking = false;
-    }
-  }
+  public stop() {}
 
   public getSpeakingStatus(): boolean {
-    return this.isSpeaking;
+    return false;
   }
 }
 
