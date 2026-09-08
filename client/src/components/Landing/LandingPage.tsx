@@ -1,35 +1,28 @@
 import React, { useState } from 'react';
-import { ChevronRight, Shield, Activity, Radio, Crosshair } from 'lucide-react';
+import {
+  Shield,
+  Radio,
+  Crosshair,
+  ArrowRight,
+  Activity,
+  Zap,
+  Globe,
+  Compass,
+  Cpu,
+  Flame,
+  CheckCircle2,
+  ChevronRight
+} from 'lucide-react';
 import { soundFx } from '../../services/soundFx';
-import { CombatRafale3D } from './CombatRafale3D';
-import { RealisticRadar3D } from './RealisticRadar3D';
-import { RadarTrackingBackground } from './RadarTrackingBackground';
-import { NukeEffect } from './NukeEffect';
-import { useEventStore } from '../../store/useEventStore';
+import { MilitaryRadarDoodlesBg } from './MilitaryRadarDoodlesBg';
+import { MilitaryRotatingRadar } from './MilitaryRotatingRadar';
 
 interface LandingPageProps {
   onEnterCommandRoom: () => void;
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({ onEnterCommandRoom }) => {
-  const [screenShake, setScreenShake] = useState(false);
-  const [nukeActive, setNukeActive] = useState(false);
-
-  const executeDetonation = useEventStore((s) => s.executeDetonation);
-
-  const handleNukeTriggered = () => {
-    setScreenShake(true);
-    setNukeActive(true);
-    executeDetonation();
-
-    setTimeout(() => {
-      setScreenShake(false);
-    }, 3200);
-
-    setTimeout(() => {
-      setNukeActive(false);
-    }, 4500);
-  };
+  const [activeTab, setActiveTab] = useState<'radar' | 'intel'>('radar');
 
   const handleLaunch = () => {
     soundFx.playTargetLock();
@@ -37,160 +30,220 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterCommandRoom }) 
   };
 
   return (
-    <div
-      className={`relative min-h-screen w-full bg-[#020408] text-[#c9d8e6] font-mono selection:bg-cyan-500 selection:text-black overflow-hidden ${
-        screenShake ? 'animate-screen-shake' : ''
-      }`}
-    >
-      {/* Tactical Realistic Nuclear Strike FX (Fireball, Supersonic Shockwave, Thermal Flash & Embers) */}
-      <NukeEffect active={nukeActive} />
+    <div className="relative min-h-screen w-full bg-[#0a0f0c] text-[#cfdbcc] font-mono selection:bg-[#4ade80] selection:text-black overflow-x-hidden">
+      {/* 1. Dynamic Background with Radar Tracking Doodles, MGRS Grid, Azimuth Ticks & Terrain */}
+      <MilitaryRadarDoodlesBg />
 
-      {/* Atmospheric Darkened Soldiers Silhouette Horizon (Bottom) */}
-      <div
-        className="fixed inset-x-0 bottom-0 h-[45vh] bg-cover bg-bottom bg-no-repeat pointer-events-none z-0 transition-all duration-700 opacity-55"
-        style={{
-          backgroundImage: `url('/assets/soldiers_hd.jpg'), url('/assets/night_soldiers_bg.jpg')`,
-          maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.85) 45%, rgba(0,0,0,0) 100%)',
-          WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.85) 45%, rgba(0,0,0,0) 100%)',
-          filter: nukeActive ? 'brightness(1.5) contrast(1.3) hue-rotate(-20deg)' : 'brightness(0.65) contrast(1.2)'
-        }}
-      />
-
-      {/* Top Planetary Crescent Rim (Galaxy Reference Aesthetic) */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-[62%] w-[1000px] sm:w-[1300px] h-[550px] sm:h-[650px] rounded-full border border-cyan-400/15 bg-gradient-to-b from-[#0a1828]/60 via-[#050f1c]/30 to-transparent blur-[0.5px] pointer-events-none z-0 shadow-[0_0_80px_rgba(0,240,255,0.06)]" />
-
-      {/* Opaque Tactical Radar Tracking Grid in the Background */}
-      <RadarTrackingBackground />
-
-      {/* Deep Obsidian Atmospheric Gradients & CRT Scanlines */}
-      <div className="fixed inset-0 bg-gradient-to-b from-[#020408]/60 via-transparent to-[#020408]/85 pointer-events-none z-10" />
-      <div className="fixed inset-0 scanlines opacity-15 pointer-events-none z-10" />
-
-      {/* TOP HEADER NAVIGATION (Matching Reference Aesthetic) */}
-      <header className="relative z-30 px-6 sm:px-14 pt-6 pb-2 flex items-center justify-between text-xs sm:text-sm font-sans tracking-widest text-slate-300 select-none">
-        {/* Top Left Navigation Link */}
-        <button
-          onClick={handleLaunch}
-          className="hover:text-cyan-300 transition-colors uppercase tracking-widest font-medium flex items-center space-x-1.5 group"
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 group-hover:scale-125 transition-transform" />
-          <span>Profile</span>
-        </button>
-
-        {/* Top Center User Handle */}
-        <div className="text-xs sm:text-sm font-mono tracking-widest text-cyan-200 font-semibold drop-shadow-[0_0_12px_rgba(0,240,255,0.5)]">
-          @DESTROYER_OF_WORLDS
+      {/* 2. Top Sleek Military Defense Navigation Bar */}
+      <header className="relative z-30 px-6 sm:px-12 py-4 flex items-center justify-between border-b border-[#4d5b4a]/30 backdrop-blur-md bg-[#0a0f0c]/80">
+        {/* Brand Logo & Military Insignia */}
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#2d3a2e] to-[#4d5b4a] border border-[#6b7c67] flex items-center justify-center shadow-[0_0_12px_rgba(74,222,128,0.25)]">
+            <Crosshair className="w-5 h-5 text-[#4ade80] animate-spin" style={{ animationDuration: '24s' }} />
+          </div>
+          <div>
+            <div className="flex items-center space-x-2">
+              <span className="font-sans font-black tracking-widest text-lg text-white">
+                VANGUARD
+              </span>
+              <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-[#1f2c23] border border-[#4ade80]/40 text-[#4ade80]">
+                C4ISR DEFENSE
+              </span>
+            </div>
+          </div>
         </div>
 
-        {/* Top Right Navigation Link */}
-        <button
-          onClick={handleLaunch}
-          className="hover:text-cyan-300 transition-colors uppercase tracking-widest font-medium flex items-center space-x-1.5 group"
-        >
-          <span>Contact Us</span>
-          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 group-hover:scale-125 transition-transform" />
-        </button>
+        {/* Center Nav Links (Inspired by AeroForce & SkyShield references) */}
+        <nav className="hidden md:flex items-center space-x-8 text-xs font-sans tracking-widest text-[#8a9a85] uppercase">
+          <a href="#surveillance" className="hover:text-[#4ade80] transition-colors flex items-center space-x-1">
+            <span className="w-1 h-1 rounded-full bg-[#4ade80]" />
+            <span>Surveillance</span>
+          </a>
+          <a href="#radar" className="hover:text-[#4ade80] transition-colors">
+            AESA Radar
+          </a>
+          <a href="#fusion" className="hover:text-[#4ade80] transition-colors">
+            Fusion Engine
+          </a>
+          <a href="#ai-sitrep" className="hover:text-[#4ade80] transition-colors">
+            AI SITREP
+          </a>
+          <a href="#defense" className="hover:text-[#4ade80] transition-colors">
+            Threat DEFCON
+          </a>
+        </nav>
+
+        {/* Top Right Launch Action */}
+        <div className="flex items-center space-x-3">
+          <button
+            onClick={handleLaunch}
+            className="px-4 py-2 bg-gradient-to-r from-[#4ade80] to-[#22c55e] hover:from-[#22c55e] hover:to-[#16a34a] text-black font-sans font-black text-xs tracking-wider rounded-lg shadow-[0_0_16px_rgba(74,222,128,0.4)] transition cursor-pointer flex items-center space-x-2"
+          >
+            <span>LAUNCH COP</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </header>
 
-      {/* COMBAT-READY 3D RAFALE FIGHTER JET (Top-Right / Top Area) */}
-      <div className="absolute top-12 right-2 sm:right-10 z-20 pointer-events-auto">
-        <CombatRafale3D onNukeScreen={handleNukeTriggered} />
-      </div>
-
-      {/* REALISTIC 3D PRIMARY SURVEILLANCE RADAR (Left-Bottom) */}
-      <div className="absolute bottom-2 left-2 sm:left-8 z-20 pointer-events-auto">
-        <RealisticRadar3D />
-      </div>
-
-      {/* MAIN CENTER HERO: SOLID OPAQUE VANGUARD TITLE & MOON */}
-      <main className="relative z-20 min-h-[calc(100vh-140px)] flex flex-col items-center justify-center text-center px-4 select-none my-auto">
-        {/* Crisp, Opaque, Grand Luxury Typography "VANGUARD" */}
-        <div className="relative inline-block cursor-pointer group" onClick={handleLaunch}>
-          <h1
-            className="font-galaxy font-black text-6xl sm:text-8xl md:text-[10.5rem] lg:text-[12.5rem] tracking-wider leading-none text-white drop-shadow-[0_4px_30px_rgba(0,240,255,0.4)] transition-transform duration-500 group-hover:scale-105 select-none"
-            style={{
-              letterSpacing: '0.09em',
-              background: 'linear-gradient(180deg, #ffffff 15%, #d5f2fc 50%, #82caf5 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              opacity: 0.98
-            }}
-          >
-            VANGUARD
-          </h1>
-
-          {/* Nuclear Strike Scorch on Title when Fired */}
-          {nukeActive && (
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none">
-              <div className="w-64 h-64 rounded-full bg-red-600/40 border-4 border-yellow-300 animate-ping" />
-              <div className="w-96 h-96 rounded-full border-2 border-orange-500 animate-ping delay-100" />
-            </div>
-          )}
-        </div>
-
-        {/* Glowing Tactical Moon Sphere with Sleek Horizontal Gradient Axis Line */}
-        <div className="relative flex items-center justify-center w-full max-w-xl mx-auto mt-2 mb-5">
-          {/* Left glowing gradient line & green dot endpoint */}
-          <div className="flex-1 flex items-center">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#4ade80] shadow-[0_0_12px_#4ade80]" />
-            <div className="flex-1 h-[1.5px] bg-gradient-to-r from-[#4ade80] via-[#38bdf8] to-transparent shadow-[0_0_8px_#38bdf8]" />
+      {/* 3. Hero Section (AeroForce & SkyShield Military Architecture) */}
+      <main className="relative z-20 max-w-7xl mx-auto px-6 sm:px-12 pt-8 pb-16 flex flex-col lg:flex-row items-center justify-between gap-10">
+        {/* LEFT COLUMN: Imposing Defense Typography & Key Capabilities */}
+        <div className="flex-1 max-w-2xl space-y-6">
+          {/* Tactical Status Pill */}
+          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#162019] border border-[#4d5b4a] text-xs text-[#8a9a85]">
+            <span className="w-2 h-2 rounded-full bg-[#4ade80] animate-pulse" />
+            <span className="text-[#4ade80] font-bold">DEFCON 1-5 REAL-TIME POSTURE</span>
+            <span className="text-[#4d5b4a]">|</span>
+            <span>5-SOURCE SENSOR FUSION</span>
           </div>
 
-          {/* Center Glowing Moon Orb */}
-          <div
-            onClick={handleLaunch}
-            className="relative mx-4 cursor-pointer group/moon"
-            title="Click to Enter Tactical Command Room"
-          >
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border border-cyan-300/60 shadow-[0_0_35px_rgba(0,240,255,0.8)] overflow-hidden transition-transform duration-500 group-hover/moon:scale-115">
-              <img
-                src="/assets/clean_galaxy.jpg"
-                alt="Tactical Moon"
-                className="w-full h-full object-cover transform scale-150 group-hover/moon:rotate-12 transition-transform duration-700"
-              />
-            </div>
-            <div className="absolute inset-0 rounded-full bg-cyan-400/20 group-hover/moon:bg-cyan-400/40 transition-colors" />
+          {/* Main Headline (Inspired by AeroForce & SkyShield) */}
+          <div className="space-y-2">
+            <h1 className="font-sans font-black text-4xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-[1.08]">
+              Advanced Air Superiority &amp; Situational Awareness
+            </h1>
+            <p className="text-sm sm:text-base text-[#8a9a85] font-sans font-normal leading-relaxed pt-2">
+              Autonomous multi-source sensor fusion engine for territorial defense. Combines live 3D AESA radar sweeps, real-time Open-Meteo meteorological telemetry, perimeter tripwires, and 100% grounded AI sitreps in a unified Common Operating Picture.
+            </p>
           </div>
 
-          {/* Right glowing gradient line & purple dot endpoint */}
-          <div className="flex-1 flex items-center">
-            <div className="flex-1 h-[1.5px] bg-gradient-to-l from-[#c084fc] via-[#38bdf8] to-transparent shadow-[0_0_8px_#38bdf8]" />
-            <div className="w-2.5 h-2.5 rounded-full bg-[#c084fc] shadow-[0_0_12px_#c084fc]" />
+          {/* Dual Action Buttons */}
+          <div className="flex flex-wrap items-center gap-4 pt-2">
+            <button
+              onClick={handleLaunch}
+              className="px-6 py-3.5 bg-gradient-to-r from-[#4ade80] to-[#22c55e] hover:from-[#22c55e] hover:to-[#16a34a] text-black font-sans font-black text-sm tracking-wide rounded-xl shadow-[0_0_24px_rgba(74,222,128,0.5)] transition transform hover:-translate-y-0.5 cursor-pointer flex items-center space-x-2.5"
+            >
+              <Crosshair className="w-4 h-4" />
+              <span>ENTER COMMAND ROOM</span>
+              <ChevronRight className="w-4 h-4" />
+            </button>
+
+            <a
+              href="#radar-section"
+              className="px-5 py-3.5 bg-[#141e17]/80 hover:bg-[#1f2c23] border border-[#4d5b4a] text-[#cfdbcc] hover:text-white font-sans font-bold text-sm tracking-wide rounded-xl transition cursor-pointer flex items-center space-x-2"
+            >
+              <Radio className="w-4 h-4 text-[#4ade80]" />
+              <span>LIVE RADAR (15 RPM)</span>
+            </a>
+          </div>
+
+          {/* Key Metric Telemetry Tags */}
+          <div className="grid grid-cols-3 gap-3 pt-4 border-t border-[#4d5b4a]/40 text-xs">
+            <div className="bg-[#121a14]/80 border border-[#4d5b4a]/40 rounded-lg p-2.5">
+              <div className="text-[10px] text-[#8a9a85] uppercase">Fusion Speed</div>
+              <div className="text-base font-bold text-[#4ade80]">&lt; 4 ms</div>
+              <div className="text-[9px] text-[#6b7c67]">Zero-latency correlation</div>
+            </div>
+
+            <div className="bg-[#121a14]/80 border border-[#4d5b4a]/40 rounded-lg p-2.5">
+              <div className="text-[10px] text-[#8a9a85] uppercase">Ingestion Feeds</div>
+              <div className="text-base font-bold text-white">5 Active</div>
+              <div className="text-[9px] text-[#6b7c67]">Radar, Wx, Log, Unit, Inc</div>
+            </div>
+
+            <div className="bg-[#121a14]/80 border border-[#4d5b4a]/40 rounded-lg p-2.5">
+              <div className="text-[10px] text-[#8a9a85] uppercase">AI Grounding</div>
+              <div className="text-base font-bold text-[#facc15]">100% Proven</div>
+              <div className="text-[9px] text-[#6b7c67]">Zero hallucinated claims</div>
+            </div>
           </div>
         </div>
 
-        {/* Subtitle */}
-        <p className="text-[11px] sm:text-xs font-mono tracking-[0.25em] text-slate-400 uppercase mb-5 max-w-xl">
-          Multi-Source Defense Situational Awareness & C4ISR Platform
-        </p>
-
-        {/* Sleek Luxury CTA Button */}
-        <button
-          onClick={handleLaunch}
-          className="px-8 py-3.5 bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-black font-sans font-black text-xs sm:text-sm uppercase tracking-widest rounded shadow-[0_0_35px_rgba(0,240,255,0.7)] transition transform hover:scale-105 active:scale-95 flex items-center space-x-2.5"
-        >
-          <span>ENTER COMMAND ROOM</span>
-          <ChevronRight className="w-4 h-4 text-black font-bold" />
-        </button>
+        {/* RIGHT COLUMN: Rotating Working Radar Scope doing its work */}
+        <div id="radar-section" className="flex-1 w-full max-w-lg flex flex-col items-center">
+          <MilitaryRotatingRadar />
+        </div>
       </main>
 
-      {/* BOTTOM FOOTER (Matching Reference Aesthetic) */}
-      <footer className="relative z-30 px-6 sm:px-14 pb-6 pt-2 flex items-center justify-between text-xs sm:text-sm font-sans tracking-widest text-slate-400 select-none">
-        <a
-          href="https://github.com/Destroyerved/Vanguard"
-          target="_blank"
-          rel="noreferrer"
-          className="hover:text-cyan-300 transition-colors lowercase tracking-wider flex items-center space-x-1"
-        >
-          <span>www.reallygreatsite.com</span>
-        </a>
+      {/* 4. Floating Defense Capabilities Grid (Inspired by Reference 3 Battle Utility Ground System) */}
+      <section className="relative z-20 max-w-7xl mx-auto px-6 sm:px-12 py-8 border-t border-[#4d5b4a]/30">
+        <div className="flex items-center justify-between mb-4">
+          <div className="text-xs font-bold text-[#4ade80] tracking-wider uppercase flex items-center space-x-2">
+            <Shield className="w-4 h-4" />
+            <span>TACTICAL DEFENSE CAPABILITIES &amp; INTEGRATIONS</span>
+          </div>
+          <div className="text-[11px] text-[#8a9a85] font-mono">
+            MGRS: 43S ED 4821 7291 • SECTOR-7
+          </div>
+        </div>
 
-        <a
-          href="mailto:ops@vanguard-defense.mil"
-          className="hover:text-cyan-300 transition-colors lowercase tracking-wider flex items-center space-x-1"
-        >
-          <span>hello@reallygreatsite.com</span>
-        </a>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {/* Card 1 */}
+          <div className="bg-[#111813]/90 border border-[#4d5b4a]/50 rounded-xl p-4 space-y-2 hover:border-[#4ade80]/60 transition">
+            <div className="flex items-center justify-between">
+              <Radio className="w-5 h-5 text-[#4ade80]" />
+              <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#1e2a20] text-[#4ade80] font-bold">
+                ACTIVE
+              </span>
+            </div>
+            <h4 className="font-sans font-bold text-sm text-white">3D AESA Primary Radar</h4>
+            <p className="text-xs text-[#8a9a85] font-sans leading-relaxed">
+              Real-time kinematic target sweeps tracking altitude, heading, velocity vectors, and IFF mode interrogation.
+            </p>
+          </div>
+
+          {/* Card 2 */}
+          <div className="bg-[#111813]/90 border border-[#4d5b4a]/50 rounded-xl p-4 space-y-2 hover:border-[#4ade80]/60 transition">
+            <div className="flex items-center justify-between">
+              <Globe className="w-5 h-5 text-[#38bdf8]" />
+              <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#132733] text-[#38bdf8] font-bold">
+                LIVE API
+              </span>
+            </div>
+            <h4 className="font-sans font-bold text-sm text-white">Open-Meteo Weather</h4>
+            <p className="text-xs text-[#8a9a85] font-sans leading-relaxed">
+              Global meteorological API pulling measured visibility, surface wind vectors, and severe storm WMO codes.
+            </p>
+          </div>
+
+          {/* Card 3 */}
+          <div className="bg-[#111813]/90 border border-[#4d5b4a]/50 rounded-xl p-4 space-y-2 hover:border-[#4ade80]/60 transition">
+            <div className="flex items-center justify-between">
+              <Cpu className="w-5 h-5 text-[#facc15]" />
+              <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#2e2614] text-[#facc15] font-bold">
+                GEMINI AI
+              </span>
+            </div>
+            <h4 className="font-sans font-bold text-sm text-white">Grounded SITREP Engine</h4>
+            <p className="text-xs text-[#8a9a85] font-sans leading-relaxed">
+              Live executive intelligence briefings with verified `#EV-...` citations and prioritized military action directives.
+            </p>
+          </div>
+
+          {/* Card 4 */}
+          <div className="bg-[#111813]/90 border border-[#4d5b4a]/50 rounded-xl p-4 space-y-2 hover:border-[#4ade80]/60 transition">
+            <div className="flex items-center justify-between">
+              <Zap className="w-5 h-5 text-[#f87171]" />
+              <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#2e1717] text-[#f87171] font-bold">
+                EXPLAINABLE
+              </span>
+            </div>
+            <h4 className="font-sans font-bold text-sm text-white">Counterfactual Math</h4>
+            <p className="text-xs text-[#8a9a85] font-sans leading-relaxed">
+              Decomposed confidence proofs showing exact corroboration weights, spatial co-location, and sensor reliability.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Bottom Military Footer Telemetry */}
+      <footer className="relative z-30 bg-[#080d0a] border-t border-[#4d5b4a]/40 px-6 sm:px-12 py-3 flex items-center justify-between text-[11px] font-mono text-[#8a9a85]">
+        <div className="flex items-center space-x-3">
+          <span className="w-2 h-2 rounded-full bg-[#4ade80]" />
+          <span className="text-white font-bold">VANGUARD DEFENSE PLATFORM v1.1</span>
+          <span>•</span>
+          <span>THEATER: NORTH FRONTIER COMMAND</span>
+        </div>
+
+        <div className="flex items-center space-x-4">
+          <span className="text-[#6b7c67]">ENCRYPTION: AES-256 GCM</span>
+          <button
+            onClick={handleLaunch}
+            className="text-[#4ade80] hover:underline font-bold cursor-pointer"
+          >
+            ENTER COMMAND CENTER &rarr;
+          </button>
+        </div>
       </footer>
     </div>
   );
