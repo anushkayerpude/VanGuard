@@ -36,7 +36,7 @@ export function App() {
   }
 
   // Wireframe C4ISR Command Room Layout:
-  // LEFT: 3 Distinct Feature Rows with generous spacing (Click to expand)
+  // LEFT: 3 Distinct Feature Rows centered in the middle (Click to expand)
   // RIGHT: Big Square Tactical Geospatial Map
   // BACKGROUND: Military Picture with Tactical Atmospheric Overlays
   return (
@@ -48,9 +48,9 @@ export function App() {
       <CommandHeader onBackToLanding={() => setCurrentView('landing')} />
 
       {/* Main 2-Column Wireframe Grid */}
-      <main className="flex-1 px-4 sm:px-6 py-4 grid grid-cols-12 gap-6 overflow-hidden z-20">
-        {/* LEFT COLUMN (5 cols / 42% width): 3 Interactive Feature Rows */}
-        <div className="col-span-12 lg:col-span-5 flex flex-col h-full overflow-hidden">
+      <main className="flex-1 px-6 sm:px-8 py-4 grid grid-cols-12 gap-8 overflow-hidden z-20">
+        {/* LEFT COLUMN (5 cols / 42% width): Centered 3 Feature Rows in the Middle */}
+        <div className="col-span-12 lg:col-span-5 flex flex-col justify-center items-center h-full overflow-hidden px-3">
           <FeatureRowsPanel />
         </div>
 

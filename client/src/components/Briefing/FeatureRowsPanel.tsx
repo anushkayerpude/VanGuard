@@ -6,16 +6,13 @@ import {
   Activity,
   ChevronDown,
   ChevronUp,
-  Maximize2,
-  Minimize2,
   ArrowUpRight,
   Volume2,
   Wind,
   Users,
   FileText,
   AlertTriangle,
-  Search,
-  ExternalLink
+  Search
 } from 'lucide-react';
 import type { SourceType } from '../../types/vanguard';
 import { RocketDoodle, ConstellationDoodle, SparkleDoodle } from '../Galaxy/GalaxyDoodles';
@@ -23,7 +20,7 @@ import { RocketDoodle, ConstellationDoodle, SparkleDoodle } from '../Galaxy/Gala
 type FeatureType = 'sitrep' | 'feed' | 'health';
 
 export const FeatureRowsPanel: React.FC = () => {
-  // Can have one active expanded feature or null (all collapsed)
+  // Can have one active expanded feature or null (all 3 sleek & collapsed)
   const [activeFeature, setActiveFeature] = useState<FeatureType | null>('sitrep');
   const [feedSearch, setFeedSearch] = useState('');
 
@@ -44,15 +41,15 @@ export const FeatureRowsPanel: React.FC = () => {
   const getSourceIcon = (src: SourceType) => {
     switch (src) {
       case 'radar':
-        return <Radio className="w-3.5 h-3.5 text-cyan-400" />;
+        return <Radio className="w-4 h-4 text-cyan-400" />;
       case 'weather':
-        return <Wind className="w-3.5 h-3.5 text-amber-400" />;
+        return <Wind className="w-4 h-4 text-amber-400" />;
       case 'personnel':
-        return <Users className="w-3.5 h-3.5 text-emerald-400" />;
+        return <Users className="w-4 h-4 text-emerald-400" />;
       case 'log':
-        return <FileText className="w-3.5 h-3.5 text-sky-400" />;
+        return <FileText className="w-4 h-4 text-sky-400" />;
       case 'incident':
-        return <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />;
+        return <AlertTriangle className="w-4 h-4 text-rose-400" />;
     }
   };
 
@@ -68,25 +65,25 @@ export const FeatureRowsPanel: React.FC = () => {
   });
 
   return (
-    <div className="flex flex-col h-full gap-5 overflow-hidden justify-between">
+    <div className="flex flex-col justify-center my-auto w-full max-w-xl mx-auto gap-5 overflow-hidden transition-all duration-300">
       {/* ========================================================================= */}
       {/* FEATURE ROW 1: AI SITREP // OPERATIONAL INTELLIGENCE */}
       {/* ========================================================================= */}
       <div
-        className={`flex flex-col rounded-2xl border transition-all duration-300 overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.5)] backdrop-blur-xl ${
+        className={`flex flex-col rounded-2xl border transition-all duration-300 overflow-hidden shadow-[0_10px_35px_rgba(0,0,0,0.55)] backdrop-blur-xl ${
           activeFeature === 'sitrep'
-            ? 'flex-1 bg-[#0a1017]/95 border-cyan-400/80 shadow-[0_0_24px_rgba(0,240,255,0.2)]'
+            ? 'bg-[#0a1017]/95 border-cyan-400/80 shadow-[0_0_26px_rgba(0,240,255,0.22)] max-h-[48vh] min-h-[220px]'
             : 'bg-[#0a1017]/85 border-slate-700/70 hover:border-cyan-400/50 hover:bg-[#0f1724]/90 cursor-pointer shrink-0'
         }`}
       >
-        {/* Row Header / Clickable Bar */}
+        {/* Clickable Header Bar */}
         <div
           onClick={() => toggleFeature('sitrep')}
-          className="px-5 py-3.5 flex items-center justify-between cursor-pointer select-none bg-gradient-to-r from-[#070b10] via-[#0b131e] to-[#070b10] border-b border-slate-700/60 hover:from-[#0d1724] transition"
+          className="px-5 py-4 flex items-center justify-between cursor-pointer select-none bg-gradient-to-r from-[#070b10] via-[#0b131e] to-[#070b10] border-b border-slate-700/60 hover:from-[#0d1724] transition"
         >
           <div className="flex items-center space-x-3.5">
             <div
-              className={`p-2 rounded-xl transition shadow-md ${
+              className={`p-2.5 rounded-xl transition shadow-md ${
                 activeFeature === 'sitrep'
                   ? 'bg-gradient-to-tr from-cyan-600 to-sky-700 text-white shadow-[0_0_12px_rgba(0,240,255,0.4)]'
                   : 'bg-cyan-950/80 border border-cyan-500/40 text-cyan-400'
@@ -145,7 +142,7 @@ export const FeatureRowsPanel: React.FC = () => {
           </div>
         </div>
 
-        {/* Expanded Content View */}
+        {/* Expanded View Content */}
         {activeFeature === 'sitrep' && (
           <div className="flex-1 overflow-y-auto p-4 space-y-3.5 custom-scrollbar">
             {/* Headline Card */}
@@ -248,20 +245,20 @@ export const FeatureRowsPanel: React.FC = () => {
       {/* FEATURE ROW 2: LIVE MULTI-SOURCE FEED */}
       {/* ========================================================================= */}
       <div
-        className={`flex flex-col rounded-2xl border transition-all duration-300 overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.5)] backdrop-blur-xl ${
+        className={`flex flex-col rounded-2xl border transition-all duration-300 overflow-hidden shadow-[0_10px_35px_rgba(0,0,0,0.55)] backdrop-blur-xl ${
           activeFeature === 'feed'
-            ? 'flex-1 bg-[#0a1017]/95 border-cyan-400/80 shadow-[0_0_24px_rgba(0,240,255,0.2)]'
+            ? 'bg-[#0a1017]/95 border-cyan-400/80 shadow-[0_0_26px_rgba(0,240,255,0.22)] max-h-[48vh] min-h-[220px]'
             : 'bg-[#0a1017]/85 border-slate-700/70 hover:border-cyan-400/50 hover:bg-[#0f1724]/90 cursor-pointer shrink-0'
         }`}
       >
-        {/* Row Header / Clickable Bar */}
+        {/* Clickable Header Bar */}
         <div
           onClick={() => toggleFeature('feed')}
-          className="px-5 py-3.5 flex items-center justify-between cursor-pointer select-none bg-gradient-to-r from-[#070b10] via-[#0b131e] to-[#070b10] border-b border-slate-700/60 hover:from-[#0d1724] transition"
+          className="px-5 py-4 flex items-center justify-between cursor-pointer select-none bg-gradient-to-r from-[#070b10] via-[#0b131e] to-[#070b10] border-b border-slate-700/60 hover:from-[#0d1724] transition"
         >
           <div className="flex items-center space-x-3.5">
             <div
-              className={`p-2 rounded-xl transition shadow-md ${
+              className={`p-2.5 rounded-xl transition shadow-md ${
                 activeFeature === 'feed'
                   ? 'bg-gradient-to-tr from-cyan-600 to-sky-700 text-white shadow-[0_0_12px_rgba(0,240,255,0.4)]'
                   : 'bg-cyan-950/80 border border-cyan-500/40 text-cyan-400'
@@ -302,19 +299,19 @@ export const FeatureRowsPanel: React.FC = () => {
           </div>
         </div>
 
-        {/* Expanded Content View */}
+        {/* Expanded View Content */}
         {activeFeature === 'feed' && (
           <div className="flex-1 flex flex-col overflow-hidden">
             {/* Filter search bar */}
-            <div className="p-3 bg-[#080d14] border-b border-slate-700/60">
+            <div className="p-3.5 bg-[#080d14] border-b border-slate-700/60">
               <div className="relative">
-                <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400" />
+                <Search className="w-3.5 h-3.5 absolute left-3 top-3 text-slate-400" />
                 <input
                   type="text"
                   value={feedSearch}
                   onChange={(e) => setFeedSearch(e.target.value)}
                   placeholder="Filter feed by ID, keyword, or source type..."
-                  className="w-full pl-9 pr-3.5 py-1.5 bg-[#0c131c] border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-400 focus:outline-none focus:border-cyan-400"
+                  className="w-full pl-9 pr-3.5 py-2 bg-[#0c131c] border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-400 focus:outline-none focus:border-cyan-400"
                 />
               </div>
             </div>
@@ -400,20 +397,20 @@ export const FeatureRowsPanel: React.FC = () => {
       {/* FEATURE ROW 3: FEED ADAPTER PIPELINES TELEMETRY */}
       {/* ========================================================================= */}
       <div
-        className={`flex flex-col rounded-2xl border transition-all duration-300 overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.5)] backdrop-blur-xl ${
+        className={`flex flex-col rounded-2xl border transition-all duration-300 overflow-hidden shadow-[0_10px_35px_rgba(0,0,0,0.55)] backdrop-blur-xl ${
           activeFeature === 'health'
-            ? 'flex-1 bg-[#0a1017]/95 border-cyan-400/80 shadow-[0_0_24px_rgba(0,240,255,0.2)]'
+            ? 'bg-[#0a1017]/95 border-cyan-400/80 shadow-[0_0_26px_rgba(0,240,255,0.22)] max-h-[48vh] min-h-[220px]'
             : 'bg-[#0a1017]/85 border-slate-700/70 hover:border-cyan-400/50 hover:bg-[#0f1724]/90 cursor-pointer shrink-0'
         }`}
       >
-        {/* Row Header / Clickable Bar */}
+        {/* Clickable Header Bar */}
         <div
           onClick={() => toggleFeature('health')}
-          className="px-5 py-3.5 flex items-center justify-between cursor-pointer select-none bg-gradient-to-r from-[#070b10] via-[#0b131e] to-[#070b10] border-b border-slate-700/60 hover:from-[#0d1724] transition"
+          className="px-5 py-4 flex items-center justify-between cursor-pointer select-none bg-gradient-to-r from-[#070b10] via-[#0b131e] to-[#070b10] border-b border-slate-700/60 hover:from-[#0d1724] transition"
         >
           <div className="flex items-center space-x-3.5">
             <div
-              className={`p-2 rounded-xl transition shadow-md ${
+              className={`p-2.5 rounded-xl transition shadow-md ${
                 activeFeature === 'health'
                   ? 'bg-gradient-to-tr from-cyan-600 to-sky-700 text-white shadow-[0_0_12px_rgba(0,240,255,0.4)]'
                   : 'bg-cyan-950/80 border border-cyan-500/40 text-cyan-400'
@@ -455,7 +452,7 @@ export const FeatureRowsPanel: React.FC = () => {
           </div>
         </div>
 
-        {/* Expanded Content View */}
+        {/* Expanded View Content */}
         {activeFeature === 'health' && (
           <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
             <div className="text-xs font-mono text-cyan-400 tracking-wider mb-1">
