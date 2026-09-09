@@ -9,8 +9,14 @@ export interface PulseMarker {
   delay?: number
 }
 
+export interface GlobeArc {
+  from: [number, number]
+  to: [number, number]
+}
+
 export interface GlobePulseProps {
   markers?: PulseMarker[]
+  arcs?: GlobeArc[]
   className?: string
   speed?: number
   baseColor?: [number, number, number]
@@ -33,6 +39,7 @@ const DEFAULT_MARKERS: PulseMarker[] = [
 
 export function GlobePulse({
   markers = DEFAULT_MARKERS,
+  arcs = [],
   className = "",
   speed = 0.003,
   baseColor = [0.5, 0.5, 0.5],
@@ -58,6 +65,7 @@ export function GlobePulse({
   // Keep latest configuration in ref to avoid destroying & recreating WebGL context
   const configRef = useRef({
     markers,
+    arcs,
     speed,
     baseColor,
     markerColor,
@@ -68,33 +76,6 @@ export function GlobePulse({
     arcColor,
   })
 
-  // Update configRef and trigger smooth globe.update when props change
-  useEffect(() => {
-    configRef.current = {
-      markers,
-      speed,
-      baseColor,
-      markerColor,
-      glowColor,
-      dark,
-      diffuse,
-      mapBrightness,
-      arcColor,
-    }
-
-    if (globeRef.current) {
-      globeRef.current.update({
-        dark,
-        diffuse,
-        mapBrightness,
-        baseColor,
-        markerColor,
-        glowColor,
-        arcColor,
-        markers: markers.map((m) => ({ location: m.location, size: 0.035, id: m.id })),
-      })
-    }
-  }, [markers, speed, baseColor, markerColor, glowColor, dark, diffuse, mapBrightness, arcColor])
 
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
     pointerInteracting.current = { x: e.clientX, y: e.clientY }
@@ -130,6 +111,36 @@ export function GlobePulse({
     }
   }, [handlePointerUp])
 
+  // Update configRef and trigger smooth globe.update when props change
+  useEffect(() => {
+    configRef.current = {
+      markers,
+      arcs,
+      speed,
+      baseColor,
+      markerColor,
+      glowColor,
+      dark,
+      diffuse,
+      mapBrightness,
+      arcColor,
+    }
+
+    if (globeRef.current) {
+      globeRef.current.update({
+        dark,
+        diffuse,
+        mapBrightness,
+        baseColor,
+        markerColor,
+        glowColor,
+        arcColor,
+        markers: markers.map((m) => ({ location: m.location, size: 0.035, id: m.id })),
+        arcs: arcs,
+      })
+    }
+  }, [markers, arcs, speed, baseColor, markerColor, glowColor, dark, diffuse, mapBrightness, arcColor])
+
   // Single WebGL initialization on mount
   useEffect(() => {
     const canvas = canvasRef.current
@@ -141,32 +152,62 @@ export function GlobePulse({
       if (!canvas) return
       const width = canvas.offsetWidth
       if (width === 0 || globeRef.current) return
+
+      if (animIdRef.current) {
+        cancelAnimationFrame(animIdRef.current)
+        animIdRef.current = 0
+      }
+
+      // Force a pristine WebGL context before binding buffers. Reusing the same
+      // canvas right after a destroy() (StrictMode remount, resize recreate) leaves
+      // stale enabled attribute arrays on the cached context, which throws
+      // "INVALID_OPERATION: drawArrays - no buffer is bound to enabled attribute".
+      canvas.width = 0
+      canvas.height = 0
+      canvas.width = width * 2
+      canvas.height = width * 2
       currentWidth = width
 
       const cfg = configRef.current
-      globeRef.current = createGlobe(canvas, {
-        devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
-        width: width * 2,
-        height: width * 2,
-        phi: 0,
-        theta: 0.2,
-        dark: cfg.dark,
-        diffuse: cfg.diffuse,
-        mapSamples: 16000,
-        mapBrightness: cfg.mapBrightness,
-        baseColor: cfg.baseColor,
-        markerColor: cfg.markerColor,
-        glowColor: cfg.glowColor,
-        markerElevation: 0,
-        markers: cfg.markers.map((m) => ({ location: m.location, size: 0.035, id: m.id })),
-        arcs: [],
-        arcColor: cfg.arcColor,
-        arcWidth: 0.5,
-        arcHeight: 0.25,
-        opacity: 0.9,
-      })
 
-      function animate() {
+      try {
+        globeRef.current = createGlobe(canvas, {
+          devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
+          width: width * 2,
+          height: width * 2,
+          phi: 0,
+          theta: 0.2,
+          dark: cfg.dark,
+          diffuse: cfg.diffuse,
+          mapSamples: 16000,
+          mapBrightness: cfg.mapBrightness,
+          baseColor: cfg.baseColor,
+          markerColor: cfg.markerColor,
+          glowColor: cfg.glowColor,
+          markerElevation: 0,
+          markers: cfg.markers.map((m) => ({ location: m.location, size: 0.035, id: m.id })),
+          arcs: cfg.arcs || [],
+          arcColor: cfg.arcColor,
+          arcWidth: 0.5,
+          arcHeight: 0.25,
+          opacity: 0.9,
+        })
+
+        animate()
+      } catch (err) {
+        // WebGL unavailable (headless/no GPU) — degrade gracefully without crashing.
+        globeRef.current = null
+      }
+    }
+
+    let isVisible = true
+    const io = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting
+    }, { threshold: 0.05 })
+    io.observe(canvas)
+
+    function animate() {
+      if (isVisible) {
         if (!isPausedRef.current) {
           phiRef.current += configRef.current.speed
         }
@@ -176,10 +217,8 @@ export function GlobePulse({
             theta: 0.2 + thetaOffsetRef.current + dragOffset.current.theta,
           })
         }
-        animIdRef.current = requestAnimationFrame(animate)
       }
-
-      animate()
+      animIdRef.current = requestAnimationFrame(animate)
     }
 
     if (canvas.offsetWidth > 0) {
@@ -199,6 +238,7 @@ export function GlobePulse({
     ro.observe(canvas)
 
     return () => {
+      io.disconnect()
       ro.disconnect()
       if (animIdRef.current) cancelAnimationFrame(animIdRef.current)
       if (globeRef.current) {

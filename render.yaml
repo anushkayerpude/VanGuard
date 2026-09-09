@@ -1,0 +1,35 @@
+services:
+  # 1. FRONTEND CLIENT (Vanguard C2 UI)
+  - type: web
+    name: vanguard-ui
+    env: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: vanguard-api
+          property: host
+
+  # 2. BACKEND API SERVER (Fusion Engine & Grounded AI)
+  - type: web
+    name: vanguard-api
+    env: node
+    rootDir: server
+    plan: starter
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: OLLAMA_HOST
+        value: http://127.0.0.1:11434

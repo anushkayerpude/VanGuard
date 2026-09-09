@@ -21,7 +21,9 @@ import type { SeverityLevel, SourceType, UnifiedEvent } from '../types/events.js
 import { haversineMeters } from '../util/geo.js';
 import { createLogger } from '../util/logger.js';
 import { generateStructured, isGeminiAvailable } from './gemini.js';
+import { generateStructuredOllama, isOllamaAvailable, isOllamaConfigured } from './ollama.js';
 import { buildNLQueryPrompt, NL_QUERY_SCHEMA, NL_QUERY_SYSTEM_INSTRUCTION } from './prompts.js';
+import { env } from '../config/env.js';
 
 const log = createLogger('ai:nlq');
 
@@ -242,9 +244,40 @@ export async function parseAndExecuteQuery(
 
   let filter = heuristic.filter;
   let interpretation = heuristic.interpretation;
-  let parser: 'gemini' | 'heuristic' = 'heuristic';
+  let parser: 'gemini' | 'ollama' | 'heuristic' = 'heuristic';
 
-  if (isGeminiAvailable()) {
+  const ollamaOnline = isOllamaConfigured() && (await isOllamaAvailable());
+  const geminiOnline = isGeminiAvailable();
+
+  const useOllama = (env.aiProvider === 'ollama' || env.aiProvider === 'auto') && ollamaOnline;
+  const useGemini =
+    (env.aiProvider === 'gemini' || (env.aiProvider === 'auto' && !ollamaOnline)) && geminiOnline;
+
+  if (useOllama) {
+    try {
+      const result = await generateStructuredOllama<RawFilter>({
+        systemInstruction: NL_QUERY_SYSTEM_INSTRUCTION,
+        prompt: buildNLQueryPrompt(query),
+        schema: NL_QUERY_SCHEMA,
+        temperature: 0.1,
+        maxOutputTokens: 512,
+      });
+
+      const modelFilter = shapeFilter(result.data);
+      filter = { ...heuristic.filter, ...modelFilter };
+      interpretation =
+        typeof result.data.interpretation === 'string' && result.data.interpretation.length > 0
+          ? result.data.interpretation
+          : heuristic.interpretation;
+      parser = 'ollama';
+    } catch (error) {
+      log.warn(
+        `Ollama query parse failed, using heuristic: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      );
+    }
+  } else if (useGemini) {
     try {
       const result = await generateStructured<RawFilter>({
         systemInstruction: NL_QUERY_SYSTEM_INSTRUCTION,

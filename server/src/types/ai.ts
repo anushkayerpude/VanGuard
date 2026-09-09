@@ -55,9 +55,9 @@ export interface AISummary {
 
 /** Audit trail describing exactly how a briefing was produced. */
 export interface BriefingProvenance {
-  /** `gemini` = live model call. `deterministic` = offline rule-based synthesizer. */
-  engine: 'gemini' | 'deterministic';
-  /** Model ID when engine is gemini. */
+  /** `gemini` | `ollama` = live model call. `deterministic` = offline rule-based synthesizer. */
+  engine: 'gemini' | 'ollama' | 'deterministic';
+  /** Model ID when engine is gemini or ollama. */
   model?: string;
   /** Wall-clock latency of the synthesis step, milliseconds. */
   latencyMs: number;
@@ -67,7 +67,7 @@ export interface BriefingProvenance {
   citationsStripped: number;
   /** Claims discarded because every citation was invalid. */
   claimsDiscarded: number;
-  /** Populated when a Gemini call failed and the deterministic path took over. */
+  /** Populated when a model call failed and the deterministic path took over. */
   degradedReason?: string;
 }
 
@@ -102,6 +102,6 @@ export interface NLQueryResult {
   interpretation: string;
   matchedEventIds: string[];
   matchCount: number;
-  parser: 'gemini' | 'heuristic';
+  parser: 'gemini' | 'ollama' | 'heuristic';
   latencyMs: number;
 }

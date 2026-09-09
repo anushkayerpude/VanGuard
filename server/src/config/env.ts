@@ -50,6 +50,13 @@ export interface VanguardEnv {
   /** False when no key is configured. */
   aiEnabled: boolean;
 
+  /** Ollama local AI configuration */
+  ollamaBaseUrl: string;
+  ollamaModel: string;
+  /** 'auto' | 'ollama' | 'gemini' | 'deterministic' */
+  aiProvider: 'auto' | 'ollama' | 'gemini' | 'deterministic';
+  ollamaEnabled: boolean;
+
   /** Master pipeline cadence, milliseconds. */
   tickIntervalMs: number;
   /** How often the live Open-Meteo feed is polled, milliseconds. */
@@ -68,6 +75,12 @@ export interface VanguardEnv {
 }
 
 const geminiApiKey = str('GEMINI_API_KEY', '').replace(/^your_.*_here$/i, '');
+const ollamaBaseUrl = str('OLLAMA_BASE_URL', 'http://localhost:11434');
+const ollamaModel = str('OLLAMA_MODEL', 'llama3.2:latest');
+const rawAiProvider = str('AI_PROVIDER', 'auto').toLowerCase();
+const aiProvider = (['auto', 'ollama', 'gemini', 'deterministic'].includes(rawAiProvider)
+  ? rawAiProvider
+  : 'auto') as VanguardEnv['aiProvider'];
 
 export const env: VanguardEnv = {
   nodeEnv: str('NODE_ENV', 'development'),
@@ -83,6 +96,11 @@ export const env: VanguardEnv = {
   geminiBaseUrl: str('GEMINI_BASE_URL', 'https://generativelanguage.googleapis.com/v1beta'),
   aiEnabled: geminiApiKey.length > 0,
 
+  ollamaBaseUrl,
+  ollamaModel,
+  aiProvider,
+  ollamaEnabled: aiProvider === 'ollama' || aiProvider === 'auto',
+
   tickIntervalMs: num('TICK_INTERVAL_MS', 3_000),
   weatherPollIntervalMs: num('WEATHER_POLL_INTERVAL_MS', 120_000),
   briefingIntervalMs: num('BRIEFING_INTERVAL_MS', 45_000),
@@ -96,11 +114,20 @@ export const env: VanguardEnv = {
 
 /** One-line boot banner describing the effective configuration. */
 export function describeEnv(): string {
+  const activeDesc =
+    env.aiProvider === 'ollama'
+      ? `ollama (${env.ollamaModel})`
+      : env.aiProvider === 'gemini'
+      ? `gemini (${env.geminiModel})`
+      : env.aiProvider === 'auto'
+      ? `auto (ollama: ${env.ollamaModel} / gemini: ${env.geminiModel})`
+      : 'deterministic';
+
   return [
     `env=${env.nodeEnv}`,
     `port=${env.port}`,
     `tick=${env.tickIntervalMs}ms`,
-    `ai=${env.aiEnabled ? env.geminiModel : 'deterministic (no GEMINI_API_KEY)'}`,
+    `ai=${activeDesc}`,
     `seed=${env.simSeed}`,
   ].join(' | ');
 }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'motion/react';
 import { useAuth } from '../../context/AuthContext';
 import {
   ShieldCheck,
@@ -84,8 +85,19 @@ export default function OperatorAuthModal({ isOpen, onClose }: OperatorAuthModal
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 select-none font-mono">
-      <div className="bg-[#0b1209] border border-[#526a27]/70 rounded-2xl max-w-md w-full p-6 shadow-2xl shadow-[#16200d]/80 flex flex-col space-y-4 text-slate-100 relative">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      onClick={onClose}
+      className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 select-none font-mono"
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 16, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+        onClick={(e) => e.stopPropagation()}
+        className="bg-[#0b1209] border border-[#526a27]/70 rounded-2xl max-w-md w-full p-6 shadow-2xl shadow-[#16200d]/80 flex flex-col space-y-4 text-slate-100 relative"
+      >
         
         {/* CLOSE BUTTON */}
         <button
@@ -286,7 +298,7 @@ export default function OperatorAuthModal({ isOpen, onClose }: OperatorAuthModal
             </span>
           </div>
         )}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

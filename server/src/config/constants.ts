@@ -238,6 +238,12 @@ export const GEMINI_TIMEOUT_MS = 12_000;
 /** Retry attempts for a transient Gemini failure. */
 export const GEMINI_MAX_RETRIES = 2;
 
+/** Hard timeout on a single Ollama request, milliseconds. */
+export const OLLAMA_TIMEOUT_MS = 60_000;
+
+/** Retry attempts for a transient Ollama failure. */
+export const OLLAMA_MAX_RETRIES = 1;
+
 /* ------------------------------------------------------------------ *
  * Media authenticity (VANGUARD_MEDIA_AUTHENTICITY_FLOW.md)
  * ------------------------------------------------------------------ */
