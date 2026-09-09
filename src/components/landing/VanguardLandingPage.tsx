@@ -1189,12 +1189,12 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
 
       {/* ─── 8. HANDS-ON CONFIDENCE CALCULATOR ────────────────────────────────────── */}
       <section id="live-labs" className="py-24 relative z-10 overflow-hidden">
-        {/* Wireframe Section 6 Background: Air Defense Missile Radar Vehicle */}
+        {/* Section 6 Background: Camouflage Battle Tank */}
         <div 
-          className="absolute inset-0 z-0 pointer-events-none opacity-25 bg-no-repeat bg-right-bottom bg-cover filter contrast-125 brightness-75"
-          style={{ backgroundImage: "url('/assets/missile_vehicle.png')" }}
+          className="absolute inset-0 z-0 pointer-events-none opacity-50 bg-no-repeat bg-right-bottom bg-cover filter contrast-125 brightness-95 transition-opacity duration-700"
+          style={{ backgroundImage: "url('/assets/battle_tank_section6.png')" }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-transparent" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
