@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo, lazy, Suspense } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'motion/react';
 import {
   Shield,
@@ -189,6 +189,22 @@ const TEAM_MEMBERS = [
   },
 ];
 
+// ─── LAZY VIEWPORT-GATED HEAVY COMPONENTS ────────────────────────────────────
+// These WebGL/Canvas components are only mounted when their container scrolls
+// into view, eliminating ~120fps of offscreen GPU work.
+function useInViewLazy(rootMargin = '200px') {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) setInView(true); }, { rootMargin });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [rootMargin]);
+  return { ref, inView };
+}
+
 export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
   onLaunchCop,
   onOpenArchitecture,
@@ -199,8 +215,23 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
   // Global Theme State: Dark Mode Only
   const { theme, isDark } = useTheme();
 
-  // Mouse Tracking for dynamic cursor spotlight over the cyber grid
-  const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: -1000, y: -1000 });
+  // ── ZERO-RERENDER MOUSE SPOTLIGHT ──────────────────────────────────────────
+  // Instead of useState (which re-renders the entire 2000-line tree on every
+  // pixel of movement), we write CSS custom properties directly on the DOM node.
+  const spotlightRef = useRef<HTMLDivElement>(null);
+  const mouseRafRef = useRef<number>(0);
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (mouseRafRef.current) return;
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+    mouseRafRef.current = requestAnimationFrame(() => {
+      if (spotlightRef.current) {
+        spotlightRef.current.style.setProperty('--mx', `${clientX}px`);
+        spotlightRef.current.style.setProperty('--my', `${clientY}px`);
+      }
+      mouseRafRef.current = 0;
+    });
+  }, []);
 
   // Active story chapter state
   const [activeChapterIndex, setActiveChapterIndex] = useState<number>(1);
@@ -217,12 +248,16 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
   const [briefingModalOpen, setBriefingModalOpen] = useState<boolean>(false);
   const [briefingFormSubmitted, setBriefingFormSubmitted] = useState<boolean>(false);
 
-  // Framer Motion Scroll Hooks
+  // ── LAZY GATES FOR HEAVY CANVAS WIDGETS ────────────────────────────────────
+  const heroGlobe = useInViewLazy('300px');
+  const telemetrySection = useInViewLazy('200px');
+
+  // Framer Motion Scroll Hooks — lighter spring for reduced CPU
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
+    stiffness: 60,
+    damping: 20,
+    restDelta: 0.005,
   });
 
   // Global Enter Key Listener: Transitions directly to the Login/Clearance Portal
@@ -241,10 +276,6 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
   const heroY = useTransform(scrollYProgress, [0, 0.12], [0, -75]);
   const heroScale = useTransform(scrollYProgress, [0, 0.12], [1, 0.94]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.10], [1, 0]);
-  const heroFilter = useTransform(scrollYProgress, [0, 0.10], ['blur(0px)', 'blur(8px)']);
-
-  const orbY1 = useTransform(scrollYProgress, [0, 1], [0, 220]);
-  const orbY2 = useTransform(scrollYProgress, [0, 1], [0, -180]);
 
   // Calculated Confidence values
   const rawConfidence = Math.min(
@@ -296,7 +327,7 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
 
   return (
     <div
-      onMouseMove={(e) => setMousePos({ x: e.clientX, y: e.clientY })}
+      onMouseMove={handleMouseMove}
       className={`min-h-screen font-sans selection:bg-lime-400 selection:text-black overflow-x-hidden relative transition-colors duration-500 ${
         isDark ? 'bg-[#000000] text-slate-100' : 'bg-[#f8fafc] text-slate-900'
       }`}
@@ -489,57 +520,42 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
         {/* Animated Cyber Grid Layer (Tactical Olive Green on Void Black) */}
         <div className={`absolute inset-0 ${gridBackgroundClass} radial-grid-mask opacity-75`} />
 
-        {/* Interactive Mouse-Tracking Spotlight over the Cyber Grid */}
+        {/* Interactive Mouse-Tracking Spotlight — GPU-only, zero re-renders */}
         <div
-          className="absolute inset-0 transition-opacity duration-300 pointer-events-none"
+          ref={spotlightRef}
+          className="absolute inset-0 pointer-events-none"
           style={{
-            background: `radial-gradient(650px circle at ${mousePos.x}px ${mousePos.y}px, ${
+            '--mx': '-1000px',
+            '--my': '-1000px',
+            background: `radial-gradient(650px circle at var(--mx) var(--my), ${
               isDark ? 'rgba(82, 106, 39, 0.12)' : 'rgba(82, 106, 39, 0.08)'
             }, transparent 70%)`,
-          }}
+          } as React.CSSProperties}
         />
 
-        {/* Subtle Floating Ambient Mesh Orbs (Tactical Green) */}
-        {isDark ? (
-          <>
-            <motion.div
-              style={{ y: orbY1 }}
-              animate={{
-                x: [0, 50, -25, 0],
-                scale: [1, 1.1, 0.95, 1],
-              }}
-              transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute top-1/6 left-1/5 w-[600px] h-[400px] bg-[#33401c]/25 blur-[160px] rounded-full"
-            />
-            <motion.div
-              style={{ y: orbY2 }}
-              animate={{
-                x: [0, -40, 40, 0],
-                scale: [1, 1.08, 0.95, 1],
-              }}
-              transition={{ duration: 28, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute top-1/2 right-10 w-[550px] h-[550px] bg-[#33401c]/30 blur-[170px] rounded-full"
-            />
-          </>
-        ) : (
-          <>
-            <motion.div
-              style={{ y: orbY1 }}
-              animate={{
-                x: [0, 60, -30, 0],
-                scale: [1, 1.15, 0.92, 1],
-              }}
-              transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute top-1/6 left-1/5 w-[600px] h-[450px] bg-[#526a27]/15 blur-[150px] rounded-full"
-            />
-          </>
+        {/* Subtle Floating Ambient Mesh Orbs — hardware-accelerated radial gradients (zero blur filter tax) */}
+        <div
+          className="absolute top-[16%] left-[20%] w-[600px] h-[400px] pointer-events-none will-change-transform animate-[orb-drift-1_24s_ease-in-out_infinite]"
+          style={{
+            background: isDark
+              ? 'radial-gradient(ellipse at center, rgba(51,64,28,0.22) 0%, rgba(51,64,28,0.08) 45%, transparent 75%)'
+              : 'radial-gradient(ellipse at center, rgba(82,106,39,0.14) 0%, rgba(82,106,39,0.05) 45%, transparent 75%)',
+          }}
+        />
+        {isDark && (
+          <div
+            className="absolute top-1/2 right-10 w-[550px] h-[550px] pointer-events-none will-change-transform animate-[orb-drift-2_28s_ease-in-out_infinite]"
+            style={{
+              background: 'radial-gradient(circle at center, rgba(51,64,28,0.25) 0%, rgba(51,64,28,0.08) 45%, transparent 75%)',
+            }}
+          />
         )}
       </div>
 
       {/* ─── 4. MONUMENTAL HERO: DESIGNER YERPUDE MASTER FRAME ──────────────────────── */}
       <motion.section
         id="hero"
-        style={{ y: heroY, scale: heroScale, opacity: heroOpacity, filter: heroFilter }}
+        style={{ y: heroY, scale: heroScale, opacity: heroOpacity }}
         className={`relative w-screen h-screen min-h-[100dvh] max-h-screen ${
           isDark ? 'bg-[#000000] text-white' : 'bg-[#f8fafc] text-slate-900'
         } overflow-hidden select-none font-sans flex flex-col justify-between pt-16 pb-3 sm:pb-4 px-4 sm:px-8 lg:px-12 z-10`}
@@ -554,8 +570,8 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
 
         {/* HORIZONTAL TACTICAL HIGHLIGHT BAR & COBE 3D PULSE GLOBE BEHIND VANGUARD */}
         <div className="relative w-full flex items-center justify-center z-10 mb-2 mt-auto pt-20 sm:pt-24 md:pt-28">
-          {/* COBE 3D PULSE GLOBE AESTHETIC SPHERE CENTERED BEHIND VANGUARD */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[58%] pointer-events-none z-0 flex items-center justify-center">
+          {/* COBE 3D PULSE GLOBE — Lazy-mounted only when hero is in viewport */}
+          <div ref={heroGlobe.ref} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[58%] pointer-events-none z-0 flex items-center justify-center">
             {/* Soft tactical radial aura behind globe */}
             <div
               className={`absolute w-[360px] h-[360px] sm:w-[520px] sm:h-[520px] md:w-[640px] md:h-[640px] rounded-full ${
@@ -563,32 +579,34 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
               } pointer-events-none`}
             />
 
-            <div
-              className={`relative w-[300px] h-[300px] sm:w-[440px] sm:h-[440px] md:w-[540px] md:h-[540px] lg:w-[640px] lg:h-[640px] ${
-                isDark
-                  ? 'opacity-85 mix-blend-screen drop-shadow-[0_0_40px_rgba(82,106,39,0.4)]'
-                  : 'opacity-90 drop-shadow-[0_10px_35px_rgba(82,106,39,0.25)]'
-              }`}
-              style={{
-                maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 48%, rgba(0,0,0,0) 80%)',
-                WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 48%, rgba(0,0,0,0) 80%)',
-              }}
-            >
-              <GlobePulse
-                className="w-full h-full"
-                speed={0.0022}
-                baseColor={isDark ? COBE_DARK_BASE : COBE_LIGHT_BASE}
-                markerColor={isDark ? COBE_DARK_MARKER : COBE_LIGHT_MARKER}
-                glowColor={isDark ? COBE_DARK_GLOW : COBE_LIGHT_GLOW}
-                dark={isDark ? 1 : 0}
-                diffuse={isDark ? 1.6 : 1.3}
-                mapBrightness={isDark ? 10 : 8}
-                arcColor={isDark ? COBE_DARK_MARKER : COBE_LIGHT_MARKER}
-                pulseColor={isDark ? '#a4c639' : '#526a27'}
-                markers={COBE_HERO_MARKERS}
-                showOverlayPulses={false}
-              />
-            </div>
+            {heroGlobe.inView && (
+              <div
+                className={`relative w-[300px] h-[300px] sm:w-[440px] sm:h-[440px] md:w-[540px] md:h-[540px] lg:w-[640px] lg:h-[640px] ${
+                  isDark
+                    ? 'opacity-85 mix-blend-screen drop-shadow-[0_0_40px_rgba(82,106,39,0.4)]'
+                    : 'opacity-90 drop-shadow-[0_10px_35px_rgba(82,106,39,0.25)]'
+                }`}
+                style={{
+                  maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 48%, rgba(0,0,0,0) 80%)',
+                  WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 48%, rgba(0,0,0,0) 80%)',
+                }}
+              >
+                <GlobePulse
+                  className="w-full h-full"
+                  speed={0.0022}
+                  baseColor={isDark ? COBE_DARK_BASE : COBE_LIGHT_BASE}
+                  markerColor={isDark ? COBE_DARK_MARKER : COBE_LIGHT_MARKER}
+                  glowColor={isDark ? COBE_DARK_GLOW : COBE_LIGHT_GLOW}
+                  dark={isDark ? 1 : 0}
+                  diffuse={isDark ? 1.6 : 1.3}
+                  mapBrightness={isDark ? 10 : 8}
+                  arcColor={isDark ? COBE_DARK_MARKER : COBE_LIGHT_MARKER}
+                  pulseColor={isDark ? '#a4c639' : '#526a27'}
+                  markers={COBE_HERO_MARKERS}
+                  showOverlayPulses={false}
+                />
+              </div>
+            )}
           </div>
 
           {/* Tactical Olive Green Highlight Bar (#33401c) */}
@@ -827,15 +845,21 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
                 </div>
               </div>
 
-              {/* Embedded Interactive 3D Dotted Globe */}
-              <div className="w-full flex justify-center items-center py-2">
-                <WireframeDottedGlobe
-                  width={520}
-                  height={430}
-                  className="w-full max-w-full"
-                  interactive={true}
-                  theme={theme}
-                />
+              {/* Embedded Interactive 3D Dotted Globe — lazy-mounted on scroll */}
+              <div ref={telemetrySection.ref} className="w-full flex justify-center items-center py-2">
+                {telemetrySection.inView ? (
+                  <WireframeDottedGlobe
+                    width={520}
+                    height={430}
+                    className="w-full max-w-full"
+                    interactive={true}
+                    theme={theme}
+                  />
+                ) : (
+                  <div className="w-full aspect-square max-w-[520px] flex items-center justify-center">
+                    <div className="w-12 h-12 border-2 border-[#526a27] border-t-[#a4c639] rounded-full animate-spin" />
+                  </div>
+                )}
               </div>
 
               {/* Globe Telemetry Footer */}

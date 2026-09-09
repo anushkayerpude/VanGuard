@@ -200,15 +200,23 @@ export function GlobePulse({
       }
     }
 
-function animate() {
-      if (!isPausedRef.current) {
-        phiRef.current += configRef.current.speed
-      }
-      if (globeRef.current) {
-        globeRef.current.update({
-          phi: phiRef.current + phiOffsetRef.current + dragOffset.current.phi,
-          theta: 0.2 + thetaOffsetRef.current + dragOffset.current.theta,
-        })
+    let isVisible = true
+    const io = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting
+    }, { threshold: 0.05 })
+    io.observe(canvas)
+
+    function animate() {
+      if (isVisible) {
+        if (!isPausedRef.current) {
+          phiRef.current += configRef.current.speed
+        }
+        if (globeRef.current) {
+          globeRef.current.update({
+            phi: phiRef.current + phiOffsetRef.current + dragOffset.current.phi,
+            theta: 0.2 + thetaOffsetRef.current + dragOffset.current.theta,
+          })
+        }
       }
       animIdRef.current = requestAnimationFrame(animate)
     }
@@ -230,6 +238,7 @@ function animate() {
     ro.observe(canvas)
 
     return () => {
+      io.disconnect()
       ro.disconnect()
       if (animIdRef.current) cancelAnimationFrame(animIdRef.current)
       if (globeRef.current) {

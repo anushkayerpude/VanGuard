@@ -381,14 +381,22 @@ export const WireframeDottedGlobe: React.FC<WireframeDottedGlobeProps> = ({
       });
     };
 
-    // Animation Loop
+    // Animation Loop with Viewport Caching
+    let isVisible = true;
+    const io = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting;
+    }, { threshold: 0.05 });
+    io.observe(canvas);
+
     const animate = () => {
-      if (autoRotate) {
-        rotation[0] += rotationSpeed;
-        projection.rotate(rotation);
+      if (isVisible) {
+        if (autoRotate) {
+          rotation[0] += rotationSpeed;
+          projection.rotate(rotation);
+        }
+        photonOffset += 1.2;
+        render();
       }
-      photonOffset += 1.2;
-      render();
       animFrameId = requestAnimationFrame(animate);
     };
 
@@ -448,6 +456,7 @@ export const WireframeDottedGlobe: React.FC<WireframeDottedGlobeProps> = ({
     canvas.addEventListener('wheel', handleWheel, { passive: false });
 
     return () => {
+      io.disconnect();
       cancelAnimationFrame(animFrameId);
       canvas.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mousemove', handleMouseMove);

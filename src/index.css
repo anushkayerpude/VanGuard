@@ -24,17 +24,27 @@
   --border-olive: #526a27;
 }
 
-/* ─── Global Smooth Scrolling Everywhere ───────────────────────────────────── */
-html,
-body,
-#root {
-  scroll-behavior: smooth;
+/* ─── Lenis Smooth Scrolling Integration ───────────────────────────────────── */
+html.lenis,
+html.lenis body {
+  height: auto;
 }
 
-/* Ensure smooth scrolling across all scroll containers, panels, and modals */
-*,
-*::before,
-*::after {
+html.lenis,
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Fallback smooth scrolling for when Lenis is not active */
+html:not(.lenis) {
   scroll-behavior: smooth;
 }
 
@@ -47,16 +57,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Momentum scrolling for WebKit / iOS across all overflow containers */
+/* Momentum scrolling for WebKit / iOS across inner scrollable containers */
 .overflow-y-auto,
 .overflow-x-auto,
-.overflow-auto,
-main,
-section,
-nav,
-aside,
-dialog {
-  scroll-behavior: smooth;
+.overflow-auto {
   -webkit-overflow-scrolling: touch;
 }
 
@@ -64,10 +68,7 @@ dialog {
 @media (prefers-reduced-motion: reduce) {
   html,
   body,
-  #root,
-  *,
-  *::before,
-  *::after {
+  #root {
     scroll-behavior: auto !important;
   }
 }
@@ -491,4 +492,23 @@ dialog {
 
 .animate-doodles {
   animation: doodleFloat 16s ease-in-out infinite;
+}
+
+/* GPU Composited Ambient Orb Keyframes (Zero CPU tax) */
+@keyframes orb-drift-1 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(35px, -25px, 0) scale(1.06);
+  }
+}
+
+@keyframes orb-drift-2 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-30px, 20px, 0) scale(1.04);
+  }
 }
