@@ -36,7 +36,6 @@ import {
 import LoadingRadar, { RadarContact } from './LoadingRadar';
 import WireframeDottedGlobe, { DEFENSE_SECTORS } from './WireframeDottedGlobe';
 import TacticalTypewriter from './TacticalTypewriter';
-import { GlobePulse } from '@/components/ui/cobe-globe-pulse';
 import { useTheme } from '../../context/ThemeContext';
 
 interface VanguardLandingPageProps {
@@ -45,22 +44,6 @@ interface VanguardLandingPageProps {
   eventCount?: number;
   threatLevel?: string;
 }
-
-const COBE_HERO_MARKERS = [
-  { id: 'vanguard-hq', location: [28.6139, 77.209] as [number, number] },
-  { id: 'us-pentagon', location: [38.8719, -77.0563] as [number, number] },
-  { id: 'nato-brussels', location: [50.8503, 4.3517] as [number, number] },
-  { id: 'indopac-singapore', location: [1.3521, 103.8198] as [number, number] },
-  { id: 'pacom-tokyo', location: [35.6762, 139.6503] as [number, number] },
-  { id: 'aus-canberra', location: [-35.2809, 149.13] as [number, number] },
-];
-
-const COBE_DARK_BASE: [number, number, number] = [0.15, 0.22, 0.1];
-const COBE_LIGHT_BASE: [number, number, number] = [0.82, 0.88, 0.78];
-const COBE_DARK_MARKER: [number, number, number] = [0.64, 0.77, 0.22];
-const COBE_LIGHT_MARKER: [number, number, number] = [0.32, 0.45, 0.15];
-const COBE_DARK_GLOW: [number, number, number] = [0.08, 0.12, 0.04];
-const COBE_LIGHT_GLOW: [number, number, number] = [0.92, 0.96, 0.88];
 
 const HERO_TYPEWRITER_PHRASES = [
   'Multi-Source Defence Situational Awareness System',
@@ -509,7 +492,7 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
           isDark ? 'bg-[#000000] text-white' : 'bg-[#f8fafc] text-slate-900'
         } overflow-hidden select-none font-sans flex flex-col justify-between pt-16 pb-3 sm:pb-4 px-4 sm:px-8 lg:px-12 z-10`}
       >
-        {/* Wireframe Hero Background: Tactical Operators with Boxed VANGUARD */}
+        {/* Wireframe Hero Background: Tactical Operators */}
         <div 
           className="absolute inset-0 z-0 pointer-events-none opacity-80 bg-cover bg-center bg-no-repeat filter contrast-125 brightness-85 transition-opacity duration-700"
           style={{ backgroundImage: "url('/assets/vanguard_hero_tactical.png')" }}
@@ -517,41 +500,8 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/60" />
         </div>
 
-        {/* HORIZONTAL TACTICAL HIGHLIGHT BAR & COBE 3D PULSE GLOBE BEHIND VANGUARD */}
+        {/* HORIZONTAL TACTICAL HIGHLIGHT BAR BEHIND VANGUARD */}
         <div className="relative w-full flex items-center justify-center z-20 mb-2 mt-auto pt-24 sm:pt-28 md:pt-32">
-          {/* COBE 3D PULSE GLOBE AESTHETIC SPHERE CENTERED BEHIND VANGUARD */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0 flex items-center justify-center">
-            {/* Soft tactical radial aura behind globe */}
-            <div
-              className={`absolute w-[360px] h-[360px] sm:w-[520px] sm:h-[520px] md:w-[680px] md:h-[680px] rounded-full ${
-                isDark ? 'bg-[#526a27]/20 blur-[90px]' : 'bg-[#526a27]/12 blur-[80px]'
-              } pointer-events-none`}
-            />
-
-            <div
-              className={`relative w-[300px] h-[300px] sm:w-[460px] sm:h-[460px] md:w-[580px] md:h-[580px] lg:w-[680px] lg:h-[680px] ${
-                isDark
-                  ? 'opacity-85 mix-blend-screen drop-shadow-[0_0_40px_rgba(82,106,39,0.4)]'
-                  : 'opacity-90 drop-shadow-[0_10px_35px_rgba(82,106,39,0.25)]'
-              }`}
-            >
-              <GlobePulse
-                className="w-full h-full"
-                speed={0.0022}
-                baseColor={isDark ? COBE_DARK_BASE : COBE_LIGHT_BASE}
-                markerColor={isDark ? COBE_DARK_MARKER : COBE_LIGHT_MARKER}
-                glowColor={isDark ? COBE_DARK_GLOW : COBE_LIGHT_GLOW}
-                dark={isDark ? 1 : 0}
-                diffuse={isDark ? 1.6 : 1.3}
-                mapBrightness={isDark ? 10 : 8}
-                arcColor={isDark ? COBE_DARK_MARKER : COBE_LIGHT_MARKER}
-                pulseColor={isDark ? '#a4c639' : '#526a27'}
-                markers={COBE_HERO_MARKERS}
-                showOverlayPulses={false}
-              />
-            </div>
-          </div>
-
           {/* Tactical Olive Green Highlight Bar (#33401c) */}
           <div
             className={`absolute inset-x-0 h-11 sm:h-13 md:h-14 ${
