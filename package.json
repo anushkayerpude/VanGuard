@@ -1,19 +1,36 @@
 {
   "name": "vanguard",
-  "version": "1.1.0",
   "private": true,
-  "description": "VANGUARD — Multi-Source Defence Situational Awareness System (HackHertz 2026 D-05)",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently -n \"SERVER,CLIENT\" -c \"cyan.bold,magenta.bold\" \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
-    "dev:server": "npm run dev --prefix server",
-    "dev:client": "npm run dev --prefix client",
-    "smoke": "npm run smoke --prefix server",
-    "test": "npm test --prefix server",
-    "build": "npm run build --prefix server && npm run build --prefix client",
-    "typecheck": "npm run typecheck --prefix server && npm run build --prefix client"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@types/d3": "^7.4.3",
+    "cobe": "^2.0.1",
+    "d3": "^7.9.0",
+    "firebase": "^12.18.0",
+    "lucide-react": "^0.344.0",
+    "motion": "^13.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zod": "^4.5.4"
   },
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "@21st-dev/cli": "^1.17.0",
+    "@types/node": "^26.5.0",
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.5.5",
+    "postcss": "^8.5.28",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^5.3.3",
+    "vite": "^5.1.6",
+    "vitest": "^2.1.9"
   }
 }
