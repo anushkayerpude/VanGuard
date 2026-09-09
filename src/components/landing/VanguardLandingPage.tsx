@@ -919,12 +919,12 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
 
       {/* ─── 6. WHAT VANGUARD DOES: CORE CAPABILITIES ─────────────────────────────── */}
       <section id="what-it-does" className="py-24 relative z-10 overflow-hidden">
-        {/* Wireframe Section 4 Background: Field Patrol Team & Vehicle */}
+        {/* Section 4 Background: Camouflage Battle Tank */}
         <div 
-          className="absolute inset-0 z-0 pointer-events-none opacity-20 bg-no-repeat bg-center bg-cover filter contrast-125 brightness-70"
-          style={{ backgroundImage: "url('/assets/patrol_team.png')" }}
+          className="absolute inset-0 z-0 pointer-events-none opacity-40 bg-no-repeat bg-center bg-cover filter contrast-125 brightness-90 transition-opacity duration-700"
+          style={{ backgroundImage: "url('/assets/battle_tank_4th_section.png')" }}
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/85 to-black/80" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/80" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
