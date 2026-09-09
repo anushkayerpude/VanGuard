@@ -1558,24 +1558,8 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
               <span>HACKHERTZ 2026 · DEFENSE TASK FORCE</span>
             </div>
 
-            <h2 className={`font-heading text-3xl sm:text-5xl lg:text-6xl font-extrabold uppercase ${textHeadingColor} flex flex-wrap items-center justify-center gap-3 sm:gap-4.5`}>
-              <span>Team</span>
-              {/* Thermonuclear Fireball Core Emblem */}
-              <motion.div 
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                className="relative inline-flex items-center justify-center w-11 h-11 sm:w-14 sm:h-14 rounded-2xl overflow-hidden border border-amber-500/70 bg-black shadow-[0_0_30px_rgba(245,158,11,0.6)] cursor-pointer"
-                title="Thermonuclear Core — Destroyer of Worlds"
-              >
-                <img
-                  src="/assets/nuke_core_badge.png"
-                  alt="Thermonuclear Blast Core"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-amber-400/20" />
-              </motion.div>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-[#c6ff00] to-[#a4c639] drop-shadow-[0_0_30px_rgba(245,158,11,0.4)]">
-                Destroyer of Worlds
-              </span>
+            <h2 className={`font-heading text-3xl sm:text-5xl font-extrabold uppercase ${textHeadingColor}`}>
+              Team <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-[#c6ff00] to-[#a4c639] drop-shadow-[0_0_30px_rgba(245,158,11,0.4)]">Destroyer of Worlds</span>
             </h2>
 
             <p className="text-[11px] sm:text-xs font-mono text-amber-300/90 tracking-widest uppercase mt-3 drop-shadow-[0_0_10px_rgba(245,158,11,0.3)]">
