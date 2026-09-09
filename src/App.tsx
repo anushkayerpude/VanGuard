@@ -481,7 +481,7 @@ const handleRunNlQuery = async (query: string) => {
   if (viewMode === 'landing') {
     return (
       <VanguardLandingPage
-        onLaunchCop={() => setViewMode('login')}
+        onLaunchCop={() => setViewMode('console')}
         onOpenArchitecture={() => setViewMode('architecture')}
         serverOnline={serverOnline}
         eventCount={events.length}

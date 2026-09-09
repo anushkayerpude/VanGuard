@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo, lazy, Suspense } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'motion/react';
 import {
   Shield,
@@ -18,7 +18,6 @@ import {
   Clock,
   Terminal,
   Layers,
-  Workflow,
   Sparkles,
   RefreshCw,
   ExternalLink,
@@ -30,6 +29,7 @@ import {
   Radar,
   Crosshair,
   MapPin,
+  Workflow,
   Users,
   Crown,
 } from 'lucide-react';
@@ -172,25 +172,8 @@ const TEAM_MEMBERS = [
   },
 ];
 
-// ─── LAZY VIEWPORT-GATED HEAVY COMPONENTS ────────────────────────────────────
-// These WebGL/Canvas components are only mounted when their container scrolls
-// into view, eliminating ~120fps of offscreen GPU work.
-function useInViewLazy(rootMargin = '200px') {
-  const ref = useRef<HTMLDivElement>(null);
-  const [inView, setInView] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) setInView(true); }, { rootMargin });
-    io.observe(el);
-    return () => io.disconnect();
-  }, [rootMargin]);
-  return { ref, inView };
-}
-
 export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
   onLaunchCop,
-  onOpenArchitecture,
   serverOnline = false,
   eventCount = 118,
   threatLevel = 'green',
@@ -198,23 +181,8 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
   // Global Theme State: Dark Mode Only
   const { theme, isDark } = useTheme();
 
-  // ── ZERO-RERENDER MOUSE SPOTLIGHT ──────────────────────────────────────────
-  // Instead of useState (which re-renders the entire 2000-line tree on every
-  // pixel of movement), we write CSS custom properties directly on the DOM node.
-  const spotlightRef = useRef<HTMLDivElement>(null);
-  const mouseRafRef = useRef<number>(0);
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (mouseRafRef.current) return;
-    const clientX = e.clientX;
-    const clientY = e.clientY;
-    mouseRafRef.current = requestAnimationFrame(() => {
-      if (spotlightRef.current) {
-        spotlightRef.current.style.setProperty('--mx', `${clientX}px`);
-        spotlightRef.current.style.setProperty('--my', `${clientY}px`);
-      }
-      mouseRafRef.current = 0;
-    });
-  }, []);
+  // Mouse Tracking for dynamic cursor spotlight over the cyber grid
+  const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: -1000, y: -1000 });
 
   // Active story chapter state
   const [activeChapterIndex, setActiveChapterIndex] = useState<number>(1);
@@ -231,34 +199,21 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
   const [briefingModalOpen, setBriefingModalOpen] = useState<boolean>(false);
   const [briefingFormSubmitted, setBriefingFormSubmitted] = useState<boolean>(false);
 
-  // ── LAZY GATES FOR HEAVY CANVAS WIDGETS ────────────────────────────────────
-  const heroGlobe = useInViewLazy('300px');
-  const telemetrySection = useInViewLazy('200px');
-
-  // Framer Motion Scroll Hooks — lighter spring for reduced CPU
+  // Framer Motion Scroll Hooks
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
-    stiffness: 60,
-    damping: 20,
-    restDelta: 0.005,
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
   });
-
-  // Global Enter Key Listener: Transitions directly to the Login/Clearance Portal
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        onLaunchCop();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onLaunchCop]);
 
   const heroY = useTransform(scrollYProgress, [0, 0.12], [0, -75]);
   const heroScale = useTransform(scrollYProgress, [0, 0.12], [1, 0.94]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.10], [1, 0]);
+  const heroFilter = useTransform(scrollYProgress, [0, 0.10], ['blur(0px)', 'blur(8px)']);
+
+  const orbY1 = useTransform(scrollYProgress, [0, 1], [0, 220]);
+  const orbY2 = useTransform(scrollYProgress, [0, 1], [0, -180]);
 
   // Calculated Confidence values
   const rawConfidence = Math.min(
@@ -310,7 +265,7 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
 
   return (
     <div
-      onMouseMove={handleMouseMove}
+      onMouseMove={(e) => setMousePos({ x: e.clientX, y: e.clientY })}
       className={`min-h-screen font-sans selection:bg-lime-400 selection:text-black overflow-x-hidden relative transition-colors duration-500 ${
         isDark ? 'bg-[#000000] text-slate-100' : 'bg-[#f8fafc] text-slate-900'
       }`}
@@ -340,19 +295,8 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
           <span>PROBLEM ID D-05 · 114 INVARIANT TESTS PASSING</span>
         </div>
 
-        {/* Right: Tactical Launch COP & Architecture */}
-        <div className="flex items-center gap-2 sm:gap-3 pointer-events-auto">
-          {onOpenArchitecture && (
-            <button
-              type="button"
-              onClick={onOpenArchitecture}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-[#526a27]/60 hover:border-[#a4c639] text-[#a4c639] hover:text-white font-mono text-xs font-semibold tracking-wide uppercase transition-all cursor-pointer"
-            >
-              <Workflow className="w-3.5 h-3.5 text-[#c6ff00]" />
-              <span className="hidden sm:inline">Architecture & Models</span>
-            </button>
-          )}
-
+        {/* Right: Tactical Launch COP */}
+        <div className="flex items-center gap-3 pointer-events-auto">
           {/* Quick Launch COP Button (Tactical Olive / Lime) */}
           <motion.button
             type="button"
@@ -387,16 +331,7 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
           <a
             key={sec.label}
             href={sec.href}
-            onClick={(e) => {
-              e.preventDefault();
-              const el = document.querySelector(sec.href);
-              if (el) {
-                const yOffset = -88;
-                const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
-                window.scrollTo({ top: y, behavior: 'smooth' });
-              }
-            }}
-            className={`px-3 py-1.5 rounded-full ${glassPillClass} border transition-all hover:scale-105 flex items-center gap-2 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-full ${glassPillClass} border transition-all hover:scale-105 flex items-center gap-2 ${
               isDark
                 ? 'text-slate-400 hover:text-[#a4c639] hover:border-[#526a27]'
                 : 'text-slate-600 hover:text-slate-950 hover:border-lime-500/60 shadow-sm'
@@ -503,42 +438,57 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
         {/* Animated Cyber Grid Layer (Tactical Olive Green on Void Black) */}
         <div className={`absolute inset-0 ${gridBackgroundClass} radial-grid-mask opacity-75`} />
 
-        {/* Interactive Mouse-Tracking Spotlight — GPU-only, zero re-renders */}
+        {/* Interactive Mouse-Tracking Spotlight over the Cyber Grid */}
         <div
-          ref={spotlightRef}
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-0 transition-opacity duration-300 pointer-events-none"
           style={{
-            '--mx': '-1000px',
-            '--my': '-1000px',
-            background: `radial-gradient(650px circle at var(--mx) var(--my), ${
+            background: `radial-gradient(650px circle at ${mousePos.x}px ${mousePos.y}px, ${
               isDark ? 'rgba(82, 106, 39, 0.12)' : 'rgba(82, 106, 39, 0.08)'
             }, transparent 70%)`,
-          } as React.CSSProperties}
-        />
-
-        {/* Subtle Floating Ambient Mesh Orbs — hardware-accelerated radial gradients (zero blur filter tax) */}
-        <div
-          className="absolute top-[16%] left-[20%] w-[600px] h-[400px] pointer-events-none will-change-transform animate-[orb-drift-1_24s_ease-in-out_infinite]"
-          style={{
-            background: isDark
-              ? 'radial-gradient(ellipse at center, rgba(51,64,28,0.22) 0%, rgba(51,64,28,0.08) 45%, transparent 75%)'
-              : 'radial-gradient(ellipse at center, rgba(82,106,39,0.14) 0%, rgba(82,106,39,0.05) 45%, transparent 75%)',
           }}
         />
-        {isDark && (
-          <div
-            className="absolute top-1/2 right-10 w-[550px] h-[550px] pointer-events-none will-change-transform animate-[orb-drift-2_28s_ease-in-out_infinite]"
-            style={{
-              background: 'radial-gradient(circle at center, rgba(51,64,28,0.25) 0%, rgba(51,64,28,0.08) 45%, transparent 75%)',
-            }}
-          />
+
+        {/* Subtle Floating Ambient Mesh Orbs (Tactical Green) */}
+        {isDark ? (
+          <>
+            <motion.div
+              style={{ y: orbY1 }}
+              animate={{
+                x: [0, 50, -25, 0],
+                scale: [1, 1.1, 0.95, 1],
+              }}
+              transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute top-1/6 left-1/5 w-[600px] h-[400px] bg-[#33401c]/25 blur-[160px] rounded-full"
+            />
+            <motion.div
+              style={{ y: orbY2 }}
+              animate={{
+                x: [0, -40, 40, 0],
+                scale: [1, 1.08, 0.95, 1],
+              }}
+              transition={{ duration: 28, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute top-1/2 right-10 w-[550px] h-[550px] bg-[#33401c]/30 blur-[170px] rounded-full"
+            />
+          </>
+        ) : (
+          <>
+            <motion.div
+              style={{ y: orbY1 }}
+              animate={{
+                x: [0, 60, -30, 0],
+                scale: [1, 1.15, 0.92, 1],
+              }}
+              transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute top-1/6 left-1/5 w-[600px] h-[450px] bg-[#526a27]/15 blur-[150px] rounded-full"
+            />
+          </>
         )}
       </div>
 
       {/* ─── 4. MONUMENTAL HERO: DESIGNER YERPUDE MASTER FRAME ──────────────────────── */}
       <motion.section
         id="hero"
-        style={{ y: heroY, scale: heroScale, opacity: heroOpacity }}
+        style={{ y: heroY, scale: heroScale, opacity: heroOpacity, filter: heroFilter }}
         className={`relative w-screen h-screen min-h-[100dvh] max-h-screen ${
           isDark ? 'bg-[#000000] text-white' : 'bg-[#f8fafc] text-slate-900'
         } overflow-hidden select-none font-sans flex flex-col justify-between pt-16 pb-3 sm:pb-4 px-4 sm:px-8 lg:px-12 z-10`}
@@ -579,7 +529,7 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
         </div>
 
         {/* BOTTOM BEVELED TACTICAL FRAME CONTAINER */}
-        <div className="relative w-full max-w-[1580px] mx-auto z-20 mb-2">
+        <div className="relative w-full max-w-[1580px] mx-auto z-10 mb-2">
           <div className="relative w-full min-h-[190px] sm:min-h-[210px] md:min-h-[225px] p-5 sm:p-7 flex flex-col justify-between">
             {/* SVG Crisp Chamfered Border & Dynamic Theme Background */}
             <svg
@@ -700,13 +650,6 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
                     <Satellite className="w-3.5 h-3.5 text-[#a4c639]" />
                     <span>Briefing</span>
                   </motion.button>
-
-                  <div className="w-full flex items-center gap-2 pt-1 text-[10px] font-mono text-[#a4c639]/90">
-                    <span className="px-1.5 py-0.5 rounded bg-[#16200d] border border-[#526a27]/70 text-[#c6ff00] font-bold shadow-sm">
-                      ↵ ENTER
-                    </span>
-                    <span className="tracking-wider">PRESS ENTER ANYWHERE TO INITIATE C2 LOGIN</span>
-                  </div>
                 </div>
               </div>
             </div>
@@ -731,7 +674,7 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
       </motion.section>
 
       {/* ─── 5. DUAL HARDWARE SHOWCASE: 3D GLOBE & KINEMATIC RADAR (SCROLL REVEAL) ──── */}
-      <section id="telemetry" className={`py-28 border-t ${sectionBorderClass} relative z-10 scroll-mt-24 overflow-hidden`}>
+      <section id="telemetry" className={`py-28 border-t ${sectionBorderClass} relative z-10 overflow-hidden`}>
         {/* Section 2 Background: Dual-Axis 3D Military Surveillance Radar Station */}
         <div 
           className="absolute inset-0 z-0 pointer-events-none opacity-55 bg-no-repeat bg-center bg-cover filter contrast-125 brightness-95 transition-opacity duration-700"
@@ -787,21 +730,15 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
                 </div>
               </div>
 
-              {/* Embedded Interactive 3D Dotted Globe — lazy-mounted on scroll */}
-              <div ref={telemetrySection.ref} className="w-full flex justify-center items-center py-2">
-                {telemetrySection.inView ? (
-                  <WireframeDottedGlobe
-                    width={520}
-                    height={430}
-                    className="w-full max-w-full"
-                    interactive={true}
-                    theme={theme}
-                  />
-                ) : (
-                  <div className="w-full aspect-square max-w-[520px] flex items-center justify-center">
-                    <div className="w-12 h-12 border-2 border-[#526a27] border-t-[#a4c639] rounded-full animate-spin" />
-                  </div>
-                )}
+              {/* Embedded Interactive 3D Dotted Globe */}
+              <div className="w-full flex justify-center items-center py-2">
+                <WireframeDottedGlobe
+                  width={520}
+                  height={430}
+                  className="w-full max-w-full"
+                  interactive={true}
+                  theme={theme}
+                />
               </div>
 
               {/* Globe Telemetry Footer */}
@@ -872,7 +809,7 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
       </section>
 
       {/* ─── 5. THE MISSION STORY: SECTOR 04 INTERCEPT (SCROLL REVEAL) ────────────── */}
-      <section id="story" className={`py-24 border-y ${sectionBorderClass} relative z-10 scroll-mt-24 overflow-hidden`}>
+      <section id="story" className={`py-24 border-y ${sectionBorderClass} relative z-10 overflow-hidden`}>
         {/* Section 3 Background: F-22 Stealth Fighter Jet Interceptor */}
         <div 
           className="absolute inset-0 z-0 pointer-events-none opacity-55 bg-no-repeat bg-center bg-cover filter contrast-125 brightness-95 transition-opacity duration-700"
@@ -982,7 +919,7 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
       </section>
 
       {/* ─── 6. WHAT VANGUARD DOES: CORE CAPABILITIES ─────────────────────────────── */}
-      <section id="what-it-does" className="py-24 relative z-10 scroll-mt-24 overflow-hidden">
+      <section id="what-it-does" className="py-24 relative z-10 overflow-hidden">
         {/* Section 4 Background: Mil Mi-17 Military Assault Transport Helicopter */}
         <div 
           className="absolute inset-0 z-0 pointer-events-none opacity-55 bg-no-repeat bg-center bg-cover filter contrast-125 brightness-95 transition-opacity duration-700"
@@ -1135,7 +1072,7 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
       </section>
 
       {/* ─── 7. HOW IT WORKS: THE 3-STEP PIPELINE (SCROLL STAGGER) ────────────────── */}
-      <section id="how-it-works" className={`py-24 border-y ${sectionBorderClass} relative z-10 scroll-mt-24 overflow-hidden`}>
+      <section id="how-it-works" className={`py-24 border-y ${sectionBorderClass} relative z-10 overflow-hidden`}>
         {/* Section 5 Background: Supersonic Fighter Jet */}
         <div 
           className="absolute inset-0 z-0 pointer-events-none opacity-55 bg-no-repeat bg-center bg-cover filter contrast-125 brightness-95 transition-opacity duration-700"
@@ -1252,7 +1189,7 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
       </section>
 
       {/* ─── 8. HANDS-ON CONFIDENCE CALCULATOR ────────────────────────────────────── */}
-      <section id="live-labs" className="py-24 relative z-10 scroll-mt-24 overflow-hidden">
+      <section id="live-labs" className="py-24 relative z-10 overflow-hidden">
         {/* Section 6 Background: Modern Next-Gen Main Battle Tank */}
         <div 
           className="absolute inset-0 z-0 pointer-events-none opacity-55 bg-no-repeat bg-right-bottom bg-cover filter contrast-125 brightness-95 transition-opacity duration-700"
@@ -1413,7 +1350,7 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
       </section>
 
       {/* ─── 9. ENTERPRISE DEPLOYMENTS ─────────────────────────────────────────────── */}
-      <section id="deployment" className={`py-24 border-y ${sectionBorderClass} relative z-10 scroll-mt-24 overflow-hidden`}>
+      <section id="deployment" className={`py-24 border-y ${sectionBorderClass} relative z-10 overflow-hidden`}>
         {/* Section 7 Background: Nuclear Ballistic Missile Submarine Launch (High Visibility) */}
         <div 
           className="absolute inset-0 z-0 pointer-events-none opacity-70 bg-no-repeat bg-center bg-cover filter contrast-125 brightness-105 transition-opacity duration-700"
@@ -1588,7 +1525,7 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
       </section>
 
       {/* ─── 10. TACTICAL TASK FORCE: DESTROYER OF WORLDS ───────────────────────────── */}
-      <section id="team" className={`py-24 border-t ${sectionBorderClass} relative z-10 scroll-mt-24 overflow-hidden`}>
+      <section id="team" className={`py-24 border-t ${sectionBorderClass} relative z-10 scroll-mt-6 overflow-hidden`}>
         {/* Section 8 Background: Thermonuclear Mushroom Cloud Blast */}
         <div 
           className="absolute inset-0 z-0 pointer-events-none opacity-50 bg-no-repeat bg-center bg-cover filter contrast-125 brightness-95 transition-opacity duration-700"
