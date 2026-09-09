@@ -809,12 +809,12 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
 
       {/* ─── 5. THE MISSION STORY: SECTOR 04 INTERCEPT (SCROLL REVEAL) ────────────── */}
       <section id="story" className={`py-24 border-y ${sectionBorderClass} relative z-10 overflow-hidden`}>
-        {/* Wireframe Section 3 Background: Heavy Armored Battle Tank */}
+        {/* Section 3 Background: Dark Theme Air Defense Radar Missile Vehicle */}
         <div 
-          className="absolute inset-0 z-0 pointer-events-none opacity-25 bg-no-repeat bg-right-center bg-cover filter contrast-125 brightness-75"
-          style={{ backgroundImage: "url('/assets/tank_sherman.png')" }}
+          className="absolute inset-0 z-0 pointer-events-none opacity-40 bg-no-repeat bg-right-center bg-cover filter contrast-125 brightness-90 transition-opacity duration-700"
+          style={{ backgroundImage: "url('/assets/missile_carrier_sam.png')" }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
