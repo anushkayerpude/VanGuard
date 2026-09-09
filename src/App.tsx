@@ -35,6 +35,7 @@ import VanguardLandingPage from './components/landing/VanguardLandingPage';
 import TacticalAuthPage from './components/auth/TacticalAuthPage';
 import ArchitectureDeepDivePage from './components/architecture/ArchitectureDeepDivePage';
 import DemoPitchCompanionModal from './components/guidance/DemoPitchCompanionModal';
+import { SmoothScrollProvider } from './components/common/SmoothScrollProvider';
 
 function AppContent() {
   useTheme();
@@ -46,6 +47,12 @@ function AppContent() {
   const [wsLive, setWsLive] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const isFirstLoadRef = useRef(true);
+  const mainScrollRef = useRef<HTMLElement | null>(null);
+
+  // Smooth scroll workspace to top whenever the operator switches navigation tabs
+  useEffect(() => {
+    mainScrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [activeTab]);
 
   // Core Data States
   const [situation, setSituation] = useState<any>(null);
@@ -539,7 +546,12 @@ const handleRunNlQuery = async (query: string) => {
 
       {/* 2. PRIMARY FULL-WIDTH OPERATIONAL WORKSPACE */}
       <div className="relative flex-1 flex flex-col min-w-0 overflow-hidden">
-        <main className="flex-1 overflow-y-auto p-4 md:p-5 relative">
+        <main
+          ref={mainScrollRef}
+          id="tactical-main-scroll"
+          data-lenis-prevent
+          className="flex-1 overflow-y-auto p-4 md:p-5 relative scroll-smooth"
+        >
           {/* DEGRADED COMMS AMBER SCANLINE OVERLAY */}
           {isDegradedComms && (
             <>
@@ -726,7 +738,9 @@ export default function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <AppContent />
+        <SmoothScrollProvider>
+          <AppContent />
+        </SmoothScrollProvider>
       </AuthProvider>
     </ThemeProvider>
   );

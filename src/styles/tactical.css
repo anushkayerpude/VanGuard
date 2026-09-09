@@ -358,14 +358,28 @@
   font-feature-settings: "tnum" 1, "zero" 1;
 }
 
-/* --- Olive scrollbars (override the earlier cyan set) -------------------- */
+/* --- Olive scrollbars with smooth transitions ---------------------------- */
+html, body {
+  scroll-behavior: smooth;
+}
+
+*, *::before, *::after {
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
 ::-webkit-scrollbar-track {
   background: #04060a;
 }
 
 ::-webkit-scrollbar-thumb {
   background: rgba(82, 106, 39, 0.55);
-  border-radius: 2px;
+  border-radius: 3px;
+  transition: background-color 0.25s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {

@@ -606,6 +606,7 @@ export default function TacticalMap({
   return (
     <div
       ref={containerRef}
+      data-lenis-prevent
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}

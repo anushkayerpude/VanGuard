@@ -189,7 +189,10 @@ export default function ArchitectureDeepDivePage({
             return (
               <button
                 key={item.id}
-                onClick={() => setActiveSection(item.id)}
+                onClick={() => {
+                  setActiveSection(item.id);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg whitespace-nowrap transition-all cursor-pointer font-semibold ${
                   isSelected
                     ? 'bg-[#1b2711] border border-[#a4c639] text-[#c6ff00] shadow-[0_0_12px_rgba(82,106,39,0.4)]'

@@ -373,7 +373,16 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
           <a
             key={sec.label}
             href={sec.href}
-            className={`px-3 py-1.5 rounded-full ${glassPillClass} border transition-all hover:scale-105 flex items-center gap-2 ${
+            onClick={(e) => {
+              e.preventDefault();
+              const el = document.querySelector(sec.href);
+              if (el) {
+                const yOffset = -88;
+                const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+              }
+            }}
+            className={`px-3 py-1.5 rounded-full ${glassPillClass} border transition-all hover:scale-105 flex items-center gap-2 cursor-pointer ${
               isDark
                 ? 'text-slate-400 hover:text-[#a4c639] hover:border-[#526a27]'
                 : 'text-slate-600 hover:text-slate-950 hover:border-lime-500/60 shadow-sm'
@@ -762,7 +771,7 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
       </motion.section>
 
       {/* ─── 5. DUAL HARDWARE SHOWCASE: 3D GLOBE & KINEMATIC RADAR (SCROLL REVEAL) ──── */}
-      <section id="telemetry" className={`py-28 border-t ${sectionBorderClass} relative z-10 overflow-hidden`}>
+      <section id="telemetry" className={`py-28 border-t ${sectionBorderClass} relative z-10 scroll-mt-24 overflow-hidden`}>
         {/* Wireframe Section 2 Background: Tactical Operator Headset / NVG */}
         <div 
           className="absolute inset-0 z-0 pointer-events-none opacity-25 bg-no-repeat bg-right-top bg-cover filter contrast-125 brightness-75"
@@ -897,7 +906,7 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
       </section>
 
       {/* ─── 5. THE MISSION STORY: SECTOR 04 INTERCEPT (SCROLL REVEAL) ────────────── */}
-      <section id="story" className={`py-24 border-y ${sectionBorderClass} relative z-10 overflow-hidden`}>
+      <section id="story" className={`py-24 border-y ${sectionBorderClass} relative z-10 scroll-mt-24 overflow-hidden`}>
         {/* Wireframe Section 3 Background: Heavy Armored Battle Tank */}
         <div 
           className="absolute inset-0 z-0 pointer-events-none opacity-25 bg-no-repeat bg-right-center bg-cover filter contrast-125 brightness-75"
@@ -1007,7 +1016,7 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
       </section>
 
       {/* ─── 6. WHAT VANGUARD DOES: CORE CAPABILITIES ─────────────────────────────── */}
-      <section id="what-it-does" className="py-24 relative z-10 overflow-hidden">
+      <section id="what-it-does" className="py-24 relative z-10 scroll-mt-24 overflow-hidden">
         {/* Wireframe Section 4 Background: Field Patrol Team & Vehicle */}
         <div 
           className="absolute inset-0 z-0 pointer-events-none opacity-20 bg-no-repeat bg-center bg-cover filter contrast-125 brightness-70"
@@ -1160,7 +1169,7 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
       </section>
 
       {/* ─── 7. HOW IT WORKS: THE 3-STEP PIPELINE (SCROLL STAGGER) ────────────────── */}
-      <section id="how-it-works" className={`py-24 border-y ${sectionBorderClass} relative z-10 overflow-hidden`}>
+      <section id="how-it-works" className={`py-24 border-y ${sectionBorderClass} relative z-10 scroll-mt-24 overflow-hidden`}>
         {/* Wireframe Section 5 Background: Tactical Camouflage Fabric */}
         <div 
           className="absolute inset-0 z-0 pointer-events-none opacity-20 bg-no-repeat bg-right-center bg-cover filter contrast-125 brightness-70"
@@ -1277,7 +1286,7 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
       </section>
 
       {/* ─── 8. HANDS-ON CONFIDENCE CALCULATOR ────────────────────────────────────── */}
-      <section id="live-labs" className="py-24 relative z-10 overflow-hidden">
+      <section id="live-labs" className="py-24 relative z-10 scroll-mt-24 overflow-hidden">
         {/* Wireframe Section 6 Background: Air Defense Missile Radar Vehicle */}
         <div 
           className="absolute inset-0 z-0 pointer-events-none opacity-25 bg-no-repeat bg-right-bottom bg-cover filter contrast-125 brightness-75"
@@ -1438,7 +1447,7 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
       </section>
 
       {/* ─── 9. ENTERPRISE DEPLOYMENTS ─────────────────────────────────────────────── */}
-      <section id="deployment" className={`py-24 border-y ${sectionBorderClass} relative z-10 overflow-hidden`}>
+      <section id="deployment" className={`py-24 border-y ${sectionBorderClass} relative z-10 scroll-mt-24 overflow-hidden`}>
         {/* Tactical Defense Backdrop */}
         <div 
           className="absolute inset-0 z-0 pointer-events-none opacity-15 bg-no-repeat bg-center bg-cover filter contrast-125 brightness-70"
@@ -1613,7 +1622,7 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
       </section>
 
       {/* ─── 10. TACTICAL TASK FORCE: DESTROYER OF WORLDS ───────────────────────────── */}
-      <section id="team" className={`py-24 border-t ${sectionBorderClass} relative z-10 scroll-mt-6 overflow-hidden`}>
+      <section id="team" className={`py-24 border-t ${sectionBorderClass} relative z-10 scroll-mt-24 overflow-hidden`}>
         {/* Wireframe Section 7 Background: Night Silhouette Operators */}
         <div 
           className="absolute inset-0 z-0 pointer-events-none opacity-20 bg-no-repeat bg-bottom bg-cover filter contrast-125 brightness-80"

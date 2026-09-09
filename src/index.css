@@ -24,7 +24,17 @@
   --border-olive: #526a27;
 }
 
-html {
+/* ─── Global Smooth Scrolling Everywhere ───────────────────────────────────── */
+html,
+body,
+#root {
+  scroll-behavior: smooth;
+}
+
+/* Ensure smooth scrolling across all scroll containers, panels, and modals */
+*,
+*::before,
+*::after {
   scroll-behavior: smooth;
 }
 
@@ -35,6 +45,31 @@ body {
   font-family: var(--font-sans);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Momentum scrolling for WebKit / iOS across all overflow containers */
+.overflow-y-auto,
+.overflow-x-auto,
+.overflow-auto,
+main,
+section,
+nav,
+aside,
+dialog {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Accessibility: Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  html,
+  body,
+  #root,
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Typography Utility Classes */
@@ -260,10 +295,10 @@ body {
   pointer-events: none;
 }
 
-/* Precision Scrollbars */
+/* Precision Scrollbars with Smooth Transitions */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -271,12 +306,21 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 2px;
+  background: rgba(82, 106, 39, 0.5);
+  border: 1px solid rgba(82, 106, 39, 0.3);
+  border-radius: 3px;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(164, 198, 57, 0.6);
+  background: rgba(164, 198, 57, 0.8);
+  border-color: rgba(198, 255, 0, 0.7);
+}
+
+/* Firefox thin scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(82, 106, 39, 0.5) #05070a;
 }
 
 /* Leaflet Map Dark Theme Overrides */
