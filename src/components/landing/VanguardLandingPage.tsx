@@ -1525,13 +1525,25 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
 
       {/* ─── 10. TACTICAL TASK FORCE: DESTROYER OF WORLDS ───────────────────────────── */}
       <section id="team" className={`py-24 border-t ${sectionBorderClass} relative z-10 scroll-mt-6 overflow-hidden`}>
-        {/* Wireframe Section 7 Background: Night Silhouette Operators */}
+        {/* Section 8 Background: Dual Flanking SAM Missile Batteries */}
         <div 
-          className="absolute inset-0 z-0 pointer-events-none opacity-20 bg-no-repeat bg-bottom bg-cover filter contrast-125 brightness-80"
-          style={{ backgroundImage: "url('/assets/night_silhouette.png')" }}
+          className="absolute inset-0 z-0 pointer-events-none opacity-50 bg-no-repeat bg-bottom bg-cover filter contrast-125 brightness-95 transition-opacity duration-700"
+          style={{ backgroundImage: "url('/assets/sam_missiles_dual_flank.png')" }}
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/90" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/80" />
         </div>
+
+        {/* Left Bottom Missile Battery Facing Middle (Up-Right) */}
+        <div 
+          className="absolute -bottom-6 -left-6 z-0 pointer-events-none w-[340px] sm:w-[440px] md:w-[540px] h-[220px] sm:h-[280px] md:h-[340px] opacity-60 bg-no-repeat bg-contain bg-bottom-left filter contrast-125 brightness-95 hidden sm:block"
+          style={{ backgroundImage: "url('/assets/sam_missiles_left.png')" }}
+        />
+
+        {/* Right Bottom Missile Battery Facing Middle (Up-Left) */}
+        <div 
+          className="absolute -bottom-6 -right-6 z-0 pointer-events-none w-[340px] sm:w-[440px] md:w-[540px] h-[220px] sm:h-[280px] md:h-[340px] opacity-60 bg-no-repeat bg-contain bg-bottom-right filter contrast-125 brightness-95 hidden sm:block"
+          style={{ backgroundImage: "url('/assets/sam_missiles_right.png')" }}
+        />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
