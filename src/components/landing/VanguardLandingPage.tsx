@@ -1072,12 +1072,12 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
 
       {/* ─── 7. HOW IT WORKS: THE 3-STEP PIPELINE (SCROLL STAGGER) ────────────────── */}
       <section id="how-it-works" className={`py-24 border-y ${sectionBorderClass} relative z-10 overflow-hidden`}>
-        {/* Wireframe Section 5 Background: Tactical Camouflage Fabric */}
+        {/* Section 5 Background: Supersonic Fighter Jet */}
         <div 
-          className="absolute inset-0 z-0 pointer-events-none opacity-20 bg-no-repeat bg-right-center bg-cover filter contrast-125 brightness-70"
-          style={{ backgroundImage: "url('/assets/camo_pattern.png')" }}
+          className="absolute inset-0 z-0 pointer-events-none opacity-55 bg-no-repeat bg-center bg-cover filter contrast-125 brightness-95 transition-opacity duration-700"
+          style={{ backgroundImage: "url('/assets/fighter_jet_supersonic.png')" }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/80" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
