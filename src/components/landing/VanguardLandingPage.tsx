@@ -1525,23 +1525,23 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
 
       {/* ─── 10. TACTICAL TASK FORCE: DESTROYER OF WORLDS ───────────────────────────── */}
       <section id="team" className={`py-24 border-t ${sectionBorderClass} relative z-10 scroll-mt-6 overflow-hidden`}>
-        {/* Section 8 Background: Dual Flanking SAM Missile Batteries */}
+        {/* Section 8 Background: Thermonuclear Mushroom Cloud Blast & Dual SAM Missile Batteries */}
         <div 
-          className="absolute inset-0 z-0 pointer-events-none opacity-50 bg-no-repeat bg-bottom bg-cover filter contrast-125 brightness-95 transition-opacity duration-700"
-          style={{ backgroundImage: "url('/assets/sam_missiles_dual_flank.png')" }}
+          className="absolute inset-0 z-0 pointer-events-none opacity-50 bg-no-repeat bg-center bg-cover filter contrast-125 brightness-95 transition-opacity duration-700"
+          style={{ backgroundImage: "url('/assets/thermonuclear_blast.png')" }}
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/80" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-black/80" />
         </div>
 
         {/* Left Bottom Missile Battery Facing Middle (Up-Right) */}
         <div 
-          className="absolute -bottom-6 -left-6 z-0 pointer-events-none w-[340px] sm:w-[440px] md:w-[540px] h-[220px] sm:h-[280px] md:h-[340px] opacity-60 bg-no-repeat bg-contain bg-bottom-left filter contrast-125 brightness-95 hidden sm:block"
+          className="absolute -bottom-6 -left-6 z-0 pointer-events-none w-[340px] sm:w-[440px] md:w-[540px] h-[220px] sm:h-[280px] md:h-[340px] opacity-65 bg-no-repeat bg-contain bg-bottom-left filter contrast-125 brightness-95 hidden sm:block"
           style={{ backgroundImage: "url('/assets/sam_missiles_left.png')" }}
         />
 
         {/* Right Bottom Missile Battery Facing Middle (Up-Left) */}
         <div 
-          className="absolute -bottom-6 -right-6 z-0 pointer-events-none w-[340px] sm:w-[440px] md:w-[540px] h-[220px] sm:h-[280px] md:h-[340px] opacity-60 bg-no-repeat bg-contain bg-bottom-right filter contrast-125 brightness-95 hidden sm:block"
+          className="absolute -bottom-6 -right-6 z-0 pointer-events-none w-[340px] sm:w-[440px] md:w-[540px] h-[220px] sm:h-[280px] md:h-[340px] opacity-65 bg-no-repeat bg-contain bg-bottom-right filter contrast-125 brightness-95 hidden sm:block"
           style={{ backgroundImage: "url('/assets/sam_missiles_right.png')" }}
         />
 
@@ -1557,10 +1557,32 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
               <Users className="w-4 h-4 text-[#a4c639] animate-pulse" />
               <span>HACKHERTZ 2026 · DEFENSE TASK FORCE</span>
             </div>
-            <h2 className={`font-heading text-3xl sm:text-5xl font-extrabold uppercase ${textHeadingColor}`}>
-              Team <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#a4c639] via-[#c6ff00] to-[#a4c639]">Destroyer of Worlds</span>
+
+            <h2 className={`font-heading text-3xl sm:text-5xl lg:text-6xl font-extrabold uppercase ${textHeadingColor} flex flex-wrap items-center justify-center gap-3 sm:gap-4.5`}>
+              <span>Team</span>
+              {/* Thermonuclear Fireball Core Emblem */}
+              <motion.div 
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                className="relative inline-flex items-center justify-center w-11 h-11 sm:w-14 sm:h-14 rounded-2xl overflow-hidden border border-amber-500/70 bg-black shadow-[0_0_30px_rgba(245,158,11,0.6)] cursor-pointer"
+                title="Thermonuclear Core — Destroyer of Worlds"
+              >
+                <img
+                  src="/assets/nuke_core_badge.png"
+                  alt="Thermonuclear Blast Core"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-amber-400/20" />
+              </motion.div>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-[#c6ff00] to-[#a4c639] drop-shadow-[0_0_30px_rgba(245,158,11,0.4)]">
+                Destroyer of Worlds
+              </span>
             </h2>
-            <p className={`mt-4 text-sm sm:text-base leading-relaxed ${textBodyColor}`}>
+
+            <p className="text-[11px] sm:text-xs font-mono text-amber-300/90 tracking-widest uppercase mt-3 drop-shadow-[0_0_10px_rgba(245,158,11,0.3)]">
+              &quot;Now I am become Death, the destroyer of worlds.&quot;
+            </p>
+
+            <p className={`mt-3 text-sm sm:text-base leading-relaxed ${textBodyColor}`}>
               The engineering crew behind VANGUARD. Architecting multi-source defense situational
               awareness, deterministic confidence arithmetic, and zero-hallucination command support.
             </p>
