@@ -919,10 +919,10 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
 
       {/* ─── 6. WHAT VANGUARD DOES: CORE CAPABILITIES ─────────────────────────────── */}
       <section id="what-it-does" className="py-24 relative z-10 overflow-hidden">
-        {/* Section 4 Background: AH-64 Apache Attack Helicopter Gunship */}
+        {/* Section 4 Background: Mil Mi-17 Military Assault Transport Helicopter */}
         <div 
           className="absolute inset-0 z-0 pointer-events-none opacity-55 bg-no-repeat bg-center bg-cover filter contrast-125 brightness-95 transition-opacity duration-700"
-          style={{ backgroundImage: "url('/assets/apache_helicopter_gunship.png')" }}
+          style={{ backgroundImage: "url('/assets/mi17_assault_helicopter.png')" }}
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/80" />
         </div>
