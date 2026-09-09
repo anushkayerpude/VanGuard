@@ -1350,12 +1350,12 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
 
       {/* ─── 9. ENTERPRISE DEPLOYMENTS ─────────────────────────────────────────────── */}
       <section id="deployment" className={`py-24 border-y ${sectionBorderClass} relative z-10 overflow-hidden`}>
-        {/* Tactical Defense Backdrop */}
+        {/* Section 7 Background: Nuclear Ballistic Missile Submarine Launch */}
         <div 
-          className="absolute inset-0 z-0 pointer-events-none opacity-15 bg-no-repeat bg-center bg-cover filter contrast-125 brightness-70"
-          style={{ backgroundImage: "url('/assets/night_soldiers_bg.jpg')" }}
+          className="absolute inset-0 z-0 pointer-events-none opacity-55 bg-no-repeat bg-center bg-cover filter contrast-125 brightness-95 transition-opacity duration-700"
+          style={{ backgroundImage: "url('/assets/submarine_ballistic_missile.png')" }}
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/85 to-black/80" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/80" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
