@@ -496,7 +496,7 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
         {/* Full Clarity Hero Background: Tactical Operators (No blackish overlay, 100% vivid fill) */}
         <div 
           className="absolute inset-0 z-0 pointer-events-none bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/assets/vanguard_hero_tactical.png')" }}
+          style={{ backgroundImage: "url('/assets/vanguard_hero_tactical_v2.png')" }}
         />
 
         {/* HORIZONTAL TACTICAL HIGHLIGHT BAR BEHIND VANGUARD */}

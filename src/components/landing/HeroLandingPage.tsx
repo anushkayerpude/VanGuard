@@ -14,7 +14,7 @@ export default function HeroLandingPage({ onEnterApp }: HeroLandingPageProps) {
       {/* BACKGROUND: TACTICAL OPERATORS (Full clarity, no blackish overlay) */}
       <div 
         className="absolute inset-0 z-0 pointer-events-none bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/assets/vanguard_hero_tactical.png')" }}
+        style={{ backgroundImage: "url('/assets/vanguard_hero_tactical_v2.png')" }}
       />
 
       {/* MINUTE TACTICAL & AEROSPACE BACKGROUND DOODLES */}
