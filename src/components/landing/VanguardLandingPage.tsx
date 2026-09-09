@@ -492,13 +492,11 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
           isDark ? 'bg-[#000000] text-white' : 'bg-[#f8fafc] text-slate-900'
         } overflow-hidden select-none font-sans flex flex-col justify-between pt-16 pb-3 sm:pb-4 px-4 sm:px-8 lg:px-12 z-10`}
       >
-        {/* Wireframe Hero Background: Tactical Operators */}
+        {/* Full Clarity Hero Background: Tactical Operators (No blackish overlay, 100% vivid fill) */}
         <div 
-          className="absolute inset-0 z-0 pointer-events-none opacity-80 bg-cover bg-center bg-no-repeat filter contrast-125 brightness-85 transition-opacity duration-700"
+          className="absolute inset-0 z-0 pointer-events-none bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: "url('/assets/vanguard_hero_tactical.png')" }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/60" />
-        </div>
+        />
 
         {/* HORIZONTAL TACTICAL HIGHLIGHT BAR BEHIND VANGUARD */}
         <div className="relative w-full flex items-center justify-center z-20 mb-2 mt-auto pt-24 sm:pt-28 md:pt-32">
