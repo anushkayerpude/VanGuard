@@ -1694,12 +1694,12 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
 
       {/* ─── 11. BOTTOM CALL TO ACTION ─────────────────────────────────────────────── */}
       <section id="cta" className="py-24 relative z-10 overflow-hidden">
-        {/* Section 9 Background: Olive Green Combat Medics Evacuation */}
+        {/* Section 9 Background: Tactical Fireteam Silhouette Lineup */}
         <div 
-          className="absolute inset-0 z-0 pointer-events-none opacity-55 bg-no-repeat bg-center bg-cover filter contrast-125 brightness-95 transition-opacity duration-700"
-          style={{ backgroundImage: "url('/assets/combat_medics_olive.png')" }}
+          className="absolute inset-0 z-0 pointer-events-none opacity-60 bg-no-repeat bg-center bg-cover filter contrast-125 brightness-95 transition-opacity duration-700"
+          style={{ backgroundImage: "url('/assets/tactical_fireteam_silhouette.png')" }}
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/80" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-black/85" />
         </div>
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
