@@ -674,10 +674,10 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
 
       {/* ─── 5. DUAL HARDWARE SHOWCASE: 3D GLOBE & KINEMATIC RADAR (SCROLL REVEAL) ──── */}
       <section id="telemetry" className={`py-28 border-t ${sectionBorderClass} relative z-10 overflow-hidden`}>
-        {/* Section 2 Background: Dark Theme Surveillance Radar Antenna */}
+        {/* Section 2 Background: Dual-Axis 3D Military Surveillance Radar Station */}
         <div 
-          className="absolute inset-0 z-0 pointer-events-none opacity-45 bg-no-repeat bg-center bg-cover filter contrast-125 brightness-90 transition-opacity duration-700"
-          style={{ backgroundImage: "url('/assets/radar_antenna_dark.png')" }}
+          className="absolute inset-0 z-0 pointer-events-none opacity-55 bg-no-repeat bg-center bg-cover filter contrast-125 brightness-95 transition-opacity duration-700"
+          style={{ backgroundImage: "url('/assets/dual_axis_radar_station.png')" }}
         >
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-transparent to-black/80" />
         </div>
