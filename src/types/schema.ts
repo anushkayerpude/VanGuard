@@ -325,7 +325,7 @@ export interface CourseOfAction {
 }
 
 export interface BriefingProvenance {
-  engine: 'gemini' | 'deterministic';
+  engine: 'gemini' | 'ollama' | 'deterministic';
   model?: string;
   latencyMs: number;
   eventsConsidered: number;
@@ -364,7 +364,7 @@ export interface NLQueryResult {
   interpretation: string;
   matchedEventIds: string[];
   matchCount: number;
-  parser: 'gemini' | 'heuristic';
+  parser: 'gemini' | 'ollama' | 'heuristic';
   latencyMs: number;
 }
 

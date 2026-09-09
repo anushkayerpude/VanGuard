@@ -123,8 +123,8 @@ export default function NlQueryBar({ activeQuery, result, onRun, onClear }: NlQu
             <div className="flex flex-wrap items-center gap-1.5">
               <Chip>
                 Parser
-                <b className={result.parser === 'gemini' ? 'text-[#a4c639]' : 'text-emerald-400'}>
-                  {result.parser.toUpperCase()}
+                <b className={result.parser === 'gemini' ? 'text-[#a4c639]' : result.parser === 'ollama' ? 'text-cyan-400' : 'text-emerald-400'}>
+                  {result.parser === 'ollama' ? 'OLLAMA (LOCAL)' : result.parser.toUpperCase()}
                 </b>
               </Chip>
               <Chip>

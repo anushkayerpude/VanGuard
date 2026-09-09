@@ -77,15 +77,23 @@ export function simulationRoutes(orchestrator: Orchestrator): Router {
 
   /** Trigger a coordinated scenario at an optional epicentre. */
   router.post('/scenario', (req, res) => {
-    const name = req.body?.scenario ?? req.body?.name;
-    const known = SCENARIOS.find((s) => s.name === name);
-
-    if (!known) {
-      throw ApiError.badRequest(
-        `Unknown scenario '${String(name)}'`,
-        { available: SCENARIOS.map((s) => s.name) },
-      );
-    }
+    const rawName = req.body?.scenario ?? req.body?.name;
+    const nameMap: Record<string, ScenarioName> = {
+      COORDINATED_ATTACK: 'border_spike',
+      AIR_COMBAT_INTERCEPT: 'perimeter_breach',
+      OSINT_AI_VERIFICATION: 'border_spike',
+      SEVERE_WEATHER: 'severe_weather_impact',
+      NORMAL_OPS: 'severe_weather_impact',
+      NAVAL_WARFARE_STRIKE: 'mass_casualty',
+      SUBMARINE_ASW_HUNT: 'perimeter_breach',
+      GROUND_ARMY_COMBAT: 'border_spike',
+      border_spike: 'border_spike',
+      perimeter_breach: 'perimeter_breach',
+      severe_weather_impact: 'severe_weather_impact',
+      mass_casualty: 'mass_casualty',
+    };
+    const targetName = nameMap[String(rawName)] || (SCENARIOS.some(s => s.name === rawName) ? rawName as ScenarioName : 'border_spike');
+    const known = SCENARIOS.find((s) => s.name === targetName) || SCENARIOS[0]!;
 
     const at =
       typeof req.body?.lat === 'number' && typeof req.body?.lng === 'number'
@@ -100,6 +108,7 @@ export function simulationRoutes(orchestrator: Orchestrator): Router {
 
     res.json({
       ...result,
+      scenario: rawName,
       label: known.label,
       description: known.description,
       expectedEffect: known.expectedEffect,

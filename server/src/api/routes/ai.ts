@@ -13,6 +13,7 @@ import type { Orchestrator } from '../../orchestrator/Orchestrator.js';
 import { generateBriefing } from '../../ai/briefing.js';
 import { findUngroundedCitations } from '../../ai/grounding.js';
 import { isGeminiAvailable } from '../../ai/gemini.js';
+import { isOllamaAvailable, isOllamaConfigured } from '../../ai/ollama.js';
 import { parseAndExecuteQuery, parseQueryHeuristic } from '../../ai/nlQuery.js';
 import { env } from '../../config/env.js';
 import type { AISummary } from '../../types/ai.js';
@@ -130,29 +131,56 @@ export function aiRoutes(orchestrator: Orchestrator): Router {
   });
 
   /** Which synthesis engine is active, and how the last briefing was produced. */
-  router.get('/status', (_req, res) => {
-    const summary = orchestrator.briefingCache.get();
+  router.get(
+    '/status',
+    asyncHandler(async (_req, res) => {
+      const summary = orchestrator.briefingCache.get();
+      const ollamaOnline = isOllamaConfigured() && (await isOllamaAvailable());
+      const geminiOnline = isGeminiAvailable();
 
-    res.json({
-      geminiConfigured: isGeminiAvailable(),
-      model: isGeminiAvailable() ? env.geminiModel : null,
-      activeEngine: isGeminiAvailable() ? 'gemini' : 'deterministic',
-      fallbackAvailable: true,
-      briefingIntervalMs: env.briefingIntervalMs,
-      lastBriefing: summary
-        ? {
-            generatedAt: summary.generatedAt,
-            provenance: summary.provenance,
-            developmentCount: summary.keyDevelopments.length,
-            coaCount: summary.coursesOfAction.length,
-            overallConfidence: summary.overallConfidence,
-          }
-        : null,
-      note:
-        'VANGUARD generates a complete, correctly cited briefing with no API key configured. ' +
-        'Gemini improves the language; the fusion engine supplies the substance.',
-    });
-  });
+      const activeEngine =
+        env.aiProvider === 'ollama' && ollamaOnline
+          ? 'ollama'
+          : env.aiProvider === 'gemini' && geminiOnline
+          ? 'gemini'
+          : env.aiProvider === 'auto'
+          ? ollamaOnline
+            ? 'ollama'
+            : geminiOnline
+            ? 'gemini'
+            : 'deterministic'
+          : 'deterministic';
+
+      const activeModel =
+        activeEngine === 'ollama'
+          ? env.ollamaModel
+          : activeEngine === 'gemini'
+          ? env.geminiModel
+          : null;
+
+      res.json({
+        geminiConfigured: geminiOnline,
+        ollamaConfigured: isOllamaConfigured(),
+        ollamaAvailable: ollamaOnline,
+        model: activeModel,
+        activeEngine,
+        fallbackAvailable: true,
+        briefingIntervalMs: env.briefingIntervalMs,
+        lastBriefing: summary
+          ? {
+              generatedAt: summary.generatedAt,
+              provenance: summary.provenance,
+              developmentCount: summary.keyDevelopments.length,
+              coaCount: summary.coursesOfAction.length,
+              overallConfidence: summary.overallConfidence,
+            }
+          : null,
+        note:
+          'VANGUARD generates complete, evidence-grounded briefings locally via Ollama, ' +
+          'in the cloud via Gemini, or offline via the deterministic rules engine.',
+      });
+    }),
+  );
 
   /**
    * Re-verify a briefing's citations against the live store.

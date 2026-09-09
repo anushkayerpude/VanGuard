@@ -41,6 +41,7 @@ export interface GenerateOptions {
   /** Sampling temperature. Low by default — this is analysis, not prose. */
   temperature?: number;
   maxOutputTokens?: number;
+  model?: string;
 }
 
 export interface GenerateResult<T> {

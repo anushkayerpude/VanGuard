@@ -16,6 +16,7 @@ import {
 import { AISummary, UnifiedEvent } from '../../types/schema';
 import { renderTextWithCitations, stripCitations } from '../../utils/citations';
 import { useVoiceBriefing } from '../../hooks/useVoiceBriefing';
+import GroundingProofModal from '../guidance/GroundingProofModal';
 
 interface BriefingMeta {
   ageMs: number;
@@ -39,6 +40,7 @@ export default function SituationBriefingCard({
   easyMode,
 }: SituationBriefingCardProps) {
   const [viewMode, setViewMode] = useState<'SIMPLE' | 'TACTICAL'>(easyMode ? 'SIMPLE' : 'TACTICAL');
+  const [proofModalOpen, setProofModalOpen] = useState(false);
   const voice = useVoiceBriefing();
 
   const isSimple = viewMode === 'SIMPLE' || easyMode;
@@ -123,6 +125,16 @@ export default function SituationBriefingCard({
               <span>{voice.playing ? 'STOP' : 'VOICE BRIEF'}</span>
             </button>
           )}
+
+          {/* Grounding Proof Inspection Button */}
+          <button
+            onClick={() => setProofModalOpen(true)}
+            className="flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-950/70 border border-emerald-500/50 text-emerald-300 hover:bg-emerald-900 transition-all cursor-pointer shadow-sm"
+            title="Inspect 0% Hallucination Grounding Proof"
+          >
+            <ShieldCheck className="w-3 h-3 text-emerald-400" />
+            <span>PROOF</span>
+          </button>
 
           <div className="flex items-center gap-1 bg-white/[0.04] backdrop-blur-md p-0.5 rounded-lg border border-white/10">
             <button
@@ -311,6 +323,8 @@ export default function SituationBriefingCard({
                 <Activity className="w-3 h-3" />
                 {provenance?.engine === 'gemini'
                   ? `Synthetic Briefing · ${provenance.model ?? 'gemini'}`
+                  : provenance?.engine === 'ollama'
+                  ? `Local Neural Briefing · ${provenance.model ?? 'ollama'} (Local)`
                   : 'Deterministic Replay Briefing'}
               </span>
               {briefingMeta?.groundingVerified && <span className="font-bold uppercase">Grounding: VERIFIED</span>}
@@ -335,9 +349,16 @@ export default function SituationBriefingCard({
       {!hasBriefing && (
         <div className="px-2 py-1.5 rounded-lg bg-white/[0.035] backdrop-blur-md border border-white/10 text-[10px] text-slate-500 flex items-center gap-1.5">
           <Gauge className="w-3 h-3 text-slate-500" />
-          No synthesized briefing yet — backends without GEMINI_API_KEY use the deterministic replay engine.
+          No synthesized briefing yet — backends without an active LLM use the deterministic replay engine.
         </div>
       )}
+
+      {/* Grounding Verification Audit Modal */}
+      <GroundingProofModal
+        isOpen={proofModalOpen}
+        onClose={() => setProofModalOpen(false)}
+        briefing={briefing}
+      />
     </div>
   );
 }

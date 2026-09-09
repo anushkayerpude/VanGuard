@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'motion/react';
 import {
   Shield,
@@ -18,6 +18,7 @@ import {
   Clock,
   Terminal,
   Layers,
+  Workflow,
   Sparkles,
   RefreshCw,
   ExternalLink,
@@ -29,7 +30,6 @@ import {
   Radar,
   Crosshair,
   MapPin,
-  Workflow,
   Users,
   Crown,
 } from 'lucide-react';
@@ -41,6 +41,7 @@ import { useTheme } from '../../context/ThemeContext';
 
 interface VanguardLandingPageProps {
   onLaunchCop: () => void;
+  onOpenArchitecture?: () => void;
   serverOnline?: boolean;
   eventCount?: number;
   threatLevel?: string;
@@ -190,6 +191,7 @@ const TEAM_MEMBERS = [
 
 export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
   onLaunchCop,
+  onOpenArchitecture,
   serverOnline = false,
   eventCount = 118,
   threatLevel = 'green',
@@ -222,6 +224,19 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
     damping: 30,
     restDelta: 0.001,
   });
+
+  // Global Enter Key Listener: Transitions directly to the Login/Clearance Portal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        onLaunchCop();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onLaunchCop]);
 
   const heroY = useTransform(scrollYProgress, [0, 0.12], [0, -75]);
   const heroScale = useTransform(scrollYProgress, [0, 0.12], [1, 0.94]);
@@ -311,8 +326,19 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
           <span>PROBLEM ID D-05 · 114 INVARIANT TESTS PASSING</span>
         </div>
 
-        {/* Right: Tactical Launch COP */}
-        <div className="flex items-center gap-3 pointer-events-auto">
+        {/* Right: Tactical Launch COP & Architecture */}
+        <div className="flex items-center gap-2 sm:gap-3 pointer-events-auto">
+          {onOpenArchitecture && (
+            <button
+              type="button"
+              onClick={onOpenArchitecture}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-[#526a27]/60 hover:border-[#a4c639] text-[#a4c639] hover:text-white font-mono text-xs font-semibold tracking-wide uppercase transition-all cursor-pointer"
+            >
+              <Workflow className="w-3.5 h-3.5 text-[#c6ff00]" />
+              <span className="hidden sm:inline">Architecture & Models</span>
+            </button>
+          )}
+
           {/* Quick Launch COP Button (Tactical Olive / Lime) */}
           <motion.button
             type="button"
@@ -705,6 +731,13 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
                     <Satellite className="w-3.5 h-3.5 text-[#a4c639]" />
                     <span>Briefing</span>
                   </motion.button>
+
+                  <div className="w-full flex items-center gap-2 pt-1 text-[10px] font-mono text-[#a4c639]/90">
+                    <span className="px-1.5 py-0.5 rounded bg-[#16200d] border border-[#526a27]/70 text-[#c6ff00] font-bold shadow-sm">
+                      ↵ ENTER
+                    </span>
+                    <span className="tracking-wider">PRESS ENTER ANYWHERE TO INITIATE C2 LOGIN</span>
+                  </div>
                 </div>
               </div>
             </div>

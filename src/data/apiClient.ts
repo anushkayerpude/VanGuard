@@ -21,8 +21,20 @@ import type {
   SystemMetrics,
 } from '../types/schema';
 
-export const BACKEND_URL = 'http://localhost:3001/api/v1';
-export const WS_URL = 'ws://localhost:3001/stream';
+const envApiUrl = typeof import.meta !== 'undefined' ? (import.meta as any).env?.VITE_API_URL : undefined;
+const envWsUrl = typeof import.meta !== 'undefined' ? (import.meta as any).env?.VITE_WS_URL : undefined;
+
+export const BACKEND_URL = envApiUrl
+  ? `${envApiUrl.replace(/\/+$/, '')}/api/v1`
+  : (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
+      ? '/api/v1'
+      : 'http://localhost:3001/api/v1');
+
+export const WS_URL = envWsUrl
+  ? envWsUrl
+  : (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
+      ? `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/stream`
+      : 'ws://localhost:3001/stream');
 
 const DEFAULT_TIMEOUT_MS = 4000;
 

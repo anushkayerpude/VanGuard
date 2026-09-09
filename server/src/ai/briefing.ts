@@ -24,8 +24,10 @@ import { nextCoaId } from '../util/ids.js';
 import { createLogger } from '../util/logger.js';
 import { nowIso } from '../util/time.js';
 import { synthesizeDeterministic } from './fallback.js';
-import { generateStructured, isGeminiAvailable } from './gemini.js';
+import { generateStructured, isGeminiAvailable, type GenerateResult } from './gemini.js';
+import { generateStructuredOllama, isOllamaAvailable, isOllamaConfigured } from './ollama.js';
 import { groundSummary, type EventResolver } from './grounding.js';
+import { env } from '../config/env.js';
 import {
   BRIEFING_SCHEMA,
   BRIEFING_SYSTEM_INSTRUCTION,
@@ -106,12 +108,40 @@ export async function generateBriefing(request: BriefingRequest): Promise<AISumm
     degradedMode: request.degradedMode,
   };
 
-  if (request.forceDeterministic || !isGeminiAvailable()) {
-    const reason = request.forceDeterministic
-      ? 'Deterministic engine requested'
-      : 'GEMINI_API_KEY not configured';
+  if (request.forceDeterministic) {
+    const reason = 'Deterministic engine requested';
     log.info(`synthesizing deterministically — ${reason}`);
+    const summary = synthesizeDeterministic(deterministicInput);
+    summary.provenance.degradedReason = reason;
+    return summary;
+  }
 
+  // Determine active synthesis engine
+  const ollamaOnline = isOllamaConfigured() && (await isOllamaAvailable());
+  const geminiOnline = isGeminiAvailable();
+
+  let targetEngine: 'ollama' | 'gemini' | 'deterministic' = 'deterministic';
+  if (env.aiProvider === 'ollama') {
+    targetEngine = ollamaOnline ? 'ollama' : 'deterministic';
+  } else if (env.aiProvider === 'gemini') {
+    targetEngine = geminiOnline ? 'gemini' : 'deterministic';
+  } else if (env.aiProvider === 'auto') {
+    // Local-first preference when Ollama is available, else Gemini, else deterministic
+    if (ollamaOnline) {
+      targetEngine = 'ollama';
+    } else if (geminiOnline) {
+      targetEngine = 'gemini';
+    } else {
+      targetEngine = 'deterministic';
+    }
+  }
+
+  if (targetEngine === 'deterministic') {
+    const reason =
+      !ollamaOnline && !geminiOnline
+        ? 'Neither Ollama nor GEMINI_API_KEY available'
+        : 'Deterministic engine selected';
+    log.info(`synthesizing deterministically — ${reason}`);
     const summary = synthesizeDeterministic(deterministicInput);
     summary.provenance.degradedReason = reason;
     return summary;
@@ -121,16 +151,34 @@ export async function generateBriefing(request: BriefingRequest): Promise<AISumm
 
   try {
     const prompt = buildBriefingPrompt(deterministicInput);
+    let result: GenerateResult<RawBriefing>;
 
-    const result = await generateStructured<RawBriefing>({
-      systemInstruction: BRIEFING_SYSTEM_INSTRUCTION,
-      prompt,
-      schema: BRIEFING_SCHEMA,
-      temperature: 0.25,
-      maxOutputTokens: 3_072,
-    });
+    if (targetEngine === 'ollama') {
+      result = await generateStructuredOllama<RawBriefing>({
+        systemInstruction: BRIEFING_SYSTEM_INSTRUCTION,
+        prompt,
+        schema: BRIEFING_SCHEMA,
+        temperature: 0.2,
+        maxOutputTokens: 3_072,
+      });
+    } else {
+      result = await generateStructured<RawBriefing>({
+        systemInstruction: BRIEFING_SYSTEM_INSTRUCTION,
+        prompt,
+        schema: BRIEFING_SCHEMA,
+        temperature: 0.25,
+        maxOutputTokens: 3_072,
+      });
+    }
 
-    const draft = shapeRawBriefing(result.data, request.threatLevel, evidence.length, result.model, result.latencyMs);
+    const draft = shapeRawBriefing(
+      result.data,
+      request.threatLevel,
+      evidence.length,
+      result.model,
+      result.latencyMs,
+      targetEngine,
+    );
     const { summary, report } = groundSummary(draft, request.resolver);
 
     summary.provenance.citationsStripped = report.citationsStripped;
@@ -139,15 +187,15 @@ export async function generateBriefing(request: BriefingRequest): Promise<AISumm
     // If grounding emptied the briefing, the model produced nothing usable.
     // Fall back rather than serving an empty panel during a demo.
     if (summary.keyDevelopments.length === 0) {
-      log.warn('every key development failed grounding — falling back to deterministic engine');
+      log.warn(`every key development failed grounding — falling back to deterministic engine`);
       const fallbackSummary = synthesizeDeterministic(deterministicInput);
       fallbackSummary.provenance.degradedReason =
-        `Gemini output failed citation grounding (${report.citationsStripped} invented citations)`;
+        `${targetEngine} output failed citation grounding (${report.citationsStripped} invented citations)`;
       return fallbackSummary;
     }
 
     log.info(
-      `briefing via ${result.model} in ${result.latencyMs}ms — ` +
+      `briefing via ${targetEngine} (${result.model}) in ${result.latencyMs}ms — ` +
         `${summary.keyDevelopments.length} developments, ${summary.coursesOfAction.length} COAs, ` +
         `${report.citationsStripped} citations stripped`,
     );
@@ -155,10 +203,10 @@ export async function generateBriefing(request: BriefingRequest): Promise<AISumm
     return summary;
   } catch (error) {
     const reason = error instanceof Error ? error.message : String(error);
-    log.warn(`Gemini synthesis failed after ${Date.now() - started}ms — ${reason}`);
+    log.warn(`${targetEngine} synthesis failed after ${Date.now() - started}ms — ${reason}`);
 
     const summary = synthesizeDeterministic(deterministicInput);
-    summary.provenance.degradedReason = `Gemini unavailable: ${reason}`;
+    summary.provenance.degradedReason = `${targetEngine} unavailable: ${reason}`;
     return summary;
   }
 }
@@ -170,6 +218,7 @@ function shapeRawBriefing(
   eventsConsidered: number,
   model: string,
   latencyMs: number,
+  engine: 'gemini' | 'ollama' | 'deterministic' = 'gemini',
 ): AISummary {
   return {
     generatedAt: nowIso(),
@@ -205,7 +254,7 @@ function shapeRawBriefing(
       })),
     overallConfidence: 0, // recomputed from surviving citations by groundSummary
     provenance: {
-      engine: 'gemini',
+      engine,
       model,
       latencyMs,
       eventsConsidered,

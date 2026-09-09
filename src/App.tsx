@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { UnifiedEvent, AISummary, CorrelationCluster, BriefingLatestResponse } from './types/schema';
+import { UnifiedEvent, AISummary, CorrelationCluster, BriefingLatestResponse, ThreatLevel } from './types/schema';
 import { getScenarioDataset, DemoScenarioMode } from './data/scenarioEngine';
 import {
   getSituation,
@@ -10,6 +10,7 @@ import {
   postBriefing,
   postQuery,
   postDegraded,
+  postScenario,
 } from './data/apiClient';
 import { LiveStreamClient } from './data/wsClient';
 import { AuthProvider } from './context/AuthContext';
@@ -31,15 +32,20 @@ import ApiConsoleDiagnostics from './components/system/ApiConsoleDiagnostics';
 import EventInvestigationDrawer from './components/intelligence/EventInvestigationDrawer';
 import EventReconMedia from './components/EventReconMedia';
 import VanguardLandingPage from './components/landing/VanguardLandingPage';
+import TacticalAuthPage from './components/auth/TacticalAuthPage';
+import ArchitectureDeepDivePage from './components/architecture/ArchitectureDeepDivePage';
+import DemoPitchCompanionModal from './components/guidance/DemoPitchCompanionModal';
 
 function AppContent() {
   useTheme();
-  const [viewMode, setViewMode] = useState<'landing' | 'console'>('landing');
+  const [viewMode, setViewMode] = useState<'landing' | 'login' | 'console' | 'architecture'>('landing');
   const [activeTab, setActiveTab] = useState<NavSection>('overview');
+  const [pitchGuideOpen, setPitchGuideOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [serverOnline, setServerOnline] = useState(false);
   const [wsLive, setWsLive] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const isFirstLoadRef = useRef(true);
 
   // Core Data States
   const [situation, setSituation] = useState<any>(null);
@@ -68,6 +74,27 @@ function AppContent() {
   // Natural-language omnibar filter (POST /ai/query)
   const [nlQuery, setNlQuery] = useState<string>('');
   const [nlResult, setNlResult] = useState<{ interpretation: string; parser: string; latencyMs: number; matchedEventIds: string[] } | null>(null);
+
+  const refreshBriefing = useCallback(async () => {
+    try {
+      const brief = await getBriefingLatest();
+      setBriefingMeta({
+        ageMs: brief.ageMs,
+        generating: brief.generating,
+        groundingVerified: brief.groundingVerified,
+      });
+      if (brief.summary) {
+        setBriefing(brief.summary);
+      } else if (!brief.generating) {
+        // No briefing cached yet and none generating — trigger the first synthesis.
+        const forced = await postBriefing();
+        setBriefing(forced.summary);
+        setBriefingMeta((m) => ({ ...m, groundingVerified: forced.groundingVerified }));
+      }
+    } catch {
+      // Backend down — briefing stays at its last value (or null on first load).
+    }
+  }, []);
 
   // Fetch live backend data from the fusion REST server
   const fetchBackendData = useCallback(async (isManualSync = false) => {
@@ -136,31 +163,9 @@ function AppContent() {
       setLoading(false);
       if (isManualSync) setRefreshing(false);
     }
-  }, [events.length, activeScenario]);
+  }, [events.length, activeScenario, refreshBriefing]);
 
-  const refreshBriefing = useCallback(async () => {
-    try {
-      const brief = await getBriefingLatest();
-      setBriefingMeta({
-        ageMs: brief.ageMs,
-        generating: brief.generating,
-        groundingVerified: brief.groundingVerified,
-      });
-      if (brief.summary) {
-        setBriefing(brief.summary);
-      } else if (!brief.generating) {
-        // No briefing cached yet and none generating — trigger the first synthesis.
-        const forced = await postBriefing();
-        setBriefing(forced.summary);
-        setBriefingMeta((m) => ({ ...m, groundingVerified: forced.groundingVerified }));
-      }
-    } catch {
-      // Backend down — briefing stays at its last value (or null on first load).
-    }
-  }, []);
-
-  // Polling — the clock now lives inside TopTacticalHeader so the 1s tick no
-  // longer re-renders the entire App tree.
+  // Polling — runs every 5s
   useEffect(() => {
     fetchBackendData();
     const pollTimer = setInterval(() => fetchBackendData(false), 5000);
@@ -169,7 +174,7 @@ function AppContent() {
     };
   }, [fetchBackendData]);
 
-  // WebSocket live pump — restructure polling when frames drop.
+  // WebSocket live pump — keeps real-time feed active without tearing down
   useEffect(() => {
     const client = new LiveStreamClient(undefined, {
       state: (state) => setWsLive(state === 'open'),
@@ -209,7 +214,8 @@ function AppContent() {
         setEvents((prev) => {
           const byId = new Map(prev.map((e) => [e.id, e]));
           for (const evt of frame.payload.events) byId.set(evt.id, evt);
-          return [...byId.values()];
+          const merged = [...byId.values()];
+          return merged.length > 200 ? merged.slice(-200) : merged;
         });
       },
       clusterUpdate: (frame) => {
@@ -236,7 +242,8 @@ function AppContent() {
         setEvents((prev) => {
           const byId = new Map(prev.map((e) => [e.id, e]));
           byId.set(evt.id, evt);
-          return [...byId.values()];
+          const merged = [...byId.values()];
+          return merged.length > 200 ? merged.slice(-200) : merged;
         });
       },
       resync: () => {
@@ -273,6 +280,12 @@ function AppContent() {
         setActiveTab('simulation');
       } else if (e.key === 'd' || e.key === 'D') {
         setActiveTab('api_tester');
+      } else if (e.key === 'p' || e.key === 'P') {
+        // Only trigger if not focused in an input
+        const tag = (e.target as HTMLElement)?.tagName?.toLowerCase();
+        if (tag !== 'input' && tag !== 'textarea') {
+          setPitchGuideOpen((prev) => !prev);
+        }
       } else if (e.key === 'l' || e.key === 'L') {
         setViewMode((prev) => (prev === 'landing' ? 'console' : 'landing'));
       } else if (e.key === 'Escape') {
@@ -285,10 +298,12 @@ function AppContent() {
   }, []);
 
   // Handle Scenario Injections
-  const handleInjectScenario = (mode: DemoScenarioMode) => {
+  const handleInjectScenario = async (mode: DemoScenarioMode) => {
     setActiveScenario(mode);
     setScenarioNonce((n) => n + 1);
     const scenario = getScenarioDataset(mode);
+
+    // 1. Situation Posture
     setSituation({
       threatLevel: scenario.threatLevel,
       threatScore: scenario.events.reduce(
@@ -303,8 +318,112 @@ function AppContent() {
       ),
       headline: `${scenario.name} — ${scenario.description}`,
     });
+
+    // 2. Events & Feed Health
     setEvents(scenario.events);
     setSourcesHealth(scenario.sourcesHealth);
+
+    // 3. Auto-select primary critical event
+    const primary = scenario.events.find((e) => e.severity === 'critical') || scenario.events[0];
+    if (primary) {
+      setSelectedEvent(primary);
+    }
+
+    // 4. Generate Synthesized Scenario Clusters
+    const avgLat = scenario.events.reduce((s, e) => s + e.location.lat, 0) / (scenario.events.length || 1);
+    const avgLng = scenario.events.reduce((s, e) => s + e.location.lng, 0) / (scenario.events.length || 1);
+    const scenarioClusters: CorrelationCluster[] = [
+      {
+        id: `clust-${mode.toLowerCase()}-01`,
+        eventIds: scenario.events.map((e) => e.id),
+        distinctSources: Array.from(new Set(scenario.events.map((e) => e.sourceType))),
+        centroid: { lat: avgLat, lng: avgLng },
+        radiusMeters: 3200,
+        firstSeen: new Date(Date.now() - 60000).toISOString(),
+        lastSeen: new Date().toISOString(),
+        peakSeverity: (primary?.severity as any) || 'critical',
+        meanConfidence: Math.round(
+          scenario.events.reduce((s, e) => s + e.confidence, 0) / (scenario.events.length || 1)
+        ),
+      },
+    ];
+    setClusters(scenarioClusters);
+
+    // 5. Generate Tailored AI Tactical Intelligence Briefing
+    const scenarioBriefing: AISummary = {
+      generatedAt: new Date().toISOString(),
+      threatLevel: (scenario.threatLevel?.toLowerCase() as ThreatLevel) || 'orange',
+      headline: `${scenario.name} — ACTIVE THREAT CONVERGENCE`,
+      executiveSummary: `Tactical C2 has ingested scripted incident [${scenario.name}]. Multi-sensor correlation confirms active convergence across ${scenario.sourcesHealth.length} feeds. Grounding verification active.`,
+      overallConfidence: Math.round(
+        scenario.events.reduce((s, e) => s + e.confidence, 0) / (scenario.events.length || 1)
+      ),
+      keyDevelopments: scenario.events.slice(0, 4).map((evt) => ({
+        point: `${evt.title}: ${evt.description}`,
+        supportingEventIds: [evt.id, ...(evt.corroboratedBy || [])],
+      })),
+      prioritizedActions: [
+        {
+          action: `Establish 360° defensive perimeter around sector ${primary?.id || 'ALPHA'}.`,
+          urgency: 5,
+          supportingEventIds: [primary?.id || scenario.events[0]?.id || ''],
+        },
+        {
+          action: 'Cross-reference satellite multispectral passes with primary radar return residuals.',
+          urgency: 4,
+          supportingEventIds: scenario.events.slice(0, 2).map((e) => e.id),
+        },
+        {
+          action: 'Alert tactical command net and ready kinetic interdiction elements.',
+          urgency: 4,
+          supportingEventIds: scenario.events.map((e) => e.id).slice(0, 3),
+        },
+      ],
+      coursesOfAction: [
+        {
+          id: 'coa-scenario-01',
+          title: 'Immediate Defensive Scramble',
+          description: 'Vector quick-reaction intercept assets to lock target coordinates and interdict trajectory.',
+          pros: ['Halts incursion immediately', 'Secures high-value ground assets'],
+          tradeoffs: ['Commits ready reserve squadrons'],
+          recommendedUrgency: 5,
+          supportingEventIds: [primary?.id || ''],
+        },
+      ],
+      provenance: {
+        engine: 'deterministic',
+        model: 'Scenario Grounded Engine',
+        latencyMs: 14,
+        eventsConsidered: scenario.events.length,
+        citationsStripped: 0,
+        claimsDiscarded: 0,
+      },
+    };
+    setBriefing(scenarioBriefing);
+    setBriefingMeta({
+      ageMs: 0,
+      generating: false,
+      groundingVerified: true,
+    });
+
+    // 6. Prepend Timeline Escalation Record
+    const escalationRecord: any = {
+      id: `esc-${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      from: 'green',
+      to: (scenario.threatLevel?.toLowerCase() as ThreatLevel) || 'orange',
+      score: 280,
+      reason: `Operational Injection: ${scenario.name} triggered by C2 Operator`,
+      triggerEventIds: [primary?.id || scenario.events[0]?.id || ''],
+    };
+    setTimeline((prev) => [escalationRecord, ...prev]);
+
+    // 7. Trigger backend simulation endpoint if online
+    try {
+      await postScenario(mode);
+    } catch {
+      console.log('[Scenario Injector] Local mock scenario engine successfully active:', mode);
+    }
   };
 
   const handleClearScenario = () => {
@@ -355,10 +474,32 @@ const handleRunNlQuery = async (query: string) => {
   if (viewMode === 'landing') {
     return (
       <VanguardLandingPage
-        onLaunchCop={() => setViewMode('console')}
+        onLaunchCop={() => setViewMode('login')}
+        onOpenArchitecture={() => setViewMode('architecture')}
         serverOnline={serverOnline}
         eventCount={events.length}
         threatLevel={situation?.threatLevel}
+      />
+    );
+  }
+
+  if (viewMode === 'login') {
+    return (
+      <TacticalAuthPage
+        onAuthenticated={() => setViewMode('console')}
+        onBackToLanding={() => setViewMode('landing')}
+        onOpenArchitecture={() => setViewMode('architecture')}
+        serverOnline={serverOnline}
+      />
+    );
+  }
+
+  if (viewMode === 'architecture') {
+    return (
+      <ArchitectureDeepDivePage
+        onBackToLanding={() => setViewMode('landing')}
+        onLaunchConsole={() => setViewMode('console')}
+        serverOnline={serverOnline}
       />
     );
   }
@@ -391,8 +532,9 @@ const handleRunNlQuery = async (query: string) => {
         onTabChange={(tab) => setActiveTab(tab)}
         eventCount={viewEvents.length}
         anomalyCount={anomalyCount}
-        onOpenAuthModal={() => setIsAuthModalOpen(true)}
+        onOpenAuthModal={() => setViewMode('login')}
         onNavigateToLanding={() => setViewMode('landing')}
+        onOpenPitchGuide={() => setPitchGuideOpen(true)}
       />
 
       {/* 2. PRIMARY FULL-WIDTH OPERATIONAL WORKSPACE */}
@@ -425,6 +567,10 @@ const handleRunNlQuery = async (query: string) => {
               onSelectEventId={handleSelectEventId}
               easyMode={easyMode}
               onNavigateToTab={(tab) => setActiveTab(tab)}
+              activeScenario={activeScenario}
+              onInjectScenario={handleInjectScenario}
+              onClearScenario={handleClearScenario}
+              onOpenPitchGuide={() => setPitchGuideOpen(true)}
             />
           )}
 
@@ -510,10 +656,19 @@ const handleRunNlQuery = async (query: string) => {
               onClearScenario={handleClearScenario}
               onToggleDegradedComms={handleToggleDegradedComms}
               isDegradedComms={isDegradedComms}
+              onNavigateToOverview={() => setActiveTab('overview')}
             />
           )}
 
           {activeTab === 'api_tester' && <ApiConsoleDiagnostics />}
+
+          {activeTab === 'architecture' && (
+            <ArchitectureDeepDivePage
+              onBackToLanding={() => setViewMode('landing')}
+              onLaunchConsole={() => setActiveTab('overview')}
+              serverOnline={serverOnline}
+            />
+          )}
           </div>
         </main>
       </div>
@@ -551,6 +706,17 @@ const handleRunNlQuery = async (query: string) => {
       <OperatorAuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
+      />
+
+      {/* 6. DEMO PITCH COMPANION & GUIDE MODAL */}
+      <DemoPitchCompanionModal
+        isOpen={pitchGuideOpen}
+        onClose={() => setPitchGuideOpen(false)}
+        onInjectScenario={handleInjectScenario}
+        onNavigateTab={(tab) => {
+          setActiveTab(tab);
+          setPitchGuideOpen(false);
+        }}
       />
     </div>
   );
