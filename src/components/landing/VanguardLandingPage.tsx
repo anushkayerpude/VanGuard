@@ -1705,13 +1705,13 @@ export const VanguardLandingPage: React.FC<VanguardLandingPageProps> = ({
       </section>
 
       {/* ─── 11. BOTTOM CALL TO ACTION ─────────────────────────────────────────────── */}
-      <section className="py-24 relative z-10 overflow-hidden">
-        {/* Wireframe Section 8 Background: Marching Military Army */}
+      <section id="cta" className="py-24 relative z-10 overflow-hidden">
+        {/* Section 9 Background: Olive Green Combat Medics Evacuation */}
         <div 
-          className="absolute inset-0 z-0 pointer-events-none opacity-25 bg-no-repeat bg-center bg-cover filter contrast-125 brightness-75"
-          style={{ backgroundImage: "url('/assets/marching_boots.png')" }}
+          className="absolute inset-0 z-0 pointer-events-none opacity-55 bg-no-repeat bg-center bg-cover filter contrast-125 brightness-95 transition-opacity duration-700"
+          style={{ backgroundImage: "url('/assets/combat_medics_olive.png')" }}
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/90" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/80" />
         </div>
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
